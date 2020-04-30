@@ -1,0 +1,103 @@
+﻿<Window x:Class="PressureSensorTest.SettingsArchivingResults"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PressureSensorTest"
+        mc:Ignorable="d"
+        Title="Настройки сохранения результатов" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition ></RowDefinition>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <GroupBox Margin="0,10,0,5" Header="Параметры архивирования" Grid.ColumnSpan="2">
+            <StackPanel>
+                <CheckBox Margin="5,15,15,5" IsChecked="{Binding EnableArchiving, UpdateSourceTrigger=PropertyChanged}">
+                    Производить сохранение результатов
+                </CheckBox>
+                <TextBlock Margin="5,10,5,0">Путь сохранения результатов</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MinWidth="370" Margin="5,5,5,5" VerticalAlignment="Center"
+                        Text="{Binding PathResult, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <Button VerticalAlignment="Center" MinWidth="50" Margin="0,0,5,0"
+                            Command="{Binding FindResultFolderCommand}" 
+                            IsEnabled="{Binding EnblObservrtButton, UpdateSourceTrigger=PropertyChanged }">Обзор</Button>
+                </StackPanel>
+                <CheckBox Margin="5,10,15,10" IsChecked="{Binding UsedFtp, UpdateSourceTrigger=PropertyChanged}">
+                    Использовать FTP
+                </CheckBox>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MinWidth="50" Margin="5,5,5,5" VerticalAlignment="Center">
+                        <TextBox.Text>
+                            <Binding Path="MaxComBreak" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <DataErrorValidationRule></DataErrorValidationRule>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock VerticalAlignment="Center">Максимально допустимое время отсутствия связи с сервером, ч</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,10" Header="Информация для протокола">
+            <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                <StackPanel.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="5"></Setter>
+                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="MinWidth" Value="100"></Setter>
+                        <Setter Property="Margin" Value="5"></Setter>
+                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    </Style>
+                </StackPanel.Resources>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox>
+                        <TextBox.Text>
+                            <Binding Path="StandID" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <ExceptionValidationRule></ExceptionValidationRule>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock>ID стенда</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding LineID, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBlock>Название линейки</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding HardwareVer, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBlock>Версия аппаратной части</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Button Grid.Column="0" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding SaveSettingsCommand}" MinHeight="45"
+                Margin="5,5,2,5">Сохранить</Button>
+        <Button Grid.Column="1" Grid.Row="2" VerticalAlignment="Stretch" Command="{Binding CancelCommand}" MinHeight="45"
+                Margin="2,5,5,5">Отменить</Button>
+    </Grid>
+</Window>

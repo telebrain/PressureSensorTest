@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS_Access_DB", "MS_Access_DB\MS_Access_DB.csproj", "{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_AccessDb", "Test_AccessDb\Test_AccessDb.csproj", "{11707AC8-F88C-42AD-B154-EF4218E8DAFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11707AC8-F88C-42AD-B154-EF4218E8DAFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11707AC8-F88C-42AD-B154-EF4218E8DAFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11707AC8-F88C-42AD-B154-EF4218E8DAFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11707AC8-F88C-42AD-B154-EF4218E8DAFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

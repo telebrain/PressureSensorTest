@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6B5ECF8A-D7EE-4421-BE8A-2029B64C642F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PressureSensorTest</RootNamespace>
+    <AssemblyName>PressureSensorTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AmmetrSettins.cs" />
+    <Compile Include="DialogService.cs" />
+    <Compile Include="ErrorHandler.cs" />
+    <Compile Include="ErrorHandlerRemoteControlMode.cs" />
+    <Compile Include="FocusButtonUC.xaml.cs">
+      <DependentUpon>FocusButtonUC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IDialogService.cs" />
+    <Compile Include="IWinService.cs" />
+    <Compile Include="JsonAdapter.cs" />
+    <Compile Include="JsonReportSettings.cs" />
+    <Compile Include="LedIndicatorUC.xaml.cs">
+      <DependentUpon>LedIndicatorUC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainVM.cs" />
+    <Compile Include="MeasurmendIndicator.cs" />
+    <Compile Include="PressureIndication.cs" />
+    <Compile Include="PressureSystemSettings.cs" />
+    <Compile Include="Progress.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="ProductInfo.cs" />
+    <Compile Include="SavingResults.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsArchivingResults.xaml.cs">
+      <DependentUpon>SettingsArchivingResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsArchivingResultsVM.cs" />
+    <Compile Include="Stand.cs" />
+    <Compile Include="StandDatabase.cs" />
+    <Compile Include="SysSettingsVM.cs" />
+    <Compile Include="SysSettingsWindow.xaml.cs">
+      <DependentUpon>SysSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SystemStatus.cs" />
+    <Compile Include="TableResult.xaml.cs">
+      <DependentUpon>TableResult.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TableResultData.cs" />
+    <Compile Include="WaitContinue.cs" />
+    <Compile Include="WinService.cs" />
+    <Page Include="FocusButtonUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LedIndicatorUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="SettingsArchivingResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SysSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TableResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArchvingTestResult\ArchvingTestResult\ArchvingTestResult.csproj">
+      <Project>{d8a58d02-dc47-484c-9c92-866cc24b014b}</Project>
+      <Name>ArchvingTestResult</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DbCalibration\Db_Calibration\DbCalibration.csproj">
+      <Project>{7bcc5e83-2a36-43b9-8105-6290d0df5490}</Project>
+      <Name>DbCalibration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PressSystems\PressSystems.csproj">
+      <Project>{aabd3295-9947-4a6c-bbb3-457aba73e25b}</Project>
+      <Name>PressSystems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PressureSensorTestCore\PressureSensorTestCore.csproj">
+      <Project>{28b19d76-a13d-44a0-8509-76647ed338a7}</Project>
+      <Name>PressureSensorTestCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SDM_comm\SDM_comm\SDM_comm.csproj">
+      <Project>{5b1373a1-7902-47f9-8805-d132d8e01b1e}</Project>
+      <Name>SDM_comm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Stand\OwenPressureDevices.csproj">
+      <Project>{484ab14b-c806-4b57-a774-c46fe276cb1d}</Project>
+      <Name>OwenPressureDevices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CheckOK.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CheckError.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

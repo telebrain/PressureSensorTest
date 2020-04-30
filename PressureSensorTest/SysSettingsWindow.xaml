@@ -1,0 +1,147 @@
+﻿<Window x:Class="PressureSensorTest.SysSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PressureSensorTest"
+        mc:Ignorable="d"
+        Title="Настройки системы" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style TargetType="ComboBox">
+            <Setter Property="MinWidth" Value="100"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,4,0,4"></Setter>
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="MinWidth" Value="100"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="TextAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="0,4,0,4"></Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Left"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="10,4,0,4"></Setter>
+        </Style>
+        
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.ColumnSpan="2">
+            <GroupBox Margin ="5,10,5,5" Header="Настройки пневмосистемы">
+                <StackPanel Margin="5,10,5,5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding PsysIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        <TextBlock>IP пневмосистемы</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="MaxTimeSetPressure"  UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule>
+                                        </DataErrorValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock>Максимальное время выхода на уставку, с</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="TimeStabPressure"  UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule></DataErrorValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock>Время стабилизации давления, с</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="OutChannelByThread_20"  UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule></DataErrorValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock>Номер выхода пневмосистемы для датчиков с резьбой 20х1.5 мм</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="OutChannelByThread_12"  UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule></DataErrorValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock>Номер выхода пневмосистемы для резьбы  1/2 in</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox>
+                            <TextBox.Text>
+                                <Binding Path="OutChannelByThread_14"  UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule></DataErrorValidationRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock>Номер выхода пневмосистемы для резьбы  1/4 in</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Margin ="5" Header="Настройки мультиметра">
+                <StackPanel Margin="5,10,5,5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding SdmIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                        <TextBlock>IP мультиметра</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Margin ="5" Header="Настройки базы данных">
+                <StackPanel Margin="5,10,5,5">
+                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding UsedWithDataBase, UpdateSourceTrigger=PropertyChanged}">
+                        Записывать результаты в базу стенда
+                    </CheckBox>
+                    <TextBlock Margin="0,15,0,0">Путь к базе</TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox MinWidth="430" Text="{Binding DbPath, UpdateSourceTrigger=PropertyChanged}"
+                                 TextAlignment="Left"></TextBox>
+                        <Button Width="70" Margin="10,4,0,4" Command="{Binding FindDbConnand}">Обзор</Button>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedRemouteControl, UpdateSourceTrigger=PropertyChanged}">
+                Использовать удаленное управление
+            </CheckBox>
+            <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedAutomaticSortingOut, UpdateSourceTrigger=PropertyChanged}">
+                Использовать автоматическую разбраковку
+            </CheckBox>
+        </StackPanel>
+        <Button Grid.Row="1" Margin="20,10,5,10" MinHeight="45" Command="{Binding AcceptCommand}">Применить</Button>
+        <Button Grid.Column="1" Grid.Row="1" MinHeight="45" Margin="5,10,20,10" Command="{Binding CancelCommand}">Отменить</Button>
+    </Grid>
+</Window>

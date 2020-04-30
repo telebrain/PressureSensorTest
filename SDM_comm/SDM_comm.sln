@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDM_comm", "SDM_comm\SDM_comm.csproj", "{5B1373A1-7902-47F9-8805-D132D8E01B1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDMtest", "SDMtest\SDMtest.csproj", "{1C245ECA-7702-4B73-BE2A-C3AC5D823F77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCPIterminal", "SCPIterminal\SCPIterminal.csproj", "{919EBFCC-254B-4B83-A95C-59B9D229A1C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B1373A1-7902-47F9-8805-D132D8E01B1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B1373A1-7902-47F9-8805-D132D8E01B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B1373A1-7902-47F9-8805-D132D8E01B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B1373A1-7902-47F9-8805-D132D8E01B1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C245ECA-7702-4B73-BE2A-C3AC5D823F77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C245ECA-7702-4B73-BE2A-C3AC5D823F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C245ECA-7702-4B73-BE2A-C3AC5D823F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C245ECA-7702-4B73-BE2A-C3AC5D823F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{919EBFCC-254B-4B83-A95C-59B9D229A1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{919EBFCC-254B-4B83-A95C-59B9D229A1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{919EBFCC-254B-4B83-A95C-59B9D229A1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{919EBFCC-254B-4B83-A95C-59B9D229A1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF804C31-FE68-4718-AAF2-D14A20B0E75D}
+	EndGlobalSection
+EndGlobal
