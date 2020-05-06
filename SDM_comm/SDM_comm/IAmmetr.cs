@@ -7,6 +7,8 @@ namespace SDM_comm
     {
         double Current { get; }
 
+        long Timestamp { get; }
+
         Exception Exception { get; }
 
         event EventHandler<double> UpdMeasureResult;

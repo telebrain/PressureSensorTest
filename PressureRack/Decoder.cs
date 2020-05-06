@@ -25,11 +25,11 @@ namespace PressureRack
             return strOut;
         }
 
-        internal static bool ExtractData(string name, string str, out float data)
+        internal static bool ExtractData(string name, string str, out double data)
         {
             data = 0;
             string sData = ExtractData(name, str);
-            return Single.TryParse(sData, out data);
+            return double.TryParse(sData, out data);
         }
 
         internal static bool ExtractData(string name, string str, out int data)

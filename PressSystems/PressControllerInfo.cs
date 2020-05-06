@@ -11,8 +11,8 @@ namespace PressSystems
     {
         public bool Enabled { get; set; }
         public string SN { get; set; }
-        public float PressureLo { get; set; }
-        public float PressureHi { get; set; }
-        public float Precision { get; set; }
+        public double PressureLo { get; set; }
+        public double PressureHi { get; set; }
+        public double Precision { get; set; }
     }
 }

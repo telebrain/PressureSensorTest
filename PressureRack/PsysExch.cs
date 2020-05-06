@@ -37,7 +37,7 @@ namespace PressureRack
             catch { exch.Close(); return null; }
         }
 
-        internal void GetPressureLimits(out float LoLimit, out float HiLimit)
+        internal void GetPressureLimits(out double LoLimit, out double HiLimit)
         {
             string tx = "LIMITS?;";
             string rx;
@@ -136,7 +136,7 @@ namespace PressureRack
         }
 
         // Чтение переменных
-        internal void ReadVar(out float pv, out float bar, out bool inlim)
+        internal void ReadVar(out double pv, out double bar, out bool inlim)
         {
 
             string rx = "";
@@ -164,8 +164,7 @@ namespace PressureRack
                 if (!Decoder.ExtractData("BAR:", rx, out bar))
                     throw new PressureRackException(3);
 
-                int inlimRes = 0;
-                if (!Decoder.ExtractData("INLIM:", rx, out inlimRes))
+                if (!Decoder.ExtractData("INLIM:", rx, out int inlimRes))
                     throw new PressureRackException(3);
 
                 inlim = inlimRes == 1;
@@ -181,10 +180,10 @@ namespace PressureRack
         }
 
         // Передача уставки
-        internal void SendSP(float sp, int ch)
+        internal void SendSP(double sp, int ch)
         {
             string rx = "";
-            string tx = "SP: VOL:" + FloatValToString(sp) + ";" + "CH:" + Convert.ToString(ch) + ";";
+            string tx = "SP: VOL:" + DoubleValToString(sp) + ";" + "CH:" + Convert.ToString(ch) + ";";
             System.Diagnostics.Debug.WriteLine("Запись уставки: " + tx);
             try
             {
@@ -214,7 +213,7 @@ namespace PressureRack
             }
         }
 
-        private string FloatValToString(float val)
+        private string DoubleValToString(double val)
         {
             string str = Convert.ToString(val);
             str = str.Replace(",", ".");

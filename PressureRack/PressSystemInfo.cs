@@ -13,7 +13,7 @@ namespace PressureRack
 
         // Фактические границы диапазона системы, обусловленные давлением источников, питающих контроллеры
         // и прочностью арматуры. Могут быть меньше диапазона контроллеров, входящих в состав системы
-        public float PressureLo { get; set; }
-        public float PressureHi { get; set; }
+        public double PressureLo { get; set; }
+        public double PressureHi { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace PressSystems
             Info = CreatePressSystemInfo();
         }
 
-        protected override void WriteSP(int channel, double SP)
+        protected override void WriteSP(int channel, double SP, CancellationToken token)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace PressSystems
                 //    throw new Exception("Нет связи с пневмосистемой");
 
                 CurrentSP = SP;
-                CurrentChannel = channel;
+                CurrentController = channel;
                 ChangeSP(SP);
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace PressSystems
         // int i = 0;
         protected override void ReadSysVar()
         {
-
+            Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             // Операция чтения всех переменных: Pressure, Inlim, Barometr
 
             // Симуляция аварии

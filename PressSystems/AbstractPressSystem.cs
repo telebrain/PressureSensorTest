@@ -12,13 +12,15 @@ namespace PressSystems
 
         public PressSystemInfo Info { get; protected set; }
 
-        public virtual double Pressure { get; protected set; }
+        public double Pressure { get; protected set; }
 
-        public virtual double CurrentSP { get; protected set; }
+        public long Timestamp { get; protected set; }
 
-        public virtual double Barometr { get; protected set; }
+        public double CurrentSP { get; protected set; }
 
-        public int CurrentChannel { get; protected set; }
+        public double Barometr { get; protected set; }
+
+        public int CurrentController { get; protected set; }
 
         public int CurrentOutputChannel { get; protected set; } = 1;
 
@@ -44,10 +46,10 @@ namespace PressSystems
             }
         }
 
-        public virtual event EventHandler UpdateMeasures;
-        public virtual event EventHandler ExceptionEvent;
-        public virtual event EventHandler ConnectEvent;
-        public virtual event EventHandler DisconnectEvent;
+        public event EventHandler UpdateMeasures;
+        public event EventHandler ExceptionEvent;
+        public event EventHandler ConnectEvent;
+        public event EventHandler DisconnectEvent;
 
         public AbstractPressSystem(int maxTimeSetPressureOperation)
         {
@@ -160,41 +162,41 @@ namespace PressSystems
 
         public void SetPressure(double SP, CancellationToken cancellationToken)
         {
-            WriteNewSP(SP);
+            WriteNewSP(SP, cancellationToken);
             WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
         }
 
-        public void SetPressure(int channel, double SP, CancellationToken cancellationToken)
+        public void SetPressure(int controller, double SP, CancellationToken cancellationToken)
         {
-            WriteNewSP(channel, SP);
+            WriteNewSP(controller, SP, cancellationToken);
             WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
         }
 
-        public void SetPressure(int channel, double SP, int maxOperationTime, CancellationToken cancellationToken)
+        public void SetPressure(int controller, double SP, int maxOperationTime, CancellationToken cancellationToken)
         {
-            WriteNewSP(channel, SP);
+            WriteNewSP(controller, SP, cancellationToken);
             WaitSetPessure(maxOperationTime, cancellationToken);
         }
 
         public void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission, CancellationToken cancellationToken)
         {
-            int channel = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
-            SetPressure(channel, SP, cancellationToken);
+            int controller = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
+            SetPressure(controller, SP, cancellationToken);
         }
 
         public void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission, int maxOperationTime, CancellationToken cancellationToken)
         {
-            int channel = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
-            SetPressure(channel, SP, maxOperationTime, cancellationToken);
+            int controller = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
+            SetPressure(controller, SP, maxOperationTime, cancellationToken);
         }
 
-        protected abstract void WriteSP(int channel, double SP);
+        protected abstract void WriteSP(int controller, double SP, CancellationToken cancellationToken);
 
-        public void WriteNewSP(int channel, double SP)
+        public void WriteNewSP(int controller, double SP, CancellationToken cancellationToken)
         {
             try
             {
-                WriteSP(channel, SP);
+                WriteSP(controller, SP, cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -206,9 +208,9 @@ namespace PressSystems
             }
         }
 
-        public void WriteNewSP(double SP)
+        public void WriteNewSP(double SP, CancellationToken cancellationToken)
         {
-            WriteNewSP(CurrentChannel, SP);
+            WriteNewSP(CurrentController, SP, cancellationToken);
         }
 
         // Дожидаемся стабилизации давления

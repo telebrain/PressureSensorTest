@@ -17,6 +17,8 @@ namespace PressureSensorTestCore
 
         public bool StateConnect { get; private set; }
 
+        public long Timestamp { get; private set; }
+
         public event EventHandler<double> UpdMeasureResult;
 
         public event EventHandler ExceptionEvent;
@@ -94,6 +96,7 @@ namespace PressureSensorTestCore
                 double point = (pressSystem.Pressure + rangeMin) / (rangeMax - rangeMin);
                 double error = (2 * random.NextDouble() * precision - precision) / 100;
                 Current = (point + error) * 16 + 4;
+                Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 UpdMeasureResult?.Invoke(this, Current);
                 Thread.Sleep(300);
             }
