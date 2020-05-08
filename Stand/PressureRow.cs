@@ -78,9 +78,13 @@ namespace OwenPressureDevices
 
         private List<int> CreatePressureRow()
         {
-            int mult = 10;
-            int[] pressureRow = new int[] { 4, 6, 10, 16, 25 };
             List<int> row = new List<int>();
+
+            int mult = 1;
+
+            int[] pressureRow = rangeType != RangeTypeEnum.DA ? new int[] { 100, 160, 250, 400, 600 }: 
+                new int[] { 60000, 100000, 160000, 250000, 400000 };
+            
 
             bool searshComplete = false;
 
@@ -92,91 +96,101 @@ namespace OwenPressureDevices
                     // Преобразуем значение из ряда в значение диапазона в Па, 
                     // который будет обозначен в названии изделия
                     int rangeLabel = PressRowItemToRangeLabel(item * mult);
-
-                    
+                                        
                     DeviceRange range = new DeviceRange(rangeLabel, rangeType);
 
-                    // Если текцщий диапазон изделия выходит за границы пневмосистемы, прекращаем поиск
-                    if (!CheckSupportPsysRange(range, out searshComplete))
+                    // Если текцщий диапазон изделия выходит за границы пневмосистемы
+                    if (!CheckSupportPsysRange(range))
                     {
-                        if (searshComplete)
+                        if (range.Max > pressSystemInfo.RangeHi)
                         {
+                            // Верхняя граница диапазона датчика больше диапазона пневмосистемы, прекращаем поиск 
+                            searshComplete = true; 
                             break;
                         }
                         else
                         {
-                            continue;
+                            // Продолжаем поиск. Возможно, текущий диапазон ниже нижней границы пневмосистемы
+                            // continue;
+                            searshComplete = true;
+                            break;
                         }
                     }
-                    
                     // Если найден контроллер, поддерживающий диапазон и тип датчика, добавляем в ряд
                     if (CheckSupportPressControllersRange(range))
-                    {
                         row.Add(rangeLabel);
-                    }
                 }
                 mult *= 10;
             }
             if (row.Count == 0)
-            {
                 row = null;
-            }
+
             return row;
         }
 
-        private bool CheckSupportPsysRange(DeviceRange range, out bool searshComplete)
+        private bool CheckSupportPsysRange(DeviceRange range)
         {
-            searshComplete = false;
+            bool result = false;
             switch (rangeType)
             {
                 case RangeTypeEnum.DV:
-                    if (!pressSystemInfo.CheckRangeMin(range.Max))
-                    {
-                        searshComplete = true;
-                        return false;
-                    }
+                    result = pressSystemInfo.CheckRange(0, range.Max);                  
                     break;
 
                 case RangeTypeEnum.DA:
-                    if (pressSystemInfo.CheckRangeMax(range.Max, range.Min))
-                    {
-                        if (!pressSystemInfo.CheckRangeMin(range.Max, range.Min))
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        searshComplete = true;
-                        return false;
-                    }
+                    result = pressSystemInfo.CheckRange(range.Max, range.Min);
                     break;
 
                 default:
-                    if (!(pressSystemInfo.CheckRangeMax(range.Max, range.Min)
-                    && pressSystemInfo.CheckRangeMin(range.Max, range.Min)))
-                    {
-                        searshComplete = true;
-                        return false;
-                    }
+                    result = pressSystemInfo.CheckRange(range.Max, range.Min);
                     break;
             }         
-            return true;
+            return result;
         }
 
-        private bool CheckSupportPressControllersRange(DeviceRange range)
+        public bool CheckSupportPressControllersRange(DeviceRange range)
         {
             // Минимальные значения проверяются только для ДИВ и ДА
             if (rangeType == RangeTypeEnum.DIV || rangeType == RangeTypeEnum.DA)
             {
-                if (pressSystemInfo.SearshController(range.Min, range.Max - range.Min, devicePrecision) < 0)
+                if (SearshController(range.Min, range.Max, range.Min, devicePrecision) < 0)
                     return false;
             }
 
             // Максимальные значения проверяются для всех типов
-            if (pressSystemInfo.SearshController(range.Max, range.Max - range.Min, devicePrecision) < 0)
+            if (SearshController(range.Max, range.Max, range.Min, devicePrecision) < 0)
                 return false;
             return true;
+        }
+
+        // Поиск номера контроллера. Если контроллер не найден, возвращает -1
+        public int SearshController(double targetPressure, double targetRangeMax, double targetRangeMin, double precisionClass)
+        {
+            const double precisionCoef = 3; // Коэффициент запаса точности образцовых приборов
+
+            foreach (PressControllerInfo controller in pressSystemInfo.Controllers)
+            {
+                if (controller.IsEnabled)
+                {
+                    // Проверка диапазона контроллера
+                    bool checkRange = targetPressure >= 0 ? targetRangeMax <= controller.RangeHi : targetRangeMin >= controller.RangeLo;
+                    if (!checkRange)
+                        continue; // Контроллер не подходит по диапазону
+
+                    // Проверка погрешности контроллера
+
+                    // Погрешность контроллера давления в Па
+                    double controllerAbsPrecision = controller.RangeHi * controller.Precision / 100;
+                    // Погрешность преобразователя давления в Па
+                    double absPrecision = Math.Abs((targetRangeMax - targetRangeMin) * precisionClass / 100);
+                    // Соотношения погрешщностей должно быть не меньше, чем precisionCoef
+                    if ((absPrecision / controllerAbsPrecision) >= precisionCoef)
+                        return controller.Number; // Погрешнсть контроллера не удовлетворяет классу точности изделия
+                }
+            }
+
+            return -1; // В пневмосистеме не найден ни один контроллер
+
         }
 
         private int PressRowItemToRangeLabel(int pressRowItem)

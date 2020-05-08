@@ -43,13 +43,13 @@
   <ItemGroup>
     <Compile Include="IPressSystem.cs" />
     <Compile Include="PressControllerInfo.cs" />
+    <Compile Include="PressControllersList.cs" />
     <Compile Include="PressRackInfo.cs" />
     <Compile Include="PressSystemRack.cs" />
     <Compile Include="AbstractPressSystem.cs" />
     <Compile Include="PressSystemSimulator.cs" />
     <Compile Include="PressSystemInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PressureRack\PressureRack.csproj">

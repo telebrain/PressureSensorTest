@@ -35,7 +35,7 @@ namespace OwenPressureDevices
 
         int GetIndexRangeType(string rangeTypeLabel);
 
-
+        void CheckRangeSupport(IDevice device);
     }
 
     public enum UnitsEnum { Pa = 0, kPa = 1, MPa = 2 }

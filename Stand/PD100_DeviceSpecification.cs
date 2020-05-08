@@ -74,9 +74,16 @@ namespace OwenPressureDevices
             float precision = Convert.ToSingle(Classes[classIndex]);
             PressureRow pressureRow = new PressureRow(rangeType, pressSystemInfo, precision);
             List<int> pressRow = pressureRow.GetPressureRow();
-            foreach(int item in pressRow)
+            if (pressRow != null)
             {
-                row.Add(ParserNamePD100.GetPressLabel(item));
+                foreach (int item in pressRow)
+                {
+                    row.Add(ParserNamePD100.GetPressLabel(item));
+                }
+            }
+            else
+            {
+                row.Add("-----");
             }
             return row;
         }
@@ -93,6 +100,26 @@ namespace OwenPressureDevices
             return rangeTypes[index];
         }
 
+        public void CheckRangeSupport(IDevice device)
+        {
+            if (device.Range.RangeType != RangeTypeEnum.DV)
+            {
+                bool result = pressSystemInfo.CheckRange(device.Range.Max, device.Range.Min);
+                if (!result)
+                    throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
+            }
+            else
+            {
+                if (!pressSystemInfo.CheckRange(0, device.Range.Max))
+                    throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
+            }
+            var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.ClassPrecision);
+            if (pressureRow.SearshController(device.Range.Max, 0, device.Range.Max, device.ClassPrecision) < 0)
+                throw new DeviceNotSupportByPsysException("Не обеспечивается точность установки давления");
+        }
+
+        
+
         private int GetIndex(List<string> row, string label)
         {
             if (row == null) return 0;
@@ -103,5 +130,12 @@ namespace OwenPressureDevices
             }
             return index;
         }
+    }
+
+    public class DeviceNotSupportByPsysException : Exception
+    {
+        public DeviceNotSupportByPsysException(string message) :
+            base("Пневмосистема не поддерживает поверку данного изделия. " + message)
+        { }
     }
 }

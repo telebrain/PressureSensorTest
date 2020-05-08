@@ -534,7 +534,6 @@ namespace PressureSensorTest
             lockStart = false;
 
         }
-
         private void Cancel()
         {
             lockStart = true;

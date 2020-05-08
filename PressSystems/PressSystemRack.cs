@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace PressSystems
 {
-    public class PressSystemRack : AbstractPressSystem
+    internal class PressSystemRack : AbstractPressSystem
     {
         // У стойки давления все параметры давления в кПа. Для адаптпции нужно переводить Па в кПа и обратно
 
@@ -16,7 +16,7 @@ namespace PressSystems
         readonly PressureRack.PressSystemRack psys;
 
 
-        public PressSystemRack(string ip, int maxTimeSetPressure) : base(maxTimeSetPressure)
+        internal PressSystemRack(string ip, int maxTimeSetPressure) : base(maxTimeSetPressure)
         {
             psys = new PressureRack.PressSystemRack(ip, PortPressRack);
         }

@@ -135,7 +135,7 @@ namespace PressureSensorTest
             {
                 IDevice device = Product.Device;
                 ReadPsysInfo();
-                CheckPsysSupport(PressSystemInfo, device);
+                DeviceSpecification.CheckRangeSupport(device);
                 UpdSensorInfoEvent?.Invoke(this, new EventArgs());
                 ammetr = new AmmetrSimulator(psys, device.Range.Min, device.Range.Max, 0.05);
                 ammetr.ExceptionEvent += Exception_ammetr_event;
@@ -246,24 +246,7 @@ namespace PressureSensorTest
             return 3;
         }
 
-        private void CheckPsysSupport(PressSystemInfo psysInfo, IDevice device)
-        {
-            if (device.Range.RangeType != RangeTypeEnum.DV)
-            {
-                bool result = psysInfo.CheckRangeMax(device.Range.Max, device.Range.Min);
-                result = result && psysInfo.CheckRangeMin(device.Range.Max, device.Range.Min);
-                if (!result)
-                    throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
-            }
-            else
-            {
-                if (!psysInfo.CheckRangeMin(device.Range.Max))
-                    throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
-            }
-
-            if (psysInfo.SearshController(device.Range.Max, Math.Abs(device.Range.Span), device.ClassPrecision) < 0)
-                throw new DeviceNotSupportByPsysException("Не обеспечивается точность установки давления");
-        }
+       
 
         private void CheckSerialNumber(string serialNumber)
         {
@@ -276,12 +259,7 @@ namespace PressureSensorTest
         }
     }
 
-    public class DeviceNotSupportByPsysException: Exception
-    {
-        public DeviceNotSupportByPsysException(string message):
-            base("Пневмосистема не поддерживает поверку данного изделия. " + message)
-        { }
-    }
+   
 
     
 }

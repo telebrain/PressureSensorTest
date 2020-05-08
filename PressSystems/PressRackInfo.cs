@@ -10,16 +10,23 @@ namespace PressSystems
     {
         public PressRackInfo(PressureRack.PressSystemInfo info)
         {
-            base.PressureHi = info.PressureHi;
-            base.PressureLo = info.PressureLo;
+            RangeHi = info.PressureHi;
+            RangeLo = info.PressureLo;
 
-            Controllers = new PressControllerInfo[info.Controllers.Length];          
+            Controllers = new PressControllersList();          
             for (int i = 0; i < info.Controllers.Length; i ++)
             {
-                Controllers[i].SN = info.Controllers[i].SN;
-                Controllers[i].Precision = info.Controllers[i].PrecClass;
-                Controllers[i].PressureLo = info.Controllers[i].RangeLo;
-                Controllers[i].PressureHi = info.Controllers[i].RangeHi;
+                var controller = new PressControllerInfo()
+                {
+                    Number = i + 1,
+                    IsEnabled = info.Controllers[i].State,
+                    SN = info.Controllers[i].SN,
+                    Precision = info.Controllers[i].PrecClass,
+                    RangeLo = info.Controllers[i].RangeLo,
+                    RangeHi = info.Controllers[i].RangeHi
+                };
+                Controllers.Add(controller);
+               
             }          
         }
     }

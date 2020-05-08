@@ -30,7 +30,7 @@ namespace PressSystems
 
         public int MaxTimeSetPressureOperation { get; set; } = 30; // В секундах
 
-        public int DelayCheckInlim { get; set; } = 3; // в секундах
+        const int DelayCheckInlim = 3; // в секундах
 
         Exception exception = null;
         public virtual Exception Exception
@@ -178,15 +178,15 @@ namespace PressSystems
             WaitSetPessure(maxOperationTime, cancellationToken);
         }
 
-        public void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission, CancellationToken cancellationToken)
+        public void SetPressure(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken)
         {
-            int controller = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
+            int controller = Info.SearshController(SP, rangeMax, rangeMin);
             SetPressure(controller, SP, cancellationToken);
         }
 
-        public void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission, int maxOperationTime, CancellationToken cancellationToken)
+        public void SetPressure(double SP, double rangeMin, double rangeMax, int maxOperationTime, CancellationToken cancellationToken)
         {
-            int controller = Info.SearshController(SP, rangeMax - rangeMin, classPrecission);
+            int controller = Info.SearshController(SP, rangeMax, rangeMin);
             SetPressure(controller, SP, maxOperationTime, cancellationToken);
         }
 

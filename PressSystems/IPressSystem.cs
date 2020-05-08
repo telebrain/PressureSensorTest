@@ -7,8 +7,7 @@ namespace PressSystems
     {
         // Все давления в Па
 
-        // Максимально допустимое время установки давления, с
-        int MaxTimeSetPressureOperation { get; set; }
+       
 
         // Информация о пневмосистеме (ее диапазон, перечень контроллеров давления, их диапазон, класс точности)
         PressSystemInfo Info { get; }
@@ -18,8 +17,6 @@ namespace PressSystems
 
         // Давление
         double Pressure { get; }
-
-        bool InLim { get; }
 
         // Показания барометра
         double Barometr { get; }
@@ -34,10 +31,28 @@ namespace PressSystems
         int CurrentOutputChannel { get; }
 
         // Флаг выхода текущего контроллера на уставку
-        
+        bool InLim { get; }
+
+        // Максимально допустимое время установки давления, с
+        int MaxTimeSetPressureOperation { get; set; }
 
         // Флаг, позаывающий, что пневмосистема подключена к стенду и готова принимать уставку
         bool ConnectState { get; }
+
+        // Событие обновления измеренных параметров (давление, барометр, флаг выхода на уставку) 
+        event EventHandler UpdateMeasures;
+
+        // Событие, извещающее об аварии
+        event EventHandler ExceptionEvent;
+
+        // Событие подключения пневмосистемы к стенду
+        event EventHandler ConnectEvent;
+
+        // Событие откючения пневмосистемы от стенда
+        event EventHandler DisconnectEvent;
+
+        // Хранит последнее исключение (если null - рабочее состояние)
+        Exception Exception { get; }
 
         // Команда чтения информации о пневмосистеме
         void ReadInfo();
@@ -57,20 +72,7 @@ namespace PressSystems
         // Запись уставки на текущий контроллер давления
         void WriteNewSP(double SP, CancellationToken cancellationToken);
 
-        // Событие обновления измеренных параметров (давление, барометр, флаг выхода на уставку) 
-        event EventHandler UpdateMeasures;
-
-        // Событие, извещающее об аварии
-        event EventHandler ExceptionEvent;
-
-        // Событие подключения пневмосистемы к стенду
-        event EventHandler ConnectEvent;
-
-        // Событие откючения пневмосистемы от стенда
-        event EventHandler DisconnectEvent;
-
-        // Хранит последнее исключение (если null - рабочее состояние)
-        Exception Exception { get; }
+        
 
         // Установка давления с помощью текущего контроллера пневмосистемы, контроль выхода на уставку
         void SetPressure(double SP, CancellationToken cancellationToken);
@@ -83,12 +85,12 @@ namespace PressSystems
 
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
         // из диапазона и класса точности калибруемого(тестируетого) изделия
-        void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission,
+        void SetPressure(double SP, double rangeMin, double rangeMax, 
             CancellationToken cancellationToken);
 
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
         // из диапазона и класса точности калибруемого(тестируетого) изделия
-        void SetPressure(double SP, double rangeMin, double rangeMax, double classPrecission,
+        void SetPressure(double SP, double rangeMin, double rangeMax, 
             int maxOperationTime, CancellationToken cancellationToken);
     }
 }

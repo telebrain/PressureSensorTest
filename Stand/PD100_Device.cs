@@ -33,13 +33,20 @@ namespace OwenPressureDevices
                 name = value;
                 if (value != "")
                 {
-                    ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
-                    Modification = components.Modification;
-                    ThreadType = components.ThreadType;
-                    ClassPrecision = Convert.ToSingle(components.Precision);
-                    int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
-                    RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
-                    Range = new DeviceRange(range_Pa, rangeType);
+                    try
+                    {
+                        ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
+                        Modification = components.Modification;
+                        ThreadType = components.ThreadType;
+                        ClassPrecision = Convert.ToSingle(components.Precision);
+                        int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
+                        RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
+                        Range = new DeviceRange(range_Pa, rangeType);
+                    }
+                    catch
+                    {
+                        throw new Exception("Не удалось определить изделие по названию");
+                    }
                 }
             }
         }

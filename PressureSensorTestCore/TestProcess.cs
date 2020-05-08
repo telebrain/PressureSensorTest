@@ -95,7 +95,7 @@ namespace PressureSensorTestCore
                 psys.Connect(outChannelPsys, cancellation);
                 psysIsConnect = psys.ConnectState;
             }
-            psys.SetPressure(SP, rangeMin, rangeMax, classPrecision, cancellation);
+            psys.SetPressure(SP, rangeMin, rangeMax, cancellation);
             Thread.Sleep(1000);
             Measures(out double pressure, out double current, cancellation);
             CheckPoint point = new CheckPoint((int)(testPoint * 100), pressure, current);
