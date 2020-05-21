@@ -24,7 +24,7 @@ namespace PressureSensorTest
         public void AddResults(string serialNumber, int deviceType, int sensorType, bool primaryTest, TestResults results,
             PressureIndication pressureIndication, DateTime dateTime)
         {
-            bool isGood = testResults.Resume == true;
+            bool isGood = testResults.GetResume() == true;
             AddResults(serialNumber, deviceType, sensorType, primaryTest, results, pressureIndication, isGood, dateTime);          
         }
 
@@ -71,13 +71,13 @@ namespace PressureSensorTest
                 {
                     new JsonParametr(1, Convert.ToSingle(pressureIndication.GetPressure(testPointUpwards.EtalonPressure.Value))),
                     new JsonParametr(2, Convert.ToSingle(testPointUpwards.CurrentFromEtalonPressure.Value.ToString(CurrFormat))),
-                    new JsonParametr(3, Convert.ToSingle(testPointUpwards.MeasurmentCurrent.Value.ToString(CurrFormat))),
-                    new JsonParametr(4, Convert.ToSingle(pressureIndication.GetPressure(testPointUpwards.PressureFromMeasureCurrent.Value))),
+                    new JsonParametr(3, Convert.ToSingle(testPointUpwards.MeasuredCurrent.Value.ToString(CurrFormat))),
+                    new JsonParametr(4, Convert.ToSingle(pressureIndication.GetPressure(testPointUpwards.Pressure.Value))),
                     new JsonParametr(5, Convert.ToSingle(testPointUpwards.ErrorMeasure.Value.ToString(ErrFormat))),
                     new JsonParametr(6, Convert.ToSingle(pressureIndication.GetPressure(testPointTopdown.EtalonPressure.Value))),
                     new JsonParametr(7, Convert.ToSingle(testPointTopdown.CurrentFromEtalonPressure.Value.ToString(CurrFormat))),
-                    new JsonParametr(8, Convert.ToSingle(testPointTopdown.MeasurmentCurrent.Value.ToString(CurrFormat))),
-                    new JsonParametr(9, Convert.ToSingle(pressureIndication.GetPressure(testPointTopdown.PressureFromMeasureCurrent.Value))),
+                    new JsonParametr(8, Convert.ToSingle(testPointTopdown.MeasuredCurrent.Value.ToString(CurrFormat))),
+                    new JsonParametr(9, Convert.ToSingle(pressureIndication.GetPressure(testPointTopdown.Pressure.Value))),
                     new JsonParametr(10, Convert.ToSingle(testPointTopdown.ErrorMeasure.Value.ToString(ErrFormat))),
                     new JsonParametr(11, Convert.ToSingle(testResults.Variations[number].Value.ToString(ErrFormat)))
                 }

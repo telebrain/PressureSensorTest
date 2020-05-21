@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DbCalibration
+namespace StandDb
 {
     public class InpProduct
     {

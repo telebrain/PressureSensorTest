@@ -27,9 +27,18 @@ namespace SDM_comm
 
         public bool StateConnect { get; private set; }
 
-        public Ammetr (string ip)
+        public CurrentTypeEnum CurrentType { get; private set; }
+
+        public CurrentUnitsEnum Units { get; private set; }
+
+        public int Range { get; private set; }
+
+        public Ammetr(string ip, CurrentTypeEnum currentType, CurrentUnitsEnum units, int range)
         {
             this.ip = ip;
+            CurrentType = currentType;
+            Units = units;
+            Range = range;
         }
 
         CancellationTokenSource cts;
@@ -42,7 +51,7 @@ namespace SDM_comm
             {
                 Exception = null;
                 cycleTask = StartCycle(cts.Token);
-                StateConnect = true;
+                
             }
             ConnectEvent?.Invoke(this, new EventArgs());
         }
@@ -50,6 +59,7 @@ namespace SDM_comm
         public void Stop()
         {
             cts.Cancel();
+            cycleTask.GetAwaiter().GetResult();
             StateConnect = false;
             DisconnectEvent?.Invoke(this, new EventArgs());
         }
@@ -79,8 +89,9 @@ namespace SDM_comm
 
                 transport.Connect();
                 commands = new SDM_Commands(transport);
-                commands.SetCurrentRange(CurrentType.DC, 200, CurrentUnitsEnum.mA);
+                commands.SetCurrentRange(CurrentType, Range, Units);
                 commands.InitCommand();
+                StateConnect = true;
                 ConnectEvent?.Invoke(this, new EventArgs());
                 while (!cancellationToken.IsCancellationRequested)
                 {

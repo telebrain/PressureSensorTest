@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using PressSystems;
 using SDM_comm;
 using OwenPressureDevices;
 using PressureSensorTestCore;
-using ArchvingTestResult;
+using MetrologicUtils;
 
 
 
@@ -57,7 +53,8 @@ namespace PressureSensorTest
             {
                 this.dialogService = dialogService;
                 Exception = null;
-                psys = new PressSystemSimulator(20);
+                var psysCommands = new PsysCommandSimulator();
+                psys = new PressSystem(psysCommands, 20);
                 SystemStatus.Init(Settings);
                 psys.ExceptionEvent += Exception_psys_event;
                 psys.ConnectEvent += SystemStatus.PressSysten_ConnectEvent;
@@ -158,7 +155,7 @@ namespace PressureSensorTest
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
                 testProcess.RunProcess(device.Range.Min, device.Range.Max, device.ClassPrecision, GetPsysOutChannel(), cancellation, progress);
-                if (TestResults.Resume != true)
+                if (TestResults.GetResume() != true)
                     Product.Error = ProcessErrorEnum.BadPrecision;
                 Stop();
                 waitContinue?.WaitSelection(cancellation);
@@ -197,6 +194,15 @@ namespace PressureSensorTest
             if (Product.Error == ProcessErrorEnum.NoError)
                 Product.Error = ProcessErrorEnum.OperatorSolution;
             waitContinue.Continue();
+        }
+
+        public void ShowAboutTheProgramm()
+        {
+            var metrologicInfo = new MetrologicInfo();
+            string info = $"Версия сборки v.{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()}" +
+                $"\n{new string('-', 80)}\n\n" + metrologicInfo.GetMetrologicInfo();
+            
+            dialogService.Message("О программе:", info);
         }
 
         private void Stop()

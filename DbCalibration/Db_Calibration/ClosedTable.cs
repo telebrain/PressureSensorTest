@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MS_Access_DB;
 
-namespace DbCalibration
+namespace StandDb
 {
     public class ClosedTable: BaseTable
     {

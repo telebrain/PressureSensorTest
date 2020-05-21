@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DbCalibration;
+using StandDb;
 
 namespace TestDb
 {
@@ -11,7 +11,7 @@ namespace TestDb
         [TestMethod]
         public void TestMethod1()
         {
-            DbCal db = new DbCal(@"D:\DbOfStend.accdb");
+            Database db = new Database(@"D:\DbOfStend.accdb");
 
             byte[] testResultFile = Encoding.Default.GetBytes("asbc");
             Result result = db.FineCloseProduct(DateTime.Now, DateTime.Now, "0000000001",

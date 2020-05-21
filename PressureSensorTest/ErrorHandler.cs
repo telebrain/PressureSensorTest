@@ -43,7 +43,7 @@ namespace PressureSensorTest
             }
 
             // Изделие не поддерживается пневмосистемой
-            catch(PsysPrecissionException ex)
+            catch(PsysSupportException ex)
             {
                 product.Error = ProcessErrorEnum.RangeNotSupportByPsys;
                 if (!settings.UsedStandDatabase)

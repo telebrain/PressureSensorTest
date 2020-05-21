@@ -7,26 +7,21 @@ using System.Threading.Tasks;
 
 namespace PressSystems
 {
-    public abstract class AbstractPressSystem : IPressSystem
+    public class PressSystem : IPressSystem
     {
 
-        public PressSystemInfo Info { get; protected set; }
+        public PressSystemInfo Info { get; private set; }
 
-        public double Pressure { get; protected set; }
+        public double CurrentSP { get; private set; }
 
-        public long Timestamp { get; protected set; }
 
-        public double CurrentSP { get; protected set; }
+        public int CurrentController { get; private set; }
 
-        public double Barometr { get; protected set; }
+        public int CurrentOutputChannel { get; private set; } = 1;
 
-        public int CurrentController { get; protected set; }
+        public PressSystemVariables PressSystemVariables { get; private set; }
 
-        public int CurrentOutputChannel { get; protected set; } = 1;
-
-        public bool InLim { get; protected set; }
-
-        public bool ConnectState { get; protected set; }
+        public bool ConnectState { get; private set; }
 
         public int MaxTimeSetPressureOperation { get; set; } = 30; // В секундах
 
@@ -36,7 +31,7 @@ namespace PressSystems
         public virtual Exception Exception
         {
             get { return exception; }
-            protected set
+            private set
             {
                 if (exception == null)
                 {
@@ -51,9 +46,12 @@ namespace PressSystems
         public event EventHandler ConnectEvent;
         public event EventHandler DisconnectEvent;
 
-        public AbstractPressSystem(int maxTimeSetPressureOperation)
+        readonly IPressSystemCommands commands;
+
+        public PressSystem(IPressSystemCommands commands, int maxTimeSetPressureOperation)
         {
             MaxTimeSetPressureOperation = maxTimeSetPressureOperation;
+            this.commands = commands;
         }
 
         public void Connect(CancellationToken cancellationToken)
@@ -65,15 +63,13 @@ namespace PressSystems
         CancellationToken cycleReadCancellation;
         Task taskCycleRead;
 
-        protected abstract void ConnectOperation(int outChannelNumber, CancellationToken cancellationToken);
-
         public void Connect(int outChannelNumber, CancellationToken cancellationToken)
         {
             try
             {
                 if (!ConnectState)
                 {
-                    ConnectOperation(outChannelNumber, cancellationToken);
+                    commands.Connect(outChannelNumber, cancellationToken);
                     taskCycleRead = StartCycleRead();
                     ConnectState = true;
                 }
@@ -97,13 +93,11 @@ namespace PressSystems
                 if (taskCycleRead != null)
                     taskCycleRead.Wait();
                 ConnectState = false;
-                if(taskCycleRead != null)
-                    taskCycleRead.Wait();
             }
             DisconnectEvent?.Invoke(this, new EventArgs());
         }
 
-        protected async Task StartCycleRead()
+        private async Task StartCycleRead()
         {
             cts = new CancellationTokenSource();
             cycleReadCancellation = cts.Token;
@@ -118,16 +112,17 @@ namespace PressSystems
             }
         }
 
-        private void CycleReadVar()
+        private async Task CycleReadVar()
         {
             try
             {
-                Pressure = CurrentSP;
                 while (true)
                 {
                     cycleReadCancellation.ThrowIfCancellationRequested();
-                    ReadSysVar();
-                    UpdateMeasures?.Invoke(this, new EventArgs());
+                    PressSystemVariables = commands.ReadSysVar();
+                    UpdateMeasures?.Invoke(this, new EventArgs());                   
+                    await Task.Delay(100);
+                    throw new PressSystemException("Ошибка опроса");
                 }
             }
             catch (OperationCanceledException)
@@ -140,15 +135,12 @@ namespace PressSystems
             }
         }
 
-        protected abstract void ReadSysVar();
-
-        protected abstract void ReadInfoCore();
 
         public void ReadInfo()
         {
             try
             {
-                ReadInfoCore();
+                Info = commands.ReadInfo();
             }
             catch (OperationCanceledException)
             {
@@ -190,13 +182,11 @@ namespace PressSystems
             SetPressure(controller, SP, maxOperationTime, cancellationToken);
         }
 
-        protected abstract void WriteSP(int controller, double SP, CancellationToken cancellationToken);
-
         public void WriteNewSP(int controller, double SP, CancellationToken cancellationToken)
         {
             try
             {
-                WriteSP(controller, SP, cancellationToken);
+                commands.WriteSP(controller, SP, cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -214,30 +204,26 @@ namespace PressSystems
         }
 
         // Дожидаемся стабилизации давления
-        protected virtual void WaitSetPessure(int maxOperationTime, CancellationToken cancellationToken)
+        private void WaitSetPessure(int maxOperationTime, CancellationToken cancellationToken)
         {
-            bool timeOut = false;
             using (System.Timers.Timer timer = new System.Timers.Timer(maxOperationTime * 1000))
             {
+                bool timeout = false;
                 timer.AutoReset = false;
-                timer.Elapsed += (obj, e) => timeOut = true;
+                timer.Elapsed += (obj, e) => timeout = true;
                 timer.Start();
                 while (true)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (Exception != null)
+                    if (timeout)
+                    {
+                        Exception = new SetPressureTimeoutException();
                         throw Exception;
-                    if (timeOut)
-                        break;
+                    }
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (CheckInlim(cancellationToken))
                         break;
                     Thread.Sleep(200);
-                }
-
-                if (timeOut)
-                {
-                    Exception = new SetPressureTimeoutException();
-                    throw Exception;
                 }
             }
            
@@ -253,7 +239,7 @@ namespace PressSystems
                 timer.AutoReset = false;
                 timer.Elapsed += (obj, e) => result = true;
                 timer.Start();
-                while (InLim)
+                while (PressSystemVariables.InLim)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (Exception != null)
@@ -264,6 +250,11 @@ namespace PressSystems
                 }
                 return result;
             }
+        }
+
+        public void DisableControl()
+        {
+            commands.DisableControl();
         }
     }
 
@@ -281,9 +272,9 @@ namespace PressSystems
         { }
     }
 
-    public class PsysPrecissionException : Exception
+    public class PsysSupportException : Exception
     {
-        public PsysPrecissionException() :
+        public PsysSupportException() :
             base("Пневмосистема не поддерживает поверку данного типа датчика")
         { }
     }

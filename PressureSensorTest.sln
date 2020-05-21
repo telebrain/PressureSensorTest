@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PressureRack", "PressureRac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDM_comm", "SDM_comm\SDM_comm\SDM_comm.csproj", "{5B1373A1-7902-47F9-8805-D132D8E01B1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbCalibration", "DbCalibration\Db_Calibration\DbCalibration.csproj", "{7BCC5E83-2A36-43B9-8105-6290D0DF5490}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandDb", "DbCalibration\Db_Calibration\StandDb.csproj", "{7BCC5E83-2A36-43B9-8105-6290D0DF5490}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MS_Access_DB", "MS_Access_DB\MS_Access_DB\MS_Access_DB.csproj", "{CFAE9B6F-8BA8-47DB-A468-BD4F9052CF7B}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FtpConnect", "FtpConnect\FtpConnect\FtpConnect.csproj", "{BD73A573-871A-492C-AAA6-26E207736188}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDb", "TestDb\TestDb.csproj", "{7EEEB876-92BE-4936-BB1A-FBE44BC34D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetrologicUtils", "MetrologicUtils\MetrologicUtils.csproj", "{549DBC57-DB49-4497-8E0C-1EC326D9CA62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteControl", "RemoteControl\RemoteControl.csproj", "{31F53D25-C3F6-4D16-B362-47FD42648F9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +125,22 @@ Global
 		{7EEEB876-92BE-4936-BB1A-FBE44BC34D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7EEEB876-92BE-4936-BB1A-FBE44BC34D2B}.Release|x64.ActiveCfg = Release|Any CPU
 		{7EEEB876-92BE-4936-BB1A-FBE44BC34D2B}.Release|x64.Build.0 = Release|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Debug|x64.Build.0 = Debug|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Release|x64.ActiveCfg = Release|Any CPU
+		{549DBC57-DB49-4497-8E0C-1EC326D9CA62}.Release|x64.Build.0 = Release|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Debug|x64.Build.0 = Debug|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Release|x64.ActiveCfg = Release|Any CPU
+		{31F53D25-C3F6-4D16-B362-47FD42648F9F}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

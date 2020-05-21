@@ -160,9 +160,13 @@
       <Project>{d8a58d02-dc47-484c-9c92-866cc24b014b}</Project>
       <Name>ArchvingTestResult</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DbCalibration\Db_Calibration\DbCalibration.csproj">
+    <ProjectReference Include="..\DbCalibration\Db_Calibration\StandDb.csproj">
       <Project>{7bcc5e83-2a36-43b9-8105-6290d0df5490}</Project>
-      <Name>DbCalibration</Name>
+      <Name>StandDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetrologicUtils\MetrologicUtils.csproj">
+      <Project>{549dbc57-db49-4497-8e0c-1ec326d9ca62}</Project>
+      <Name>MetrologicUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\PressSystems\PressSystems.csproj">
       <Project>{aabd3295-9947-4a6c-bbb3-457aba73e25b}</Project>

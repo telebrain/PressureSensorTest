@@ -59,8 +59,8 @@ namespace PressureSensorTest
 
             if (psys != null && psys.ConnectState)
             {
-                Pressure = psys.Pressure;
-                Inlim = psys.InLim;
+                Pressure = psys.PressSystemVariables.Pressure;
+                Inlim = psys.PressSystemVariables.InLim;
             }
             else
             {

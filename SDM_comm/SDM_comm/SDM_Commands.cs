@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SDM_comm
 {
@@ -17,27 +18,27 @@ namespace SDM_comm
 
         public void InitCommand()
         {
-            transport.OnlySend("INIT");
-            Thread.Sleep(1000);
+            transport.Send("INIT");
+            (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
         }
 
-        public void SetCurrentRange(CurrentType currentType, int value, CurrentUnitsEnum unit)
+        public void SetCurrentRange(CurrentTypeEnum currentType, int value, CurrentUnitsEnum unit)
         {
             string send = "CONF:CURR:" + currentType + " ";
             send += (unit == CurrentUnitsEnum.AUTO) ? unit.ToString() : (value.ToString() + unit.ToString());
-            transport.OnlySend(send);
-            Thread.Sleep(1000);
-            //transport.OnlySend("CONF?");
+            transport.Send(send);
+
             for (int i = 0; i < 5; i++)
             {
+                (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
                 string config = WriteRead("CONF?");
                 if (CheckSetCurrentRange(config, value, unit))
-                    return;
-                Thread.Sleep(1000);
+                    return;                
             }
 
             throw new Exception("Не удалось установить режим измерения тока");
         }
+
 
         public double ReadMeasValue()
         {
@@ -58,16 +59,16 @@ namespace SDM_comm
                 attempts --;
                 if (attempts <= 0)
                     throw ex;
-                Thread.Sleep(1000);
+                (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
                 return ReadMeasValue(attempts);
             }
         }
 
         private string WriteRead(string send)
         {
-            transport.OnlySend(send);
-            Thread.Sleep(200);
-            return transport.OnlyReceive();
+            transport.Send(send);
+            (Task.Run(async () => await Task.Delay(200))).GetAwaiter().GetResult();
+            return transport.Receive();
         }
 
         private bool CheckSetCurrentRange(string config, int value, CurrentUnitsEnum unit)
@@ -113,7 +114,7 @@ namespace SDM_comm
         AUTO = 0, uA, mA, A
     }
 
-    public enum CurrentType
+    public enum CurrentTypeEnum
     {
         AC, DC
     }

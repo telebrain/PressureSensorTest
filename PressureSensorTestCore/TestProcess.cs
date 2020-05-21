@@ -9,7 +9,7 @@ using SDM_comm;
 
 namespace PressureSensorTestCore
 {
-    public class TestProcess
+    public class TestProcess : ITestProcess
     {
         readonly IPressSystem psys;
         readonly IAmmetr ammetr;
@@ -18,14 +18,15 @@ namespace PressureSensorTestCore
 
         bool psysIsConnect;
 
-        public int NumberOfMeasurments { get; set; } = 1;
+        public int NumberOfMeasurements { get; set; } = 1;
         public int TimeoutBetwinMeasures { get; set; } = 1; // в секундах
 
         public TestResults TestResults { get; private set; }
         public event EventHandler UpdResultsEvent;
 
 
-        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints, double marginCoefficient = 0.8)
+        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints, 
+            double marginCoefficient = 0.8)
         {
             this.psys = psys;
             this.ammetr = ammetr;
@@ -35,7 +36,8 @@ namespace PressureSensorTestCore
 
         readonly Action<CancellationToken> waitContinue;
 
-        public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr, double[] testPoints, double marginCoefficient = 0.8):
+        public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr, 
+            double[] testPoints, double marginCoefficient = 0.8): 
             this(psys, ammetr, testPoints, marginCoefficient)
         {
             this.waitContinue = waitContinue;
@@ -92,10 +94,12 @@ namespace PressureSensorTestCore
             double SP = GetPressureByPoint(rangeMin, rangeMax, testPoint);
             if (!psysIsConnect && (int)SP != 0)
             {
+                // Если пневмосистема еще не была подключена, а устанвка отличается от 0, подключаем пневмосистему
                 psys.Connect(outChannelPsys, cancellation);
                 psysIsConnect = psys.ConnectState;
             }
-            psys.SetPressure(SP, rangeMin, rangeMax, cancellation);
+            if (psysIsConnect)
+                psys.SetPressure(SP, rangeMin, rangeMax, cancellation);
             Thread.Sleep(1000);
             Measures(out double pressure, out double current, cancellation);
             CheckPoint point = new CheckPoint((int)(testPoint * 100), pressure, current);
@@ -104,14 +108,16 @@ namespace PressureSensorTestCore
 
         private void Measures(out double pressure, out double current, CancellationToken cancellation)
         {
-            double[] pressureItems = new double[NumberOfMeasurments];
-            double[] currentItems = new double[NumberOfMeasurments];
-            for (int i = 0; i < NumberOfMeasurments; i++)
+            double[] pressureItems = new double[NumberOfMeasurements];
+            double[] currentItems = new double[NumberOfMeasurements];
+            for (int i = 0; i < NumberOfMeasurements; i++)
             {
                 cancellation.ThrowIfCancellationRequested();
-                pressureItems[i] = psys.Pressure;
+                // Если пневмосистема не подключена, все порты стенда связаны с атмосферой
+                // При этом давление на поверяемом преобразователе давления будет равно 0
+                pressureItems[i] = psysIsConnect ? psys.PressSystemVariables.Pressure : 0;
                 currentItems[i] = ammetr.Current;
-                if (i < NumberOfMeasurments - 1)
+                if (i < NumberOfMeasurements - 1)
                     Thread.Sleep(TimeoutBetwinMeasures*1000);
             }
             pressure = pressureItems.Sum() / pressureItems.Length;

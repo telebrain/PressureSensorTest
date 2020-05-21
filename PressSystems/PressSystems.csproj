@@ -42,13 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPressSystem.cs" />
+    <Compile Include="IPressSystemCommands.cs" />
     <Compile Include="PressControllerInfo.cs" />
     <Compile Include="PressControllersList.cs" />
-    <Compile Include="PressRackInfo.cs" />
-    <Compile Include="PressSystemRack.cs" />
-    <Compile Include="AbstractPressSystem.cs" />
-    <Compile Include="PressSystemSimulator.cs" />
+    <Compile Include="PressSystem.cs" />
+    <Compile Include="PressRackCommands.cs" />
+    <Compile Include="PsysCommandSimulator.cs" />
     <Compile Include="PressSystemInfo.cs" />
+    <Compile Include="PressSystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

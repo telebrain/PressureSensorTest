@@ -30,6 +30,11 @@ namespace PressureSensorTest
             winService.ShowMessage(message);
         }
 
+        public void Message(string title, string message)
+        {
+            winService.ShowMessage(title, message);
+        }
+
         public bool TwoButtonDialog(string message)
         {
             return winService.ShowUserDialog(message);

@@ -12,6 +12,8 @@ namespace PressureSensorTest
 
         void Message(string message);
 
+        void Message(string title, string message);
+
         void WarningMessage(string message);
 
         bool TwoButtonDialog(string message);

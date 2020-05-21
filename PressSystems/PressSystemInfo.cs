@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace PressSystems
 {
@@ -26,9 +22,6 @@ namespace PressSystems
         // Допустимое отношение диапазона, в котором можно задать давление к требуемому диапазону
         readonly double ExtrapolationDownCoef = 0.8; // При экстаполяции вниз
         readonly double ExtrapolationUpCoef = 1;  // При экстраполяции вверх
-
-        
-
 
         public bool CheckRange(double targetMax, double targetMin)
         {
@@ -68,14 +61,16 @@ namespace PressSystems
         }
 
         // Поиск номера контроллера. Если контроллер не найден, возвращает -1
-        public int SearshController(double targetPressure, double targetRangeMax, double targetRangeMin)
+        public int SearshController(double sp, double targetRangeMax, double targetRangeMin)
         {
+            
             foreach (PressControllerInfo controller in Controllers)
             {
                 if (controller.IsEnabled)
                 {
                     // Проверка диапазона контроллера
-                    bool checkRange = targetPressure >= 0 ? targetRangeMax <= controller.RangeHi : targetRangeMin >= controller.RangeLo;
+                    bool checkRange = sp >= 0 ? (int)targetRangeMax <= (int)controller.RangeHi : 
+                        (int)targetRangeMin >= (int)controller.RangeLo;
                     if (!checkRange)
                         continue; // Контроллер не подходит по диапазону
                 }
@@ -83,10 +78,6 @@ namespace PressSystems
 
             return -1; // В пневмосистеме не найден ни один контроллер
 
-        }
-
-
-        
-  
+        }  
     }
 }

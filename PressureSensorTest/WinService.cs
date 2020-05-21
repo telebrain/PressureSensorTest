@@ -18,50 +18,45 @@ namespace PressureSensorTest
 
         public void ShowErrorMessage(string message)
         {
-            mainWindow.Dispatcher.Invoke(() => OpenWinErrorMessage(message));
+            mainWindow.Dispatcher.Invoke(() => MessageBox.Show(message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error));
         }
 
         public void ShowMessage(string message)
         {
-            mainWindow.Dispatcher.Invoke(() => OpenWinMessage(message));
+            mainWindow.Dispatcher.Invoke(() => MessageBox.Show(message, "Внимание!", MessageBoxButton.OK, MessageBoxImage.None));
+        }
+
+        public void ShowMessage(string title, string message)
+        {
+            mainWindow.Dispatcher.Invoke(() => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.None));
         }
 
         public bool ShowUserDialog(string message)
         {
-            return mainWindow.Dispatcher.Invoke(() => OpenWinDialog(message));
+            return mainWindow.Dispatcher.Invoke(() =>
+            {
+                MessageBoxResult result = MessageBox.Show(message, "Внимание", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                return (result == MessageBoxResult.OK);
+            });
         }
 
         public bool ShowErrorDialog(string message)
         {
-            return mainWindow.Dispatcher.Invoke(() => OpenErrDialog(message));
+            return mainWindow.Dispatcher.Invoke(() => 
+            {
+                MessageBoxResult result = MessageBox.Show(message, "Ошибка", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                return (result == MessageBoxResult.OK);
+            });
         }
 
         public void ShowWarningMessage(string message)
         {
-            mainWindow.Dispatcher.Invoke(() => OpenWinMessage(message));
+            mainWindow.Dispatcher.Invoke(() => MessageBox.Show(message, "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning));
         }
 
-        private void OpenWinErrorMessage(string message)
-        {
-            MessageBox.Show(message, "Ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
 
-        private void OpenWinMessage(string message)
-        {
-            MessageBox.Show(message, "Внимание!", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
 
-        private bool OpenWinDialog(string message)
-        {
-            MessageBoxResult result = MessageBox.Show(message, "Внимание", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            return (result == MessageBoxResult.OK);
-        }
-
-        private bool OpenErrDialog(string message)
-        {
-            MessageBoxResult result = MessageBox.Show(message, "Ошибка", MessageBoxButton.OKCancel, MessageBoxImage.Error);
-            return (result == MessageBoxResult.OK);
-        }
+        
 
         #endregion
 

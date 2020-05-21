@@ -20,8 +20,15 @@ namespace PressureRack
 
         public PressureRackException(int errNumber)
         {
-            ErrorNumber = errNumber;
-            Message = ErrorList.Errors[errNumber];
+            try
+            {
+                ErrorNumber = errNumber;
+                Properties.Resources.ResourceManager.GetString($"Err{errNumber}");
+            }
+            catch
+            {
+                Message = $"Неизвестный номер ошибки ({errNumber})";
+            }
         }
 
 

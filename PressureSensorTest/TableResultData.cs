@@ -63,8 +63,8 @@ namespace PressureSensorTest
                     var point = results[pos];
                     Data[row, shiftColumn].Content = pressureIndication.GetPressure((double)point.EtalonPressure);
                     Data[row, 1 + shiftColumn].Content = (Convert.ToSingle(point.CurrentFromEtalonPressure)).ToString(CurrentFormat);
-                    Data[row, 2 + shiftColumn].Content = (Convert.ToSingle(point.MeasurmentCurrent)).ToString(CurrentFormat);
-                    Data[row, 3 + shiftColumn].Content = pressureIndication.GetPressure((double)point.PressureFromMeasureCurrent);
+                    Data[row, 2 + shiftColumn].Content = (Convert.ToSingle(point.MeasuredCurrent)).ToString(CurrentFormat);
+                    Data[row, 3 + shiftColumn].Content = pressureIndication.GetPressure((double)point.Pressure);
                     Data[row, 4 + shiftColumn].Content = (Convert.ToSingle(point.ErrorMeasure)).ToString(ErrorFormat);
                     Data[row, 4 + shiftColumn].Color = ResumeToColor(results[pos].Resume);                   
                 }

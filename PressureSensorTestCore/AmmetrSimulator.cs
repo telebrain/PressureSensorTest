@@ -19,6 +19,12 @@ namespace PressureSensorTestCore
 
         public long Timestamp { get; private set; }
 
+        public CurrentTypeEnum CurrentType => CurrentTypeEnum.DC;
+
+        public CurrentUnitsEnum Units => CurrentUnitsEnum.mA;
+
+        public int Range => 200;
+
         public event EventHandler<double> UpdMeasureResult;
 
         public event EventHandler ExceptionEvent;
@@ -93,7 +99,7 @@ namespace PressureSensorTestCore
                 //    throw new Exception("Нет связи с мультиметром");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                double point = (pressSystem.Pressure + rangeMin) / (rangeMax - rangeMin);
+                double point = (pressSystem.PressSystemVariables.Pressure + rangeMin) / (rangeMax - rangeMin);
                 double error = (2 * random.NextDouble() * precision - precision) / 100;
                 Current = (point + error) * 16 + 4;
                 Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;

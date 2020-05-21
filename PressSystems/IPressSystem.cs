@@ -7,7 +7,7 @@ namespace PressSystems
     {
         // Все давления в Па
 
-       
+        
 
         // Информация о пневмосистеме (ее диапазон, перечень контроллеров давления, их диапазон, класс точности)
         PressSystemInfo Info { get; }
@@ -15,23 +15,14 @@ namespace PressSystems
         // Текущая уставка
         double CurrentSP { get; }
 
-        // Давление
-        double Pressure { get; }
-
-        // Показания барометра
-        double Barometr { get; }
-
-        // Метка времени обновления переменных
-        long Timestamp { get; }
-
         // Номер контроллера давления, с которого производится задача давления в данный момент
         int CurrentController { get; }
 
         // Номер выхода (абонента) пневмосистемы
         int CurrentOutputChannel { get; }
 
-        // Флаг выхода текущего контроллера на уставку
-        bool InLim { get; }
+        // Метрологические переменные пневмосистемы
+        PressSystemVariables PressSystemVariables { get; }
 
         // Максимально допустимое время установки давления, с
         int MaxTimeSetPressureOperation { get; set; }
@@ -92,5 +83,8 @@ namespace PressSystems
         // из диапазона и класса точности калибруемого(тестируетого) изделия
         void SetPressure(double SP, double rangeMin, double rangeMax, 
             int maxOperationTime, CancellationToken cancellationToken);
+
+        // Выключает поддержку давления пневмосистемой для проверки герметичности
+        void DisableControl();
     }
 }

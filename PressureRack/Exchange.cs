@@ -7,14 +7,24 @@ using System.Net.Sockets;
 
 namespace PressureRack
 {
-    class Exchange
+    class Exchange: IDisposable
     {
         Socket sock;
         const int receiveTimeout = 3000;
+        readonly string ip;
+        readonly int port;
+
         internal Exchange(string ip, int port)
         {
-            IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            this.ip = ip;
+            this.port = port;
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        }
+
+        internal void ConnectTcp()
+        {
+            IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            
             sock.Connect(ipEndPoint);
             sock.ReceiveTimeout = receiveTimeout;
         }
@@ -73,14 +83,12 @@ namespace PressureRack
             int byteRecv = sock.Receive(recv);
             sRx = Encoding.ASCII.GetString(recv, 0, byteRecv);
             sRx = sRx.Remove(sRx.Length - 1, 1);
-            // Thread.Sleep(100);
             return sRx;
         }
 
-        internal void Close()
+        public void Dispose()
         {
-            if (sock != null) { sock.Close(); }
+            sock.Close();
         }
-
     }
 }

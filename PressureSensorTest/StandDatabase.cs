@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DbCalibration;
+using StandDb;
 
 namespace PressureSensorTest
 {
     public class StandDatabase
     {
-        DbCal db;
+        Database db;
 
         public StandDatabase(string dbPath)
         {
-            db = new DbCal(dbPath);
+            db = new Database(dbPath);
         }
 
         public void AddTestInfo(ProductInfo productInfo, string jsonData)
@@ -36,6 +36,7 @@ namespace PressureSensorTest
         }
     }
 
+    [Serializable]
     public class StandDbException: Exception
     {
         public StandDbException(Result resultOperation): 

@@ -18,14 +18,7 @@ namespace PressureSensorTestCore
             MeasureResultsTopdown = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
         }
 
-        public bool? Resume
-        {
-            get
-            {
-                CalcVariations();
-                return Variations.Resume & MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume();
-            }
-        }
+        
 
         public double RangeMin { get; }
         public double RangeMax { get; }
@@ -50,12 +43,18 @@ namespace PressureSensorTestCore
             for (int i = 0; i < points; i++)
             {
                 int percent = MeasureResultsUpwards[i].PercentRange;
-                double currentUp = (double)MeasureResultsUpwards[i].MeasurmentCurrent;
-                double currentDown = (double)(MeasureResultsTopdown.GetCheckPointByPercent(percent)).MeasurmentCurrent;
+                double currentUp = (double)MeasureResultsUpwards[i].MeasuredCurrent;
+                double currentDown = (double)(MeasureResultsTopdown.GetCheckPointByPercent(percent)).MeasuredCurrent;
 
                 var point = new VariationPoint(percent, currentUp, currentDown, ClassPrecision, MarginCoefficient);
                 Variations.Add(point);               
             }
+        }
+
+        public bool? GetResume()
+        {
+            CalcVariations();
+            return Variations.Resume & MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume();
         }
     }
 }

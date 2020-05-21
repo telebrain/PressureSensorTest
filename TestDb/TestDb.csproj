@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DbCalibration\Db_Calibration\DbCalibration.csproj">
+    <ProjectReference Include="..\DbCalibration\Db_Calibration\StandDb.csproj">
       <Project>{7bcc5e83-2a36-43b9-8105-6290d0df5490}</Project>
-      <Name>DbCalibration</Name>
+      <Name>StandDb</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

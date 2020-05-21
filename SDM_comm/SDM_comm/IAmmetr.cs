@@ -11,6 +11,12 @@ namespace SDM_comm
 
         Exception Exception { get; }
 
+        CurrentTypeEnum CurrentType { get; }
+
+        CurrentUnitsEnum Units { get; }
+
+        int Range { get; }
+
         event EventHandler<double> UpdMeasureResult;
 
         event EventHandler ExceptionEvent;

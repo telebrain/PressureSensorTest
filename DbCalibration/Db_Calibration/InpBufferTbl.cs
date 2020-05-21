@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MS_Access_DB;
 
-namespace DbCalibration
+namespace StandDb
 {
     class InpBufferTbl: MS_Access_DB.BaseTable
     {

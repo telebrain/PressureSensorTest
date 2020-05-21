@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PressureSensorTestCore
 {
@@ -20,10 +16,10 @@ namespace PressureSensorTestCore
         public double? CurrentFromEtalonPressure { get; private set; }
         
         // Измеренный ток в мА
-        public double? MeasurmentCurrent { get; } = null;
+        public double? MeasuredCurrent { get; } = null;
 
         // Давление, пересчитанное из тока изделия
-        public double? PressureFromMeasureCurrent { get; private set; } = null;
+        public double? Pressure { get; private set; } = null;
 
         // Рассчитанная погрешность измерения в %
         public double? ErrorMeasure { get; private set; }
@@ -31,11 +27,11 @@ namespace PressureSensorTestCore
         public bool? Resume { get; private set; }
                 
 
-        public CheckPoint(int percentRange, double etalonPressure, double measurmentCurrent)
+        public CheckPoint(int percentRange, double etalonPressure, double measuredCurrent)
         {
             PercentRange = percentRange;
             EtalonPressure = etalonPressure;
-            MeasurmentCurrent = measurmentCurrent;
+            MeasuredCurrent = measuredCurrent;
         }
 
         public bool? CheckResult(double classPrecision, double marginCoefficient = 0.8F)
@@ -53,15 +49,15 @@ namespace PressureSensorTestCore
                     (rangeMax - rangeMin));
 
             // Считается для справки. Далее не участвует в разбраковке
-            PressureFromMeasureCurrent = ((MeasurmentCurrent - currentMin) * (rangeMax - rangeMin) / (currentMax - currentMin)) + rangeMin;
+            Pressure = ((MeasuredCurrent - currentMin) * (rangeMax - rangeMin) / (currentMax - currentMin)) + rangeMin;
 
-            ErrorMeasure = (double)Math.Round((double)(100 * (MeasurmentCurrent - CurrentFromEtalonPressure) / (currentMax - currentMin)), 3);
+            ErrorMeasure = (double)Math.Round((double)(100 * (MeasuredCurrent - CurrentFromEtalonPressure) / (currentMax - currentMin)), 3);
 
         }
 
-        public double?[] GetResultAsArray()
-        {
-            return new double?[] { EtalonPressure, CurrentFromEtalonPressure, MeasurmentCurrent, PressureFromMeasureCurrent, ErrorMeasure };
-        }
+        //public double?[] GetResultAsArray()
+        //{
+        //    return new double?[] { EtalonPressure, CurrentFromEtalonPressure, MeasuredCurrent, Pressure, ErrorMeasure };
+        //}
     }
 }

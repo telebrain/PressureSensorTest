@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using MS_Access_DB;
 
-namespace DbCalibration
+namespace StandDb
 {
-    public class DbCal
+    public class Database
     {
         readonly string _dbPath = "";
         const int AlarmSystemErrNymber = 16;
 
-        public DbCal(string dbPath)
+        public Database(string dbPath)
         {
             _dbPath = dbPath;
         }

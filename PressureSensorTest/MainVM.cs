@@ -368,6 +368,12 @@ namespace PressureSensorTest
             get { return openResultSettingsCommand ?? (openResultSettingsCommand = new RelayCommand(obj => OpenWinArchivingResultSettings())); }
         }
 
+        RelayCommand openAboutTheProgrammCommand;
+        public RelayCommand OpenAboutTheProgrammCommand
+        {
+            get { return openAboutTheProgrammCommand ?? (openAboutTheProgrammCommand = new RelayCommand(obj => stand.ShowAboutTheProgramm())); }
+        }
+
         RelayCommand readPsysInfoCommand;
         public RelayCommand ReadPsysInfoCommand
         {
@@ -487,8 +493,8 @@ namespace PressureSensorTest
         {
             ShowResultIndicator();
             OutButtonsEnable = true;
-            SignalReleaseButton = stand.TestResults.Resume == true;
-            SignalRejectButton = !stand.TestResults.Resume == true;
+            SignalReleaseButton = stand.TestResults.GetResume() == true;
+            SignalRejectButton = !stand.TestResults.GetResume() == true;
         }
 
         private void NextStep()

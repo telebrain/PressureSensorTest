@@ -25,19 +25,6 @@ namespace PressureSensorTestCore
         public double ClassPrecision { get; }
         public double MarginCoefficient { get; }
 
-        public bool? GetResume()
-        {
-            if (checkPoints.Count == 0)
-                return null;
-            foreach (var point in checkPoints)
-            {
-                bool? res = point.CheckResult(ClassPrecision, MarginCoefficient);
-                if (res != true)
-                    return res;
-            }
-            return true;
-        }
-
         public int Count
         {
             get { return checkPoints.Count; }
@@ -85,6 +72,19 @@ namespace PressureSensorTestCore
         public void Clear()
         {
             checkPoints.Clear();
+        }
+
+        public bool? GetResume()
+        {
+            if (checkPoints.Count == 0)
+                return null;
+            foreach (var point in checkPoints)
+            {
+                bool? res = point.CheckResult(ClassPrecision, MarginCoefficient);
+                if (res != true)
+                    return res;
+            }
+            return true;
         }
     }
 }

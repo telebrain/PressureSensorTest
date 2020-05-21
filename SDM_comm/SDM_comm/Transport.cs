@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace SDM_comm
 {
@@ -30,8 +27,6 @@ namespace SDM_comm
             sock.ReceiveTimeout = receiveTimeout;
 
             IAsyncResult result = sock.BeginConnect(ipEndPoint, null, null);
-            //sock.Connect(ipEndPoint);
-
             bool success = result.AsyncWaitHandle.WaitOne(3000, true);
 
             if (sock.Connected)
@@ -45,7 +40,7 @@ namespace SDM_comm
             }
         }
 
-        private void Send(string sTx)
+        public void Send(string sTx)
         {
             try
             {
@@ -59,7 +54,7 @@ namespace SDM_comm
             }
         }
 
-        private string Receive()
+        public string Receive()
         {
             try
             {
@@ -74,29 +69,7 @@ namespace SDM_comm
                 throw e;
             }
         }
-
-
-        public void OnlySend(string sTx)
-        {
-            Send(sTx);
-        }
-
-        public string OnlyReceive()
-        {
-            return Receive();
-        }
-
-        //public string Exch(string sTx)
-        //{
-        //    byte[] msg = Encoding.ASCII.GetBytes(sTx);
-        //    sock.Send(msg);
-        //    string sRx = "";
-        //    byte[] recv = new byte[512];
-        //    int byteRecv = sock.Receive(recv);
-        //    sRx = Encoding.ASCII.GetString(recv, 0, byteRecv);
-        //    sRx = sRx.Remove(sRx.Length - 1, 1);
-        //    return sRx;
-        //}
+        
 
         public void Dispose()
         {

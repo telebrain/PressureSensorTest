@@ -7,68 +7,55 @@ using System.Threading.Tasks;
 
 namespace PressSystems
 {
-    public class PressSystemSimulator : AbstractPressSystem
+    public class PsysCommandSimulator : IPressSystemCommands
     {
-        public PressSystemSimulator(int maxTimeSetPressure): base(maxTimeSetPressure)
-        {
-
-        }
-
-        protected override void ConnectOperation(int outChannelNumber, CancellationToken token)
-        {
-            // Реализация операции подключения
-        }
-
-        public override void Disconnect()
-        {
-            base.Disconnect();
-        }
-
-        protected override void ReadInfoCore()
-        {
-            Info = CreatePressSystemInfo();
-        }
-
-        protected override void WriteSP(int channel, double SP, CancellationToken token)
-        {
-            try
-            {
-                // Симуляция аварии
-                //i++;
-                //if (i >= 2)
-                //    throw new Exception("Нет связи с пневмосистемой");
-
-                CurrentSP = SP;
-                CurrentController = channel;
-                ChangeSP(SP);
-            }
-            catch (Exception ex)
-            {
-                Exception = ex;
-                throw;
-            }
-        }
-
-
+        PressSystemVariables variables = new PressSystemVariables();
         // int i = 0;
-        protected override void ReadSysVar()
+
+        public void Connect(int outChannelNumber, CancellationToken cancellationToken)
         {
-            Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            
+        }
+
+        public PressSystemVariables ReadSysVar()
+        {
             // Операция чтения всех переменных: Pressure, Inlim, Barometr
 
             // Симуляция аварии
             //i++;
             //if (i >= 5)
             //    throw new Exception("Нет связи с пневмосистемой");
+            variables.TimeStamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            return variables;
+        }
+
+        public PressSystemInfo ReadInfo()
+        {
+            return CreatePressSystemInfo(); 
+        }
+
+        public void WriteSP(int controller, double SP, CancellationToken cancellationToken)
+        {
+            // Симуляция аварии
+            //i++;
+            //if (i >= 2)
+            //    throw new Exception("Нет связи с пневмосистемой");
+
+            ChangeSP(SP);
+        }
+
+        public void Disconnect()
+        {
+
         }
 
         private async void ChangeSP(double SP)
         {
             await Task.Run(() => {
-                    InLim = false;
+                    variables.InLim = false;
                     Thread.Sleep(3000);
-                    InLim = true;
-                    Pressure = SP;
+                    variables.InLim = true;
+                    variables.Pressure = SP;
                 }
             );
         }
@@ -131,6 +118,14 @@ namespace PressSystems
 
         }
 
-        
+        public void DisableControl(int controller)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisableControl()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
