@@ -54,7 +54,7 @@ namespace PressureSensorTestCore
         public bool? GetResume()
         {
             CalcVariations();
-            return Variations.Resume & MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume();
+            return Variations.GetResume() & MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume();
         }
     }
 }

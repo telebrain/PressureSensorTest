@@ -9,12 +9,7 @@ namespace PressureSensorTestCore
 {
     public class Variations : IEnumerable
     {
-        List<VariationPoint> variationPoints;
-
-        public Variations()
-        {
-            variationPoints = new List<VariationPoint>();
-        }
+        List<VariationPoint> variationPoints = new List<VariationPoint>();
 
         public void Add(VariationPoint point)
         {
@@ -31,20 +26,17 @@ namespace PressureSensorTestCore
             get { return variationPoints[index]; }
         }
 
-        public bool? Resume
+        public bool? GetResume()
         {
-            get
+            if (variationPoints.Count == 0)
+                return null;
+            foreach (var point in variationPoints)
             {
-                if (variationPoints.Count == 0)
-                    return null;
-                foreach(var point in variationPoints)
-                {
-                    if (!point.Resume)
-                        return false;
+                if (!point.Resume)
+                    return false;
 
-                }
-                return true;
             }
+            return true;
         }
 
         public int Count { get { return variationPoints.Count; } }
