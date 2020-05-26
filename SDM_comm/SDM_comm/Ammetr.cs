@@ -14,7 +14,7 @@ namespace SDM_comm
         Transport transport = null;
         SDM_Commands commands = null;
 
-        public event EventHandler<double> UpdMeasureResult;
+        public event EventHandler UpdMeasureResult;
         public event EventHandler ExceptionEvent;
         public event EventHandler ConnectEvent;
         public event EventHandler DisconnectEvent;
@@ -97,7 +97,7 @@ namespace SDM_comm
                 {
                     Current = commands.ReadMeasValue(5);
                     Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                    UpdMeasureResult?.Invoke(this, Current);
+                    UpdMeasureResult?.Invoke(this, new EventArgs());
                     Thread.Sleep(1000);
                 }
             }

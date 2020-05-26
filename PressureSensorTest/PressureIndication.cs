@@ -16,7 +16,7 @@ namespace PressureSensorTest
 
         public PressureIndication(double range)
         {
-            this.range = (long)range;
+            this.range = (long)Math.Abs(range);
             if (this.range >= 10000000)
             {
                 UnitLable = "МПа";

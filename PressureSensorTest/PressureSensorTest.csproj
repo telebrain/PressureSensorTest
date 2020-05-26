@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AmmetrSettins.cs" />
+    <Compile Include="AmmetrSimulator.cs" />
     <Compile Include="DialogService.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ErrorHandlerRemoteControlMode.cs" />

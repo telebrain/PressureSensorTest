@@ -8,18 +8,6 @@ namespace PressureSensorTestCore
 {
     public class TestResults
     {
-        public TestResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8F)
-        {
-            RangeMin = rangeMin;
-            RangeMax = rangeMax;
-            ClassPrecision = classPrecision;
-            MarginCoefficient = marginCoefficient;
-            MeasureResultsUpwards = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
-            MeasureResultsTopdown = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
-        }
-
-        
-
         public double RangeMin { get; }
         public double RangeMax { get; }
 
@@ -30,7 +18,15 @@ namespace PressureSensorTestCore
         public MeasureResults MeasureResultsTopdown { get; private set; }
         public Variations Variations { get; private set; }
 
-        const double CurrentNormalizeValue = 16;
+        public TestResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8)
+        {
+            RangeMin = rangeMin;
+            RangeMax = rangeMax;
+            ClassPrecision = classPrecision;
+            MarginCoefficient = marginCoefficient;
+            MeasureResultsUpwards = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
+            MeasureResultsTopdown = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
+        }
 
         public void CalcVariations()
         {

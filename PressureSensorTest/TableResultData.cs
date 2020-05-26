@@ -50,7 +50,7 @@ namespace PressureSensorTest
 
         private void AddMeasureResults(MeasureResults results, int shiftColumn, bool reverse)
         {
-            const string CurrentFormat = "0.000";
+            const string CurrentFormat = "0.0000";
             const string ErrorFormat = "0.000";
 
             if (results != null)

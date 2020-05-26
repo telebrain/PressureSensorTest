@@ -102,16 +102,14 @@ namespace OwenPressureDevices
                     // Если текцщий диапазон изделия выходит за границы пневмосистемы
                     if (!CheckSupportPsysRange(range))
                     {
-                        if (range.Max > pressSystemInfo.RangeHi)
+                        if (range.RangeType == RangeTypeEnum.DA && range.Max <= pressSystemInfo.RangeHi)
                         {
-                            // Верхняя граница диапазона датчика больше диапазона пневмосистемы, прекращаем поиск 
-                            searshComplete = true; 
-                            break;
+                            // Для ДА поиск продолжим, если диапазон меньше верхней границы. 
+                            // Возможно, текущий диапазон просто ниже нижней границы пневмосистемы
+                            continue;
                         }
                         else
                         {
-                            // Продолжаем поиск. Возможно, текущий диапазон ниже нижней границы пневмосистемы
-                            // continue;
                             searshComplete = true;
                             break;
                         }
@@ -122,6 +120,7 @@ namespace OwenPressureDevices
                 }
                 mult *= 10;
             }
+            AddAdvancerItem(row);
             if (row.Count == 0)
                 row = null;
 
@@ -138,7 +137,7 @@ namespace OwenPressureDevices
                     break;
 
                 case RangeTypeEnum.DA:
-                    result = pressSystemInfo.CheckRange(range.Max, range.Min);
+                    result = pressSystemInfo.CheckRange(range.Max + DeviceRange.VacuumPressure, range.Min + DeviceRange.VacuumPressure);
                     break;
 
                 default:
@@ -150,10 +149,17 @@ namespace OwenPressureDevices
 
         public bool CheckSupportPressControllersRange(DeviceRange range)
         {
-            // Минимальные значения проверяются только для ДИВ и ДА
-            if (rangeType == RangeTypeEnum.DIV || rangeType == RangeTypeEnum.DA)
+            // Минимальные значения проверяются только для ДИВ
+            if (rangeType == RangeTypeEnum.DIV)
             {
                 if (SearshController(range.Min, range.Max, range.Min, devicePrecision) < 0)
+                    return false;
+            }
+            // и ДА
+            if (rangeType == RangeTypeEnum.DA)
+            {
+                if (SearshController(range.Min + DeviceRange.VacuumPressure, range.Max + DeviceRange.VacuumPressure, 
+                    range.Min + DeviceRange.VacuumPressure, devicePrecision) < 0)
                     return false;
             }
 
@@ -208,6 +214,21 @@ namespace OwenPressureDevices
                 else
                 {
                     return pressRowItem / 2;
+                }
+            }
+        }
+
+        private void AddAdvancerItem(List<int> row)
+        {
+            // Здесь добавляются диапазоны, не входящие в ряд
+            if (rangeType == RangeTypeEnum.DIV)
+            {
+                int label = 100000;
+                DeviceRange range = new DeviceRange(label, RangeTypeEnum.DIV);
+                if (CheckSupportPsysRange(range) && CheckSupportPressControllersRange(range))
+                {
+                    row.Add(label);
+                    row.Sort();
                 }
             }
         }

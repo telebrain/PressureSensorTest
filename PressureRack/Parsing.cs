@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System;
+using PressSystems;
 
 namespace PressureRack
 {
@@ -32,17 +33,25 @@ namespace PressureRack
 
         internal static int ExtractIntParametr(string name, string str)
         {
-            string sData = ExtractStringParametr(name, str);
-            if (!int.TryParse(sData, out int val))
+            if (!ExtractIntParametr(name, str, out int res))
                 throw new PressureRackException(3);
-            return val;
+            return res;
         }
 
-        private static bool ExtractIntParametr(string name, string str, out int result)
+        internal static PressControllerInfo ExtractPressControllerInfo(string str)
         {
-            string sData = ExtractStringParametr(name, str);
-            return int.TryParse(sData, out result);
+            var info = new PressControllerInfo()
+            {
+                IsEnabled = (ExtractStringParametr("STATE:", str) == "ON"),
+                RangeLo = Convert.ToDouble(ExtractStringParametr("LO:", str))*1000,
+                RangeHi = Convert.ToDouble(ExtractStringParametr("HI:", str))*1000,
+                Precision = Convert.ToDouble(ExtractStringParametr("PREC:", str)),
+                SN = Parsing.ExtractStringParametr("SN:", str)
+            };
+            return info;
         }
+
+        
 
         internal static void DecodeError(string str)
         {
@@ -59,6 +68,12 @@ namespace PressureRack
             }
 
             throw new PressureRackException(3);
+        }
+
+        private static bool ExtractIntParametr(string name, string str, out int result)
+        {
+            string sData = ExtractStringParametr(name, str);
+            return int.TryParse(sData, out result);
         }
     }
 }

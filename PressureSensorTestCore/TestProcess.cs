@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using PressSystems;
 using SDM_comm;
 
@@ -13,7 +14,7 @@ namespace PressureSensorTestCore
     {
         readonly IPressSystem psys;
         readonly IAmmetr ammetr;
-        readonly double marginCoefficient;
+        const double marginCoefficient = 0.8;
         readonly double[] testPoints;
 
         bool psysIsConnect;
@@ -25,38 +26,45 @@ namespace PressureSensorTestCore
         public event EventHandler UpdResultsEvent;
 
 
-        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints, 
-            double marginCoefficient = 0.8)
+        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints)
         {
             this.psys = psys;
             this.ammetr = ammetr;
-            this.marginCoefficient = marginCoefficient;
             this.testPoints = testPoints;
         }
 
         readonly Action<CancellationToken> waitContinue;
 
         public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr, 
-            double[] testPoints, double marginCoefficient = 0.8): 
-            this(psys, ammetr, testPoints, marginCoefficient)
+            double[] testPoints): this(psys, ammetr, testPoints)
         {
             this.waitContinue = waitContinue;
         }
 
         double progressValue = 0;
         double deltaProgress = 0;
+        AutoResetEvent updCurrentValueAutoReset;
+        int outChannelPsys;
+        bool absoluteType;
 
         public void RunProcess(double rangeMin, double rangeMax, double classPrecision, int outChannelPsys,
-            CancellationToken cancellation, IProgress<int> progress)
+            bool absoluteType, CancellationToken cancellationToken, IProgress<int> progress)
         {
+            this.outChannelPsys = outChannelPsys;
+            this.absoluteType = absoluteType;
+            updCurrentValueAutoReset = new AutoResetEvent(false);
+            // При обновлении показаний миллиамперметра будет освобождаться AutoResetEvent updCurrentValueAutoReset
+            ammetr.UpdMeasureResult += (obj, e) => updCurrentValueAutoReset.Set(); 
             deltaProgress = 100/(testPoints.Length*2);
+
+
             TestResults = new TestResults(rangeMin, rangeMax, classPrecision);
             UpdResultsEvent?.Invoke(this, new EventArgs());
             psysIsConnect = false;
             // Тест при движении вверх
-            AddMeasureResults(TestResults.MeasureResultsUpwards, outChannelPsys, testPoints, cancellation, progress);
+            AddMeasureResults(TestResults.MeasureResultsUpwards, testPoints, cancellationToken, progress);
             // Пауза 1 мин
-            Pause(cancellation);
+            Pause(cancellationToken, progress).GetAwaiter().GetResult();
 
             // Получаем точки для теста сверху вниз
             double[] points = new double[testPoints.Length];
@@ -64,7 +72,7 @@ namespace PressureSensorTestCore
             Array.Reverse(points);
             
             // Тест при движении вниз
-            AddMeasureResults(TestResults.MeasureResultsTopdown, outChannelPsys, points, cancellation, progress);
+            AddMeasureResults(TestResults.MeasureResultsTopdown, points, cancellationToken, progress);
 
             TestResults.CalcVariations();
 
@@ -73,66 +81,95 @@ namespace PressureSensorTestCore
 
         }
 
-        private void AddMeasureResults (MeasureResults measureResults, int outChannelPsys, double[] points, CancellationToken cancellation, 
-            IProgress<int> progress)
+        private void AddMeasureResults (MeasureResults measureResults, double[] points, 
+            CancellationToken cancellationToken, IProgress<int> progress)
         {
             foreach(double point in points)
             {
                 measureResults.Add(CheckPointMeasurmentsProcess(measureResults.RangeMin, measureResults.RangeMax, point, 
-                    measureResults.ClassPrecision, outChannelPsys, cancellation));
+                    measureResults.ClassPrecision, cancellationToken));
                 UpdResultsEvent?.Invoke(this, new EventArgs());
                 
                 progressValue += deltaProgress;
                 progress.Report((int)progressValue);
-                waitContinue?.Invoke(cancellation);
+                waitContinue?.Invoke(cancellationToken);
             }
         }
 
-        private CheckPoint CheckPointMeasurmentsProcess(double rangeMin, double rangeMax, double testPoint, double classPrecision, int outChannelPsys, 
-            CancellationToken cancellation)
+        private CheckPoint CheckPointMeasurmentsProcess(double rangeMin, double rangeMax, double testPoint, double classPrecision, 
+            CancellationToken cancellationToken)
         {
-            double SP = GetPressureByPoint(rangeMin, rangeMax, testPoint);
-            if (!psysIsConnect && (int)SP != 0)
-            {
-                // Если пневмосистема еще не была подключена, а устанвка отличается от 0, подключаем пневмосистему
-                psys.Connect(outChannelPsys, cancellation);
-                psysIsConnect = psys.ConnectState;
-            }
-            if (psysIsConnect)
-                psys.SetPressure(SP, rangeMin, rangeMax, cancellation);
-            Thread.Sleep(1000);
-            Measures(out double pressure, out double current, cancellation);
+            SetPressure(testPoint, rangeMin, rangeMax, cancellationToken);
+            Measures(out double pressure, out double current, cancellationToken);
             CheckPoint point = new CheckPoint((int)(testPoint * 100), pressure, current);
             return point;
         }
 
-        private void Measures(out double pressure, out double current, CancellationToken cancellation)
+        private void SetPressure(double testPoint, double rangeMin, double rangeMax, CancellationToken cancellationToken)
+        {
+            double _rangeMin = rangeMin;
+            double _rangeMax = rangeMax;
+            // Находим уставку по точке диапазона
+            double SP = testPoint * (_rangeMax - _rangeMin) + _rangeMin;
+            if (absoluteType)
+            {
+                // Если поверка прибора абсолютного давления, корректируем уставку и диапазон по барометру
+                SP -= psys.PressSystemVariables.Barometr;
+                _rangeMin -= psys.PressSystemVariables.Barometr;
+                _rangeMax -= psys.PressSystemVariables.Barometr;
+            }
+            if (!psysIsConnect && (int)SP != 0)
+            {
+                // Если пневмосистема еще не была подключена, а устанвка отличается от 0, подключаем пневмосистему
+                psys.Connect(outChannelPsys, cancellationToken);
+                psysIsConnect = psys.ConnectState;
+            }
+            if (psysIsConnect)
+                psys.SetPressure(SP, _rangeMin, _rangeMax, cancellationToken);
+        }
+
+        private void Measures(out double pressure, out double current, CancellationToken cancellationToken)
         {
             double[] pressureItems = new double[NumberOfMeasurements];
             double[] currentItems = new double[NumberOfMeasurements];
             for (int i = 0; i < NumberOfMeasurements; i++)
             {
-                cancellation.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
                 // Если пневмосистема не подключена, все порты стенда связаны с атмосферой
                 // При этом давление на поверяемом преобразователе давления будет равно 0
                 pressureItems[i] = psysIsConnect ? psys.PressSystemVariables.Pressure : 0;
-                currentItems[i] = ammetr.Current;
+                if (absoluteType)
+                    pressureItems[i] += psys.PressSystemVariables.Barometr;
+                currentItems[i] = GetCurrent(cancellationToken);
                 if (i < NumberOfMeasurements - 1)
                     Thread.Sleep(TimeoutBetwinMeasures*1000);
             }
             pressure = pressureItems.Sum() / pressureItems.Length;
-            current = currentItems.Sum() / pressureItems.Length;
+            current = Math.Round(currentItems.Sum() / pressureItems.Length, 4);
         }
 
-        private double GetPressureByPoint(double RangeMin, double RangeMax, double testPoint)
+        private double GetCurrent(CancellationToken cancellation)
         {
-            return testPoint*(RangeMax - RangeMin) + RangeMin;
+            long pressureTimeStamp = psys.PressSystemVariables.TimeStamp;
+            do
+            {
+                // Ждем наступление события обновления показаний миллиамперметра
+                while (!updCurrentValueAutoReset.WaitOne(100))
+                {
+                    cancellation.ThrowIfCancellationRequested();
+                    updCurrentValueAutoReset.Reset();
+                }
+            }
+            // Если метка времени больше, чем у давелния, выходим
+            while (ammetr.Timestamp <= pressureTimeStamp);
+            return ammetr.Current;
         }
 
-        private void Pause(CancellationToken cancellation)
+        private async Task Pause(CancellationToken cancellation, IProgress<int> progress)
         {
-            Thread.Sleep(1000); // Это пока
+            await Task.Delay(1000); // Это пока
         }
-        
+
+               
     }
 }

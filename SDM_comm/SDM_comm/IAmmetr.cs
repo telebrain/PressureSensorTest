@@ -17,7 +17,7 @@ namespace SDM_comm
 
         int Range { get; }
 
-        event EventHandler<double> UpdMeasureResult;
+        event EventHandler UpdMeasureResult;
 
         event EventHandler ExceptionEvent;
 

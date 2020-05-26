@@ -114,7 +114,7 @@ namespace OwenPressureDevices
                     throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
             }
             var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.ClassPrecision);
-            if (pressureRow.SearshController(device.Range.Max, 0, device.Range.Max, device.ClassPrecision) < 0)
+            if (pressureRow.SearshController(device.Range.Max, device.Range.Min, device.Range.Max, device.ClassPrecision) < 0)
                 throw new DeviceNotSupportByPsysException("Не обеспечивается точность установки давления");
         }
 

@@ -46,17 +46,10 @@
     <Compile Include="PressControllerInfo.cs" />
     <Compile Include="PressControllersList.cs" />
     <Compile Include="PressSystem.cs" />
-    <Compile Include="PressRackCommands.cs" />
     <Compile Include="PsysCommandSimulator.cs" />
     <Compile Include="PressSystemInfo.cs" />
     <Compile Include="PressSystemVariables.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PressureRack\PressureRack.csproj">
-      <Project>{57f83e2c-dcab-4b71-919f-745c526d8a0f}</Project>
-      <Name>PressureRack</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

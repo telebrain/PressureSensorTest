@@ -603,7 +603,7 @@ namespace PressureSensorTest
         { 
             var ind = (MeasurmendIndicator)sender;
             Pressure = pressureIndication.GetPressureWithUnit(ind.Pressure);
-            Current = ind.Current.ToString("0.000") + " мА";
+            Current = ind.Current.ToString("0.0000") + " мА";
         }        
 
         private void Progress_event(object sender, int val)

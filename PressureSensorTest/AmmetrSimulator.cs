@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SDM_comm;
 using PressSystems;
 
-namespace PressureSensorTestCore
+namespace PressureSensorTest
 {
     public class AmmetrSimulator : IAmmetr
     {
@@ -25,7 +25,7 @@ namespace PressureSensorTestCore
 
         public int Range => 200;
 
-        public event EventHandler<double> UpdMeasureResult;
+        public event EventHandler UpdMeasureResult;
 
         public event EventHandler ExceptionEvent;
         public event EventHandler ConnectEvent;
@@ -36,13 +36,15 @@ namespace PressureSensorTestCore
         double rangeMax;
         double precision;
         Random random;
+        bool absoluteType = false;
 
-        public AmmetrSimulator(IPressSystem pressSystem, double rangeMin, double rangeMax, double precision)
+        public AmmetrSimulator(IPressSystem pressSystem, double rangeMin, double rangeMax, double precision, bool absoluteType)
         {
             this.pressSystem = pressSystem;
             this.rangeMin = rangeMin;
             this.rangeMax = rangeMax;
             this.precision = precision;
+            this.absoluteType = absoluteType;
             random = new Random();
         }
 
@@ -52,6 +54,8 @@ namespace PressureSensorTestCore
 
         public void StartCycleMeasureCurrent()
         {
+            //updPressure = new AutoResetEvent(false);
+            //pressSystem.UpdateMeasures += (obj, e) => updPressure.Set();
             if (!StateConnect)
             {
                 Exception = null;
@@ -97,15 +101,19 @@ namespace PressureSensorTestCore
                 //i++;
                 //if (i >= 10)
                 //    throw new Exception("Нет связи с мультиметром");
-
+                Thread.Sleep(1000);
                 cancellationToken.ThrowIfCancellationRequested();
-                double point = (pressSystem.PressSystemVariables.Pressure + rangeMin) / (rangeMax - rangeMin);
+                double shift = absoluteType ? pressSystem.PressSystemVariables.Barometr*(-1) : rangeMin;
+                double span = rangeMax - rangeMin;
+                double point = pressSystem.ConnectState ? (pressSystem.PressSystemVariables.Pressure - shift) / span : shift/span;
                 double error = (2 * random.NextDouble() * precision - precision) / 100;
                 Current = (point + error) * 16 + 4;
                 Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                UpdMeasureResult?.Invoke(this, Current);
-                Thread.Sleep(300);
+                UpdMeasureResult?.Invoke(this, new EventArgs());
+                
             }
         }
+
+        
     }
 }

@@ -10,20 +10,22 @@ namespace PressureSensorTest
 {
     public class MeasurmendIndicator
     {
-        public double Pressure;
-        public bool Inlim;
-        public double Current;
+        public double Pressure { get; private set; }
+        public bool Inlim { get; private set; }
+        public double Current { get; private set; }
 
         readonly IAmmetr ammetr;
         readonly IPressSystem psys;
 
         public event EventHandler UpdDataEvent;
 
-        public MeasurmendIndicator(IAmmetr ammetr, IPressSystem psys)
+        readonly bool absolutePressure;
+
+        public MeasurmendIndicator(IAmmetr ammetr, IPressSystem psys, bool absolutePressure)
         {
             this.ammetr = ammetr;
             this.psys = psys;
-            
+            this.absolutePressure = absolutePressure;
         }
 
         CancellationTokenSource cts;
@@ -39,14 +41,14 @@ namespace PressureSensorTest
             cts.Cancel();
         }
 
-        private void CycleRead(CancellationToken cancellationToken)
+        private async Task CycleRead(CancellationToken cancellationToken)
         {
             while(true)
             {
                 if(cancellationToken.IsCancellationRequested)
                     break;
                 UpdValue();
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
         }
 
@@ -59,7 +61,8 @@ namespace PressureSensorTest
 
             if (psys != null && psys.ConnectState)
             {
-                Pressure = psys.PressSystemVariables.Pressure;
+                Pressure = absolutePressure ? psys.PressSystemVariables.Pressure + psys.PressSystemVariables.Barometr : 
+                    psys.PressSystemVariables.Pressure;
                 Inlim = psys.PressSystemVariables.InLim;
             }
             else

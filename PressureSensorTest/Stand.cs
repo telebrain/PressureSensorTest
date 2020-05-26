@@ -134,11 +134,11 @@ namespace PressureSensorTest
                 ReadPsysInfo();
                 DeviceSpecification.CheckRangeSupport(device);
                 UpdSensorInfoEvent?.Invoke(this, new EventArgs());
-                ammetr = new AmmetrSimulator(psys, device.Range.Min, device.Range.Max, 0.05);
+                ammetr = new AmmetrSimulator(psys, device.Range.Min, device.Range.Max, 0.05, device.Range.RangeType == RangeTypeEnum.DA);
                 ammetr.ExceptionEvent += Exception_ammetr_event;
                 ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;
                 ammetr.StartCycleMeasureCurrent();
-                measurmendIndicator = new MeasurmendIndicator(ammetr, psys);
+                measurmendIndicator = new MeasurmendIndicator(ammetr, psys, device.Range.RangeType == RangeTypeEnum.DA);
                 measurmendIndicator.UpdDataEvent += UpdateMeasurmendIndicators;
                 measurmendIndicator.Start();
 
@@ -154,7 +154,8 @@ namespace PressureSensorTest
                 }
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
-                testProcess.RunProcess(device.Range.Min, device.Range.Max, device.ClassPrecision, GetPsysOutChannel(), cancellation, progress);
+                testProcess.RunProcess(device.Range.Min, device.Range.Max, device.ClassPrecision, GetPsysOutChannel(),
+                        device.Range.RangeType == RangeTypeEnum.DA, cancellation, progress);
                 if (TestResults.GetResume() != true)
                     Product.Error = ProcessErrorEnum.BadPrecision;
                 Stop();

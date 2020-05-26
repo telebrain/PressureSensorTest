@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AmmetrSimulator.cs" />
     <Compile Include="CheckPoint.cs" />
     <Compile Include="ITestProcess.cs" />
     <Compile Include="MeasureResults.cs" />

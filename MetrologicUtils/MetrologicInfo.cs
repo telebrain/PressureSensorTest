@@ -16,8 +16,15 @@ namespace MetrologicUtils
             foreach (string name in names)
             {
                 result += (name + ":\n");
-                result += ($"Версия v.{FileVersionInfo.GetVersionInfo(name).FileVersion} \n");
-                result += $"Контрольная сумма: {GetHash(name)} \n\n";
+                try
+                {
+                    result += ($"Версия v.{FileVersionInfo.GetVersionInfo(name).FileVersion} \n");
+                    result += $"Контрольная сумма: {GetHash(name)} \n\n";
+                }
+                catch
+                {
+                    result += "Информация недоступна\n\n";
+                }
             }
             return result;
         }

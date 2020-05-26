@@ -97,6 +97,8 @@ namespace PressSystems
             DisconnectEvent?.Invoke(this, new EventArgs());
         }
 
+        AutoResetEvent updatePressureVarAutoReset = new AutoResetEvent(false);
+
         private async Task StartCycleRead()
         {
             cts = new CancellationTokenSource();
@@ -120,9 +122,10 @@ namespace PressSystems
                 {
                     cycleReadCancellation.ThrowIfCancellationRequested();
                     PressSystemVariables = commands.ReadSysVar();
-                    UpdateMeasures?.Invoke(this, new EventArgs());                   
+                    UpdateMeasures?.Invoke(this, new EventArgs());
+                    updatePressureVarAutoReset?.Set();
                     await Task.Delay(100);
-                    throw new PressSystemException("Ошибка опроса");
+                    //throw new PressSystemException("Ошибка опроса");
                 }
             }
             catch (OperationCanceledException)
@@ -220,10 +223,9 @@ namespace PressSystems
                         throw Exception;
                     }
 
-                    cancellationToken.ThrowIfCancellationRequested();
+                    WaitUpdatePressureVar(cancellationToken);
                     if (CheckInlim(cancellationToken))
                         break;
-                    Thread.Sleep(200);
                 }
             }
            
@@ -234,22 +236,30 @@ namespace PressSystems
         private bool CheckInlim(CancellationToken cancellationToken)
         {
             bool result = false;
-            using (System.Timers.Timer timer = new System.Timers.Timer(DelayCheckInlim))
+            updatePressureVarAutoReset.Reset();
+            using (System.Timers.Timer timer = new System.Timers.Timer(DelayCheckInlim * 1000))
             {
                 timer.AutoReset = false;
                 timer.Elapsed += (obj, e) => result = true;
                 timer.Start();
-                while (PressSystemVariables.InLim)
+                while (!result)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (Exception != null)
-                        throw Exception;
-                    if (result)
+                    WaitUpdatePressureVar(cancellationToken);
+                    if (!PressSystemVariables.InLim)
                         break;
-                    Thread.Sleep(100);
                 }
                 return result;
             }
+        }
+
+        private void WaitUpdatePressureVar(CancellationToken cancellationToken)
+        {
+            updatePressureVarAutoReset.Reset();
+            while (!updatePressureVarAutoReset.WaitOne(100))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
         }
 
         public void DisableControl()
@@ -278,4 +288,6 @@ namespace PressSystems
             base("Пневмосистема не поддерживает поверку данного типа датчика")
         { }
     }
+
+    
 }

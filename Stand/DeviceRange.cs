@@ -19,7 +19,7 @@ namespace OwenPressureDevices
         public long Pressure_Pa { get; private set; }
         public bool AbsolutPressure { get; private set; } // Флаг датчика абсолютного давления
 
-        const long vacuumPressure = -100000; // Относительное давление вакуума
+        public static long VacuumPressure = -100000; // Относительное давление вакуума
 
         public DeviceRange(int pressure_Pa, RangeTypeEnum rangeType)
         {
@@ -34,9 +34,9 @@ namespace OwenPressureDevices
             switch (rangeType)
             {
                 case RangeTypeEnum.DIV:
-                    if (pressure_Pa > Math.Abs(vacuumPressure))
+                    if (pressure_Pa > Math.Abs(VacuumPressure))
                     {
-                        Min = vacuumPressure;
+                        Min = VacuumPressure;
                         Max = pressure_Pa;
                     }
                     else
@@ -59,8 +59,8 @@ namespace OwenPressureDevices
                     Max = (-1) * pressure_Pa;
                     break;
                 case RangeTypeEnum.DA:
-                    Min = vacuumPressure;
-                    Max = vacuumPressure + pressure_Pa;
+                    Min = 0;
+                    Max = pressure_Pa;
                     AbsolutPressure = true;
                     break;
                 case RangeTypeEnum.DG:
