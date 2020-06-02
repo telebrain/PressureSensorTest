@@ -268,26 +268,7 @@ namespace PressSystems
         }
     }
 
-    public class SetPressureTimeoutException : Exception
-    {
-        public SetPressureTimeoutException() :
-            base("Время установки давления превысило допустимое")
-        { }
-    }
-
-    public class PressSystemException : Exception
-    {
-        public PressSystemException(string message) :
-            base(message)
-        { }
-    }
-
-    public class PsysSupportException : Exception
-    {
-        public PsysSupportException() :
-            base("Пневмосистема не поддерживает поверку данного типа датчика")
-        { }
-    }
+    
 
     
 }

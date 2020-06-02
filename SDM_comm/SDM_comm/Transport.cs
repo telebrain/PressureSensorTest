@@ -36,7 +36,7 @@ namespace SDM_comm
             else
             {
                 sock.Close();
-                throw new Exception("Не удалось подключиться к серверу");
+                throw new SDM_ErrException(Properties.Resources.ConnectError);
             }
         }
 

@@ -109,8 +109,8 @@ namespace ArchvingTestResult
             TimeSpan timeSpan = DateTime.Now - localFiles[0].CreationTime;
 
             if (timeSpan > new TimeSpan(MaxArchivingInteval, 0, 0))
-                throw new SavingToRemoteArchiveException(string.Format("\r\nПопытки сохранения результатов тестирования в предыдущие {0} и более часов заканчивались неудачно. " +
-                        "Для продолжения работы программы устраните причину ошибок - измените настройки сохранения и(или) обеспечьте надежную связь с сервером", MaxArchivingInteval));
+                throw new SavingToRemoteArchiveException(string.Format("Попытки сохранения результатов тестирования в предыдущие {0} и более часов заканчивались неудачно. " +
+                        "Для продолжения работы программы устраните причину ошибок - измените настройки сохранения и(или) обеспечьте надежную связь с удаленным ресурсом", MaxArchivingInteval));
         }
 
         

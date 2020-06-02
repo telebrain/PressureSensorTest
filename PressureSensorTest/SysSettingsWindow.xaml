@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PressureSensorTest"
         mc:Ignorable="d"
-        Title="Настройки системы" SizeToContent="WidthAndHeight" WindowStyle="ToolWindow">
+        Title="Настройки системы" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
     <Window.Resources>
         <Style TargetType="ComboBox">
             <Setter Property="MinWidth" Value="100"></Setter>
@@ -34,7 +34,7 @@
         </Style>
         
     </Window.Resources>
-    <Grid>
+    <Grid Margin="1">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition ></RowDefinition>
@@ -44,11 +44,11 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
-            <GroupBox Margin ="5,10,5,5" Header="Настройки пневмосистемы">
+            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления">
                 <StackPanel Margin="5,10,5,5">
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{Binding PsysIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                        <TextBlock>IP пневмосистемы</TextBlock>
+                        <TextBlock>IP стойки давления</TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBox>
@@ -63,18 +63,7 @@
                         </TextBox>
                         <TextBlock>Максимальное время выхода на уставку, с</TextBlock>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox>
-                            <TextBox.Text>
-                                <Binding Path="TimeStabPressure"  UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <DataErrorValidationRule></DataErrorValidationRule>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBlock>Время стабилизации давления, с</TextBlock>
-                    </StackPanel>
+                    
                     <StackPanel Orientation="Horizontal">
                         <TextBox>
                             <TextBox.Text>
@@ -85,7 +74,7 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock>Номер выхода пневмосистемы для датчиков с резьбой 20х1.5 мм</TextBlock>
+                        <TextBlock>Номер выхода стойки давления для резьбы 20х1.5 мм</TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBox>
@@ -97,7 +86,7 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock>Номер выхода пневмосистемы для резьбы  1/2 in</TextBlock>
+                        <TextBlock>Номер выхода стойки давления для резьбы 1/2 in</TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBox>
@@ -109,7 +98,7 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <TextBlock>Номер выхода пневмосистемы для резьбы  1/4 in</TextBlock>
+                        <TextBlock>Номер выхода стойки давления для резьбы 1/4 in</TextBlock>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

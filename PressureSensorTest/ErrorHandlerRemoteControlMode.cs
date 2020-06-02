@@ -34,7 +34,7 @@ namespace PressureSensorTest
             }
 
             // Авария амперметра
-            catch (AmmetrErrException ex)
+            catch (SDM_ErrException ex)
             {
                 // Выводим сообщение и отменяем операцию
                 product.Error = ProcessErrorEnum.SystemError;

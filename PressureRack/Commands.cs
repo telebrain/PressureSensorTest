@@ -16,6 +16,21 @@ namespace PressureRack
             exchange = new Exchange(ip, port);
         }
 
+        
+
+        public void Connect(int outChannelNumber, CancellationToken cancellationToken)
+        {
+            exchange.ConnectTcp();
+            TryConnectPsys(outChannelNumber);
+            WaitConnect(cancellationToken).GetAwaiter().GetResult();
+        }
+
+        public void Disconnect()
+        {
+            exchange.OnlySend("CLOSE;");
+            exchange.Dispose();
+        }
+
         public PressSystemInfo ReadInfo()
         {
             exchange.ConnectTcp();
@@ -34,19 +49,6 @@ namespace PressureRack
 
             Disconnect();
             return info;
-        }
-
-        public void Connect(int outChannelNumber, CancellationToken cancellationToken)
-        {
-            exchange.ConnectTcp();
-            TryConnectPsys(outChannelNumber);
-            WaitConnect(cancellationToken).GetAwaiter().GetResult();
-        }
-
-        public void Disconnect()
-        {
-            exchange.OnlySend("CLOSE;");
-            exchange.Dispose();
         }
 
         PressSystemVariables variables = new PressSystemVariables();

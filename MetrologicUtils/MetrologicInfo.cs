@@ -40,7 +40,7 @@ namespace MetrologicUtils
             }
             catch
             {
-
+                return "нет информации";
             }
             return hash;
         }
@@ -65,7 +65,7 @@ namespace MetrologicUtils
             return data;
         }
 
-        public UInt32 GetCrc(byte[] source)
+        private UInt32 GetCrc(byte[] source)
         {
             const UInt32 DefaultPolynomial = 0xedb88320; // 0x04C11DB7;
             const UInt32 DefaultSeed = 0xffffffff;

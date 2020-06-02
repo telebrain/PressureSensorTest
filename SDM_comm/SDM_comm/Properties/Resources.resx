@@ -117,52 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Err1" xml:space="preserve">
-    <value>Не удалось установить связь со стойкой давления. Проверьте, включена ли стойка давления, совпадает ли IP адрес СПК стойки давления и адрес, указанный в настройках</value>
+  <data name="ConnectError" xml:space="preserve">
+    <value>Не удалось установить связь с прибором АКИП 2101</value>
   </data>
-  <data name="Err10" xml:space="preserve">
-    <value>Уставка больше, чем давление положительного источника</value>
+  <data name="ExchangeError" xml:space="preserve">
+    <value>Прервана связь с прибором АКИП 2101</value>
   </data>
-  <data name="Err11" xml:space="preserve">
-    <value>Уставка меньше, чем давление отрицательного источника</value>
-  </data>
-  <data name="Err12" xml:space="preserve">
-    <value>Внутренняя авария стойки давления. Превышен таймаут изменения уставки</value>
-  </data>
-  <data name="Err13" xml:space="preserve">
-    <value>Неизвестный номер ошибки (13)</value>
-  </data>
-  <data name="Err14" xml:space="preserve">
-    <value>Внутренняя авария стойки давления. Потеря связи с прибором переключения каналов</value>
-  </data>
-  <data name="Err15" xml:space="preserve">
-    <value>Внутренняя авария стойки давления. Не удалось установить связь с запрашиваемым контроллером давления из-за системной ошибки СПК</value>
-  </data>
-  <data name="Err16" xml:space="preserve">
-    <value>Внутренняя авария стойки давления. Не удалось установить связь с запрашиваемым контроллером давления</value>
-  </data>
-  <data name="Err2" xml:space="preserve">
-    <value>Соединение со стойкой давления прервано</value>
-  </data>
-  <data name="Err3" xml:space="preserve">
-    <value>Не удалось расшифровать принятые данные</value>
-  </data>
-  <data name="Err4" xml:space="preserve">
-    <value>Команда не опознана стойкой давления</value>
-  </data>
-  <data name="Err5" xml:space="preserve">
-    <value>Попытка изменения уставки при нахождении в очереди</value>
-  </data>
-  <data name="Err6" xml:space="preserve">
-    <value>Запрос информации о несуществующем канале</value>
-  </data>
-  <data name="Err7" xml:space="preserve">
-    <value>При изменении уставки задан несуществующий канал</value>
-  </data>
-  <data name="Err8" xml:space="preserve">
-    <value>При изменении уставки задан канал, на котором находится неактивный контроллер</value>
-  </data>
-  <data name="Err9" xml:space="preserve">
-    <value>При изменении уставки установлено значение, находящееся за границей диапазона контроллера</value>
+  <data name="SetCurrentMeasureModeError" xml:space="preserve">
+    <value>Не удалось переключить прибор АКИП 2101 в режим измерения тока</value>
   </data>
 </root>

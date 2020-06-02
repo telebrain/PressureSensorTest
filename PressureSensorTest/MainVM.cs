@@ -549,13 +549,11 @@ namespace PressureSensorTest
         private void OpenWinSystemSettings()
         {
             SysSettingsVM sysSettingsVM = new SysSettingsVM(settings, winService);
-            StandInit();
         }
 
         private void OpenWinArchivingResultSettings()
         {
             SettingsArchivingResultsVM vm = new SettingsArchivingResultsVM(settings, winService);
-            StandInit();
         }
 
         private void UpdRangeRow()

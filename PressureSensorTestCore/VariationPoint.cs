@@ -8,23 +8,24 @@ namespace PressureSensorTestCore
 {
     public struct VariationPoint
     {
-        public int PercentPoint { get; }
+        public int PercentRange { get; }
         public double Value { get; }
         public bool Resume { get; }
 
-        const double NotmalizeCurrentValue = 16;
+        
 
-        //public VariationPoint(int point, double value, bool resume)
-        //{
-        //    Value = value;
-        //    Resume = resume;
-        //    Point = point;
-        //}
-
-        public VariationPoint(int percentPoint, double currentUpwards, double currentTopdown, double classPrecision, double marginCoefficient = 0.8F)
+        public VariationPoint(int percentRange, double currentUpwards, double currentTopdown, double classPrecision, double marginCoefficient = 0.8F)
         {
-            PercentPoint = percentPoint;
-            Value = Math.Round(Math.Abs(100 * (currentUpwards - currentTopdown) / NotmalizeCurrentValue), 3);
+            PercentRange = percentRange;
+
+            const double СurrentMin = 4;
+            const double СurrentMax = 20;
+
+            // Вычисление вариации
+            Value = Math.Round(Math.Abs(100 * (currentUpwards - currentTopdown) /
+            (СurrentMax - СurrentMin)), 3);
+
+            // Тест в точке пройден, если вариация меньше половины класса точности с учетом коэффициента запаса
             Resume = Value < classPrecision * marginCoefficient / 2;
         }
     }

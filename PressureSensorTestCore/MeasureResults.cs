@@ -10,14 +10,6 @@ namespace PressureSensorTestCore
     public class MeasureResults: IEnumerable
     {
         // Все значения давлений в Па
-        
-        public MeasureResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8F)
-        {
-            RangeMin = rangeMin;
-            RangeMax = rangeMax;
-            ClassPrecision = classPrecision;
-            MarginCoefficient = marginCoefficient;
-        }
 
         public double RangeMin { get; }
         public double RangeMax { get; }
@@ -32,13 +24,23 @@ namespace PressureSensorTestCore
 
         List<CheckPoint> checkPoints = new List<CheckPoint>();
 
-        public CheckPoint this[int checkPointNumber]
+        public MeasureResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8F)
+        {
+            RangeMin = rangeMin;
+            RangeMax = rangeMax;
+            ClassPrecision = classPrecision;
+            MarginCoefficient = marginCoefficient;
+        }
+
+        
+
+        public CheckPoint this[int index]
         {
             get
             {
-                if (checkPointNumber >= 0 && checkPointNumber < checkPoints.Count)
+                if (index >= 0 && index < checkPoints.Count)
                 {
-                    return checkPoints[checkPointNumber];
+                    return checkPoints[index];
                 }
                 else
                 {
@@ -78,13 +80,12 @@ namespace PressureSensorTestCore
         {
             if (checkPoints.Count == 0)
                 return null;
+            bool? res = true;
             foreach (var point in checkPoints)
             {
-                bool? res = point.CheckResult(ClassPrecision, MarginCoefficient);
-                if (res != true)
-                    return res;
+                res &= point.CheckResult(ClassPrecision, MarginCoefficient);
             }
-            return true;
+            return res;
         }
     }
 }

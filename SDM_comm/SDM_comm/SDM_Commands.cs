@@ -12,9 +12,9 @@ namespace SDM_comm
 
         public SDM_Commands(Transport transport)
         {
-            this.transport = transport;
-            
+            this.transport = transport;          
         }
+
 
         public void InitCommand()
         {
@@ -36,7 +36,7 @@ namespace SDM_comm
                     return;                
             }
 
-            throw new Exception("Не удалось установить режим измерения тока");
+            throw new SDM_ErrException(Properties.Resources.SetCurrentMeasureModeError);
         }
 
 
@@ -66,9 +66,16 @@ namespace SDM_comm
 
         private string WriteRead(string send)
         {
-            transport.Send(send);
-            (Task.Run(async () => await Task.Delay(200))).GetAwaiter().GetResult();
-            return transport.Receive();
+            try
+            {
+                transport.Send(send);
+                (Task.Run(async () => await Task.Delay(200))).GetAwaiter().GetResult();
+                return transport.Receive();
+            }
+            catch
+            {
+                throw new SDM_ErrException(Properties.Resources.ExchangeError);
+            }
         }
 
         private bool CheckSetCurrentRange(string config, int value, CurrentUnitsEnum unit)

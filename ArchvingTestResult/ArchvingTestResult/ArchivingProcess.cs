@@ -46,6 +46,11 @@ namespace ArchvingTestResult
             }
         }
 
+        public void CheckLocalFolderState()
+        {
+            archiving.CheckLocalFolderState();
+        }
+
         // Запускает слежение за локальной папкой сохранения результатов
         // При появлении связи с сервером, пытается туда копировать файлы из локальной директории
         public void StartTracking()

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PressureSensorTest.Properties {
+namespace SDM_comm.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace PressureSensorTest.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PressureSensorTest.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SDM_comm.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,52 +61,29 @@ namespace PressureSensorTest.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Не удалось установить связь с прибором АКИП 2101.
         /// </summary>
-        internal static System.Drawing.Bitmap CheckError {
+        internal static string ConnectError {
             get {
-                object obj = ResourceManager.GetObject("CheckError", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("ConnectError", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to Прервана связь с прибором АКИП 2101.
         /// </summary>
-        internal static System.Drawing.Bitmap CheckOK {
+        internal static string ExchangeError {
             get {
-                object obj = ResourceManager.GetObject("CheckOK", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("ExchangeError", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized string similar to Не удалось переключить прибор АКИП 2101 в режим измерения тока.
         /// </summary>
-        internal static System.Drawing.Icon Manometr {
+        internal static string SetCurrentMeasureModeError {
             get {
-                object obj = ResourceManager.GetObject("Manometr", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Manometr1 {
-            get {
-                object obj = ResourceManager.GetObject("Manometr1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon ManometrBlue {
-            get {
-                object obj = ResourceManager.GetObject("ManometrBlue", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ResourceManager.GetString("SetCurrentMeasureModeError", resourceCulture);
             }
         }
     }

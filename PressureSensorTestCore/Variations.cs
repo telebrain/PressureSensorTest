@@ -11,6 +11,13 @@ namespace PressureSensorTestCore
     {
         List<VariationPoint> variationPoints = new List<VariationPoint>();
 
+        public int Count { get { return variationPoints.Count; } }
+
+        public VariationPoint this[int index]
+        {
+            get { return variationPoints[index]; }
+        }
+
         public void Add(VariationPoint point)
         {
             variationPoints.Add(point);
@@ -21,24 +28,18 @@ namespace PressureSensorTestCore
             return variationPoints.GetEnumerator();
         }
 
-        public VariationPoint this[int index]
-        {
-            get { return variationPoints[index]; }
-        }
-
         public bool? GetResume()
         {
             if (variationPoints.Count == 0)
                 return null;
+            bool res = true;
             foreach (var point in variationPoints)
             {
-                if (!point.Resume)
-                    return false;
-
+                res &= point.Resume;
             }
-            return true;
+            return res;
         }
 
-        public int Count { get { return variationPoints.Count; } }
+        
     }
 }

@@ -70,13 +70,14 @@ namespace PressureSensorTest
                 {
                     processErrorHandler = new ErrorHandlerRemoteControlMode(Settings, SystemStatus);
                 }
+                // throw new Exception();
                 
             }
             catch(Exception ex)
             {
                 Exception = ex;
-                dialogService.ErrorMessage("Не удалось установить связь с пневмосистемой. Проверьте состояние готовности пневмосистемы " +
-                                        "и нажмите кнопку \"Подключиться к пневмосистеме\". Или измените настройки в меню \"Система\"");
+                dialogService.ErrorMessage("Не удалось установить связь со стойкой давления по запросу. Проверьте состояние ее готовности  " +
+                                        "и нажмите кнопку \"Установить связь со стойкой давления\". Или измените настройки в меню \"Система\"");
             }
         }
 
@@ -144,7 +145,10 @@ namespace PressureSensorTest
 
                 TestProcess testProcess;
                 if (Settings.UsedAutomaticSortingOut)
+                {
+                    waitContinue = null;
                     testProcess = new TestProcess(psys, ammetr, GetTestPoints());
+                }
                 else
                 {
                     waitContinue = new WaitContinue();
@@ -177,7 +181,7 @@ namespace PressureSensorTest
             }
         }
 
-        // В режиме ручной разбраковки (о, кто придумал этот идиотизм!?) будет обрабатываться нажмтие кнопки "Далее"
+        // В режиме ручной разбраковки будет обрабатываться нажмтие кнопки "Далее"
         public void NextStep()
         {
             if (waitContinue != null)
@@ -203,7 +207,7 @@ namespace PressureSensorTest
             string info = $"Версия сборки v.{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()}" +
                 $"\n{new string('-', 80)}\n\n" + metrologicInfo.GetMetrologicInfo();
             
-            dialogService.Message("О программе:", info);
+            dialogService.Message("О программе", info);
         }
 
         private void Stop()

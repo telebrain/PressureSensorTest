@@ -61,7 +61,7 @@ namespace PressureRack.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не удалось подключиться к стойке давления.
+        ///   Looks up a localized string similar to Не удалось установить связь со стойкой давления. Проверьте, включена ли стойка давления, совпадает ли IP адрес СПК стойки давления и адрес, указанный в настройках.
         /// </summary>
         internal static string Err1 {
             get {
@@ -106,7 +106,7 @@ namespace PressureRack.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Внутренняя авария стойки давления. Потеря связи с прибором переключения каналов пневмосистемы.
+        ///   Looks up a localized string similar to Внутренняя авария стойки давления. Потеря связи с прибором переключения каналов.
         /// </summary>
         internal static string Err14 {
             get {
@@ -133,7 +133,7 @@ namespace PressureRack.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Соединение прервано.
+        ///   Looks up a localized string similar to Соединение со стойкой давления прервано.
         /// </summary>
         internal static string Err2 {
             get {

@@ -10,21 +10,21 @@ namespace PressureSensorTestCore
         public int PercentRange { get; }
 
         // Образцовое значение давления
-        public double? EtalonPressure { get; } = null;
-
-        // Ток, рассчитанный по образцовому значению давления
-        public double? CurrentFromEtalonPressure { get; private set; }
+        public double EtalonPressure { get; }
         
         // Измеренный ток в мА
-        public double? MeasuredCurrent { get; } = null;
+        public double MeasuredCurrent { get; }
+
+        // Ток, рассчитанный по образцовому значению давления
+        public double CurrentFromEtalonPressure { get; private set; }
 
         // Давление, пересчитанное из тока изделия
-        public double? Pressure { get; private set; } = null;
+        public double Pressure { get; private set; }
 
         // Рассчитанная погрешность измерения в %
-        public double? ErrorMeasure { get; private set; }
+        public double? ErrorMeasure { get; private set; } = null;
 
-        public bool? Resume { get; private set; }
+        public bool? Resume { get; private set; } = null;
                 
 
         public CheckPoint(int percentRange, double etalonPressure, double measuredCurrent)
@@ -34,30 +34,30 @@ namespace PressureSensorTestCore
             MeasuredCurrent = measuredCurrent;
         }
 
-        public bool? CheckResult(double classPrecision, double marginCoefficient = 0.8F)
-        {
-            Resume = Math.Abs((double)ErrorMeasure) < classPrecision * marginCoefficient;
-            return Resume;
-        }
-
         public void CalcError(double rangeMin, double rangeMax)
         {
-            const double currentMin = 4;
-            const double currentMax = 20;
-            
-            CurrentFromEtalonPressure = currentMin + ((currentMax - currentMin) * (EtalonPressure - rangeMin) /
+            const double СurrentMin = 4;
+            const double СurrentMax = 20;
+
+            // Расчет тока, соответсвующего образцовому давлению
+            CurrentFromEtalonPressure = СurrentMin + ((СurrentMax - СurrentMin) * (EtalonPressure - rangeMin) /
                     (rangeMax - rangeMin));
 
             // Считается для справки. Далее не участвует в разбраковке
-            Pressure = ((MeasuredCurrent - currentMin) * (rangeMax - rangeMin) / (currentMax - currentMin)) + rangeMin;
-
-            ErrorMeasure = (double)Math.Round((double)(100 * (MeasuredCurrent - CurrentFromEtalonPressure) / (currentMax - currentMin)), 3);
-
+            Pressure = ((MeasuredCurrent - СurrentMin) * (rangeMax - rangeMin) / (СurrentMax - СurrentMin)) + rangeMin;
+            // Расчет основной приведенной погрешности
+            ErrorMeasure = Math.Round(100 * (MeasuredCurrent - CurrentFromEtalonPressure) / (СurrentMax - СurrentMin), 3);
         }
 
-        //public double?[] GetResultAsArray()
-        //{
-        //    return new double?[] { EtalonPressure, CurrentFromEtalonPressure, MeasuredCurrent, Pressure, ErrorMeasure };
-        //}
+        public bool? CheckResult(double classPrecision, double marginCoefficient = 0.8F)
+        {
+            // Если результаты еще не готовы
+            if (ErrorMeasure == null) 
+                return null; // Возвращается null
+
+            // Тест пройден, если погрешность меньше класса с учетом коэффициента запаса
+            Resume = Math.Abs(ErrorMeasure.Value) < classPrecision * marginCoefficient;
+            return Resume;
+        }
     }
 }

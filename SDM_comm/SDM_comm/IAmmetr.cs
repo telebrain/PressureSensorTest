@@ -32,8 +32,5 @@ namespace SDM_comm
         void Stop();
     }
 
-    public class AmmetrErrException: Exception
-    {
-        public AmmetrErrException(string message): base(message) { }
-    }
+    
 }

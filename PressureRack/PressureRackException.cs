@@ -27,7 +27,7 @@ namespace PressureRack
             }
             catch
             {
-                Message = $"Неизвестный номер ошибки ({errNumber})";
+                Message = $"Неизвестный номер ошибки стойки давления ({errNumber})";
             }
         }
 

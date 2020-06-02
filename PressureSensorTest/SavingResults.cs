@@ -28,6 +28,11 @@ namespace PressureSensorTest
             sysStatus.ServerStatus = StatusEnum.Ok;
         }
 
+        public void CheckSavingState()
+        {
+            archiving.CheckLocalFolderState();
+        }
+
         public void SaveResult(ProductInfo product, TestResults results, IDialogService dialogService)
         {
             // Смысл формировать и посылать Json есть только когда статус продукта 0 - нет ошибок, или 14 - неудачная поверка, или 18 - забракован оператором
