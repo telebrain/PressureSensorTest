@@ -55,7 +55,7 @@ namespace PressureSensorTestCore
             updCurrentValueAutoReset = new AutoResetEvent(false);
             // При обновлении показаний миллиамперметра будет освобождаться AutoResetEvent updCurrentValueAutoReset
             ammetr.UpdMeasureResult += (obj, e) => updCurrentValueAutoReset.Set(); 
-            deltaProgress = 100/(testPoints.Length*2);
+            deltaProgress = 100/(testPoints.Length*2 + 2);
 
 
             TestResults = new TestResults(rangeMin, rangeMax, classPrecision);
@@ -119,7 +119,7 @@ namespace PressureSensorTestCore
                 _rangeMax -= psys.PressSystemVariables.Barometr;
             }
             if (!psysIsConnect && (int)SP != 0)
-            {
+            { 
                 // Если пневмосистема еще не была подключена, а устанвка отличается от 0, подключаем пневмосистему
                 psys.Connect(outChannelPsys, cancellationToken);
                 psysIsConnect = psys.ConnectState;
@@ -167,9 +167,23 @@ namespace PressureSensorTestCore
 
         private async Task Pause(CancellationToken cancellation, IProgress<int> progress)
         {
-            await Task.Delay(1000); // Это пока
-        }
-
-               
+            const int pause = 60; // Заменить потом на 60 с
+            bool exit = false;
+            var startTime = DateTime.Now;
+            double startProgerss = progressValue;
+            using (System.Timers.Timer timer = new System.Timers.Timer(pause * 1000))
+            {
+                timer.Elapsed += (obj, e) => exit = true;
+                timer.Start();
+                while(!exit)
+                {
+                    var timeSpan = DateTime.Now - startTime;
+                    progressValue = startProgerss + (2*deltaProgress * timeSpan.Seconds / pause);
+                    progress.Report((int)progressValue);
+                    cancellation.ThrowIfCancellationRequested();
+                    await Task.Delay(500);
+                }
+            }   
+        }     
     }
 }

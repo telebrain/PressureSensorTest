@@ -31,6 +31,30 @@ namespace PressureRack
             exchange.Dispose();
         }
 
+        // Новый метод - будет работать после обновления протокола
+        //public PressSystemInfo ReadInfo()
+        //{
+        //    exchange.ConnectTcp();
+
+        //    PressSystemInfo info = null;
+        //    try
+        //    {
+        //        string tx = "INFO?;";
+        //        string rx = "";
+        //        rx = exchange.Exch(tx);
+        //        info = Parsing.GetPressSystemInfo(rx);
+        //    }
+        //    catch
+        //    {
+        //        exchange.Dispose();
+        //        throw;
+        //    }
+
+        //    Disconnect();
+        //    return info;
+        //}
+
+
         public PressSystemInfo ReadInfo()
         {
             exchange.ConnectTcp();
@@ -51,6 +75,7 @@ namespace PressureRack
             return info;
         }
 
+        long oldReceiveTimeStamp = 0;
         PressSystemVariables variables = new PressSystemVariables();
         public PressSystemVariables ReadSysVar()
         {
@@ -73,8 +98,17 @@ namespace PressureRack
             {
                 variables.Pressure = Parsing.ExtractDoubleParametr("PV:", rx) * 1000;
                 variables.Barometr = Parsing.ExtractDoubleParametr("BAR:", rx) * 1000;
-                variables.InLim = Parsing.ExtractDoubleParametr("INLIM:", rx) == 1;
+                variables.InLim = Parsing.ExtractIntParametr("INLIM:", rx) == 1;
                 variables.TimeStamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                // Пока эта часть протокола не реализована
+                //long receiveTimeStamp = Parsing.ExtractLongParametr("TIMESTAMP:", rx);
+                //// Если изменилось принятое значение TimeStamp, обновляем переменную меткой по часам компьютера
+                //if (receiveTimeStamp != oldReceiveTimeStamp)
+                //{
+                //    variables.TimeStamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                //    oldReceiveTimeStamp = receiveTimeStamp;
+                //}
             }
             else
             {
@@ -116,7 +150,7 @@ namespace PressureRack
             }
         }
 
-        // Чтение информации о контроллере давления пневмосистемы
+        // Чтение информации о контроллере давления пневмосистемы - после обновления протокола убрать
         private PressControllerInfo GetControllerInfo(int controller)
         {
             try
@@ -124,8 +158,7 @@ namespace PressureRack
                 string tx = "INFO: " + Convert.ToString(controller) + ";";
                 string rx = "";
                 rx = exchange.Exch(tx);
-                var info = Parsing.ExtractPressControllerInfo(rx);
-                info.Number = controller;
+                var info = Parsing.GetPressControllerInfo(rx, controller);
                 return info;
             }
             catch
@@ -135,6 +168,7 @@ namespace PressureRack
             }
         }
 
+        // Убрать после обновления протокола
         private void GetPressureRange(out double loRange, out double hiRange)
         {
             string tx = "LIMITS?;";

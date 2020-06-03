@@ -27,7 +27,7 @@ namespace OwenPressureDevices
             string title = splitName[0];
 
             // Поиск цифрового значения во второй части имени
-            Regex regex = new Regex(string.Format(@"\d,\d"));
+            Regex regex = new Regex(string.Format(@"\d,\d|\d"));
             Match matchRange = regex.Match(splitName[1]);
             
             if (matchRange.Index <= 0)
