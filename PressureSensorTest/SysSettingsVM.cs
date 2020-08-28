@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace PressureSensorTest
 {
@@ -149,6 +151,20 @@ namespace PressureSensorTest
             set { dbPath = value; OnPropertyChanged(); }
         }
 
+        List<string> ipNetCardsContent;
+        public List<string> IpNetCardsContent
+        {
+            get { return ipNetCardsContent; }
+            set { ipNetCardsContent = value; OnPropertyChanged(); }
+        }
+
+        string ipNetCard;
+        public string IpNetCard
+        {
+            get { return ipNetCard; }
+            set { ipNetCard = value; OnPropertyChanged(); }
+        }
+
         #endregion
 
         #region Commands
@@ -243,6 +259,7 @@ namespace PressureSensorTest
             settings.UsedStandDatabase = UsedWithDataBase;
             settings.UsedRemoteControl = UsedRemouteControl;
             settings.UsedAutomaticSortingOut = UsedAutomaticSortingOut;
+            settings.RemoteControlIp = IpNetCard;
         }
 
         private void SettingsToVis()
@@ -258,6 +275,23 @@ namespace PressureSensorTest
             UsedWithDataBase = settings.UsedStandDatabase;
             UsedRemouteControl = settings.UsedRemoteControl;
             UsedAutomaticSortingOut = settings.UsedAutomaticSortingOut;
+            IpNetCardsContent = new List<string>();
+            IpNetCard = "";
+            foreach (NetworkInterface item in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                foreach (UnicastIPAddressInformation ip in item.GetIPProperties().UnicastAddresses)
+                {
+                    if (ip.Address.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        string addr = ip.Address.ToString();
+                        IpNetCardsContent.Add(addr);
+                        if (addr == settings.RemoteControlIp)
+                            IpNetCard = addr;
+                    }
+                }
+            }
         }
+
+        
     }
 }

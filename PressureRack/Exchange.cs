@@ -24,9 +24,22 @@ namespace PressureRack
         internal void ConnectTcp()
         {
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
-            
-            sock.Connect(ipEndPoint);
+            sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             sock.ReceiveTimeout = receiveTimeout;
+
+            IAsyncResult result = sock.BeginConnect(ipEndPoint, null, null);
+            bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+
+            if (sock.Connected)
+            {
+                sock.EndConnect(result);
+                sock.ReceiveTimeout = receiveTimeout;
+            }
+            else
+            {
+                sock.Close();
+                throw new PressureRackException(1);
+            }
         }
 
         private void Send(string sTx)

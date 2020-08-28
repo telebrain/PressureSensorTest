@@ -22,6 +22,8 @@ namespace OwenPressureDevices
         int DeviceTypeCode { get; }
         // Код сенсора
         int SensorTypeCode { get; }
+        // Тип резьбы
+        string ThreadType { get; }
 
     }
 }

@@ -31,22 +31,19 @@ namespace OwenPressureDevices
             set
             {
                 name = value;
-                if (value != "")
+                try
                 {
-                    try
-                    {
-                        ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
-                        Modification = components.Modification;
-                        ThreadType = components.ThreadType;
-                        ClassPrecision = Convert.ToSingle(components.Precision);
-                        int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
-                        RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
-                        Range = new DeviceRange(range_Pa, rangeType);
-                    }
-                    catch
-                    {
-                        throw new Exception("Не удалось определить изделие по названию");
-                    }
+                    ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
+                    Modification = components.Modification;
+                    ThreadType = components.ThreadType;
+                    ClassPrecision = Convert.ToSingle(components.Precision);
+                    int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
+                    RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
+                    Range = new DeviceRange(range_Pa, rangeType);
+                }
+                catch
+                {
+                    throw new ParseDeviceNameException();
                 }
             }
         }
@@ -63,5 +60,12 @@ namespace OwenPressureDevices
         public int DeviceTypeCode { get { return 3; } }
         // Тоже пока непонятно, какой ставить
         public int SensorTypeCode { get { return 2; } }
+    }
+
+    public class ParseDeviceNameException: Exception
+    {
+        public ParseDeviceNameException():
+            base("Не удалось определить изделие по названию")
+        { }
     }
 }

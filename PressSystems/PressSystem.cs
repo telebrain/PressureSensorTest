@@ -43,6 +43,7 @@ namespace PressSystems
 
         public event EventHandler UpdateMeasures;
         public event EventHandler ExceptionEvent;
+        public event EventHandler BeginConnectEvent;
         public event EventHandler ConnectEvent;
         public event EventHandler DisconnectEvent;
 
@@ -69,6 +70,7 @@ namespace PressSystems
             {
                 if (!ConnectState)
                 {
+                    BeginConnectEvent?.Invoke(this, new EventArgs());
                     commands.Connect(outChannelNumber, cancellationToken);
                     taskCycleRead = StartCycleRead();
                     ConnectState = true;
@@ -92,6 +94,7 @@ namespace PressSystems
                 cts.Cancel();
                 if (taskCycleRead != null)
                     taskCycleRead.Wait();
+                commands.Disconnect();
                 ConnectState = false;
             }
             DisconnectEvent?.Invoke(this, new EventArgs());

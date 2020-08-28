@@ -14,7 +14,7 @@ namespace PressSystems
 
         public void Connect(int outChannelNumber, CancellationToken cancellationToken)
         {
-            
+            Thread.Sleep(3000);
         }
 
         public PressSystemVariables ReadSysVar()

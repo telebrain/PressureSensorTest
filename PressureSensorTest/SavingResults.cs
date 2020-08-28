@@ -8,7 +8,7 @@ namespace PressureSensorTest
     {
         readonly Settings settings;
         readonly ArchivingProcess archiving;
-        readonly StandDatabase db;
+        readonly ProductDb db;
         readonly SystemStatus sysStatus;
 
         public SavingResults(Settings settings, SystemStatus sysStatus)
@@ -20,7 +20,7 @@ namespace PressureSensorTest
                 jsonSettings.UsedFtp);
             archiving.SuccessfulCopyToServerEvent += Archiving_SuccessfulCopyToServerEvent;
             archiving.StartTracking();
-            db = new StandDatabase(settings.PathToDb);
+            db = new ProductDb(settings.PathToDb);
         }
 
         private void Archiving_SuccessfulCopyToServerEvent(object sender, EventArgs e)
@@ -43,8 +43,8 @@ namespace PressureSensorTest
                 string jsonContent = null;
                 string fileName = null;
 
-                if ((product.Error == ProcessErrorEnum.NoError || product.Error == ProcessErrorEnum.BadPrecision ||
-                    product.Error == ProcessErrorEnum.OperatorSolution))
+                if ((product.Error == TestErrorEnum.NoError || product.Error == TestErrorEnum.BadPrecision ||
+                    product.Error == TestErrorEnum.OperatorSolution))
                 {
                     var jsonAdapter = new JsonAdapter(settings.JsonReportSettings);
                     jsonAdapter.AddResults(product.Device.SerialNumber, product.Device.DeviceTypeCode, product.Device.SensorTypeCode, product.PrimaryTest, results,
@@ -67,7 +67,7 @@ namespace PressureSensorTest
                     sysStatus.ServerStatus = StatusEnum.Ok;
                 }
             }
-            catch(StandDbException ex)
+            catch(DbException ex)
             {
                 sysStatus.DataBaseStatusMessage = ex.Message;
                 sysStatus.DataBaseStatus = StatusEnum.Error;

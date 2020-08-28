@@ -13,6 +13,7 @@ namespace SDM_comm
         readonly string ip = "";
         Transport transport = null;
         SDM_Commands commands = null;
+        double multipler = 1;
 
         public event EventHandler UpdMeasureResult;
         public event EventHandler ExceptionEvent;
@@ -38,6 +39,8 @@ namespace SDM_comm
             this.ip = ip;
             CurrentType = currentType;
             Units = units;
+            multipler = Units == CurrentUnitsEnum.A ? 1 : 1000;
+                
             Range = range;
         }
 
@@ -67,7 +70,7 @@ namespace SDM_comm
         private async Task StartCycle(CancellationToken cancellationToken)
         {
             try
-            {       
+            {             
                 await Task.Run(() => CycleMeasureCurrent(cancellationToken));
             }
             catch (OperationCanceledException) { }
@@ -79,29 +82,32 @@ namespace SDM_comm
                     ExceptionEvent?.Invoke(this, new EventArgs());
                 }
             }
+            finally
+            {
+                transport.Dispose();
+                DisconnectEvent?.Invoke(this, new EventArgs());
+            }
 
         }
 
         private void CycleMeasureCurrent(CancellationToken cancellationToken)
         {
-            using (transport = new Transport(ip, Port))
+            transport = new Transport(ip, Port);
+            transport.Connect();
+            commands = new SDM_Commands(transport);
+            commands.SetCurrentRange(CurrentType, Range, Units);
+            commands.SetSamples(1);
+            commands.InitCommand();
+            StateConnect = true;
+            ConnectEvent?.Invoke(this, new EventArgs());
+            while (!cancellationToken.IsCancellationRequested)
             {
-
-                transport.Connect();
-                commands = new SDM_Commands(transport);
-                commands.SetCurrentRange(CurrentType, Range, Units);
-                commands.InitCommand();
-                StateConnect = true;
-                ConnectEvent?.Invoke(this, new EventArgs());
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    Current = commands.ReadMeasValue(5);
-                    Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                    UpdMeasureResult?.Invoke(this, new EventArgs());
-                    Thread.Sleep(1000);
-                }
+                Current = commands.ReadMeasValue(5) * multipler;
+                Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                UpdMeasureResult?.Invoke(this, new EventArgs());
+                Thread.Sleep(300);
             }
-            DisconnectEvent?.Invoke(this, new EventArgs());
+            
         }
     }
 }

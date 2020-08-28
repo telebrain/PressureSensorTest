@@ -110,6 +110,17 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
+            <GroupBox Margin ="5" Header="Настройки удаленного управления">
+                <StackPanel Margin ="5,10,5,5" Orientation="Horizontal" VerticalAlignment="Center">
+                    <CheckBox  IsChecked="{Binding UsedRemouteControl, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
+                        Использовать удаленное управление
+                    </CheckBox>
+                    <ComboBox VerticalAlignment="Center" Margin="20,0,0,0" Width="130"
+                              ItemsSource="{Binding IpNetCardsContent}"
+                              SelectedItem="{Binding IpNetCard}"></ComboBox>
+                    <TextBlock >IP сетевой карты</TextBlock>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Margin ="5" Header="Настройки базы данных">
                 <StackPanel Margin="5,10,5,5">
                     <CheckBox Margin="0,10,0,0" IsChecked="{Binding UsedWithDataBase, UpdateSourceTrigger=PropertyChanged}">
@@ -123,9 +134,7 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedRemouteControl, UpdateSourceTrigger=PropertyChanged}">
-                Использовать удаленное управление
-            </CheckBox>
+            
             <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedAutomaticSortingOut, UpdateSourceTrigger=PropertyChanged}">
                 Использовать автоматическую разбраковку
             </CheckBox>

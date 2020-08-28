@@ -17,7 +17,7 @@ namespace PressureSensorTest
 
         public DateTime ClosingDateTime { get; set; }
 
-        public ProcessErrorEnum Error { get; set; }
+        public TestErrorEnum Error { get; set; }
 
         public bool PrimaryTest { get; set; } = true;
 
@@ -26,7 +26,7 @@ namespace PressureSensorTest
             Device = device;
             OpenDateTime = openDateTime;
             DeviceBoxNumber = "";
-            Error = ProcessErrorEnum.NoError;
+            Error = TestErrorEnum.InDefined;
         }
 
         public ProductInfo(IDevice device, string deviceBox, DateTime openDateTime)
@@ -34,12 +34,13 @@ namespace PressureSensorTest
             Device = device;
             DeviceBoxNumber = deviceBox;
             OpenDateTime = openDateTime;
-            Error = ProcessErrorEnum.NoError;
+            Error = TestErrorEnum.InDefined;
         }
     }
 
-    public enum ProcessErrorEnum
+    public enum TestErrorEnum
     {
+        InDefined = -100,
         NoError = 0,
         BadPrecision = 14, // Не соответсвует метрологическим характеристикам
         Leakage = 15, // Утечка

@@ -71,12 +71,12 @@ namespace PressSystems
                     // Проверка диапазона контроллера
                     bool checkRange = sp >= 0 ? (int)targetRangeMax <= (int)controller.RangeHi : 
                         (int)targetRangeMin >= (int)controller.RangeLo;
-                    if (!checkRange)
-                        continue; // Контроллер не подходит по диапазону
+                    if (checkRange)
+                        return controller.Number;
                 }
             }
 
-            return -1; // В пневмосистеме не найден ни один контроллер
+            return -1; // В пневмосистеме не найден ни один контроллер, подходящий по диапазону
 
         }  
     }

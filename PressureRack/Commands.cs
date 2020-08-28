@@ -75,7 +75,7 @@ namespace PressureRack
             return info;
         }
 
-        long oldReceiveTimeStamp = 0;
+
         PressSystemVariables variables = new PressSystemVariables();
         public PressSystemVariables ReadSysVar()
         {
@@ -161,7 +161,7 @@ namespace PressureRack
                 var info = Parsing.GetPressControllerInfo(rx, controller);
                 return info;
             }
-            catch
+            catch(Exception)
             {
                 exchange.Dispose();
                 throw;
@@ -190,7 +190,7 @@ namespace PressureRack
             }
 
             loRange = Parsing.ExtractDoubleParametr("LO:", rx)*1000;
-            loRange = Parsing.ExtractDoubleParametr("HI:", rx)*1000;
+            hiRange = Parsing.ExtractDoubleParametr("HI:", rx)*1000;
         }
 
         // Запрос подключения к пневмосистеме стойки

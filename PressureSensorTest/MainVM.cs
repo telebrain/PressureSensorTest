@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OwenPressureDevices;
 using System.Windows;
+using System.Windows.Media;
 
 namespace PressureSensorTest 
 {
@@ -44,7 +45,11 @@ namespace PressureSensorTest
         public int TitleDeviceIndex
         {
             get { return titleDeviceIndex; }
-            set { titleDeviceIndex = value; OnPropertyChanged(); }
+            set
+            {
+                titleDeviceIndex = value >= 0 ? value : 0;
+                OnPropertyChanged();
+            }
         }
 
         List<string> rangeTypeLabel;
@@ -60,7 +65,7 @@ namespace PressureSensorTest
             get { return rangeRangeTypeLabelIndex; }
             set
             {
-                rangeRangeTypeLabelIndex = value;
+                rangeRangeTypeLabelIndex = value >= 0 ? value : 0;
                 OnPropertyChanged();
                 UpdRangeRow();
             }
@@ -77,7 +82,11 @@ namespace PressureSensorTest
         public int RangeRowIndex
         {
             get { return rangeRowIndex; }
-            set { rangeRowIndex = value; OnPropertyChanged(); }
+            set
+            {
+                rangeRowIndex = value >= 0 ? value : 0;
+                OnPropertyChanged();
+            }
         }
 
         List<string> modifications;
@@ -91,21 +100,33 @@ namespace PressureSensorTest
         public int ModificationIndex
         {
             get { return modificationIndex; }
-            set { modificationIndex = value; OnPropertyChanged(); }
+            set
+            {
+                modificationIndex = value >= 0 ? value : 0;
+                OnPropertyChanged();
+            }
         }
 
         List<string> threadTypes;
         public List<string> ThreadTypes
         {
             get { return threadTypes; }
-            set { threadTypes = value; OnPropertyChanged(); }
+            set
+            {
+                threadTypes = value;
+                OnPropertyChanged();
+            }
         }
 
         int threadTypeIndex;
         public int ThreadTypeIndex
         {
             get { return threadTypeIndex; }
-            set { threadTypeIndex = value; OnPropertyChanged(); }
+            set
+            {
+                threadTypeIndex = value >= 0 ? value : 0;
+                OnPropertyChanged();
+            }
         }
 
         List<string> classes;
@@ -121,7 +142,7 @@ namespace PressureSensorTest
             get { return classIndex; }
             set
             {
-                classIndex = value;
+                classIndex = value >= 0 ? value : 0;
                 OnPropertyChanged();
                 UpdRangeRow();
             }
@@ -198,11 +219,11 @@ namespace PressureSensorTest
             set { readPsysInfoButtonVis = value; OnPropertyChanged(); }
         }
 
-        Visibility sensorNameIndVisible;
-        public Visibility SensorNameIndVisible
+        Visibility deviceNameIndVisible;
+        public Visibility DeviceNameIndVisible
         {
-            get { return sensorNameIndVisible; }
-            set { sensorNameIndVisible = value; OnPropertyChanged(); }
+            get { return deviceNameIndVisible; }
+            set { deviceNameIndVisible = value; OnPropertyChanged(); }
         }
 
         bool snInputEnable;
@@ -327,6 +348,28 @@ namespace PressureSensorTest
             set { signalReleaseButton = value; OnPropertyChanged(); }
         }
 
+        Visibility showStateConnectPsys = Visibility.Hidden;
+        public Visibility ShowStateConnectPsys
+        {
+            get { return showStateConnectPsys; }
+            set { showStateConnectPsys = value; OnPropertyChanged(); }
+        }
+
+        string messageStateConnectPsys;
+        public string MessageStateConnectPsys
+        {
+            get { return messageStateConnectPsys; }
+            set { messageStateConnectPsys = value; OnPropertyChanged(); }
+        }
+
+        Brush colorStateConnectPsys;
+        public Brush ColorStateConnectPsys
+        {
+            get { return colorStateConnectPsys; }
+            set { colorStateConnectPsys = value; OnPropertyChanged(); }
+        }
+        
+
         #endregion
 
         #region Комманды
@@ -394,7 +437,7 @@ namespace PressureSensorTest
             settings = stand.Settings;
             settings.UpdSettingsEvent += UpdSettings_event;
             stand.UpdRowsTypesEvent += UpdRowsTypes_event;
-            stand.UpdSensorInfoEvent += UpdSensorInfo_event;
+            stand.UpdProductInfoEvent += UpdProductInfo_event;
             stand.UpdTestResultEvent += UpdTestResult_event;
             stand.UpdateMeasurmendIndicators += UpdIndicators_event;
             stand.ProgressEvent += Progress_event;
@@ -402,8 +445,44 @@ namespace PressureSensorTest
             stand.SelectionRequest += SelectedRequest_event;
             stand.ProcessComplete += ProcessComplete_event;
             stand.SystemStatus.ChangeSysStatusEvent += SystemStatus_ChangeSysStatusEvent;
+            stand.SystemStatus.ChangeConnectPressSystemEvent += SystemStatus_ChangeConnectPressSystemEvent;
+            stand.RemoteStartEvent += Stand_RemoteStartEvent;
+            stand.StopEvent += Stand_RemoteStopEvent;
             ControlsToStopMode();
             StandInit();
+        }
+
+        private void Stand_RemoteStopEvent(object sender, EventArgs e)
+        {
+            ControlsToStopMode();
+        }
+
+        private void Stand_RemoteStartEvent(object sender, EventArgs e)
+        {
+            ControlsToRunMode();
+        }
+
+        private void SystemStatus_ChangeConnectPressSystemEvent(object sender, EventArgs e)
+        {
+            switch (stand.SystemStatus.PressSystemsStateConnect)
+            {
+                case PressSystemsConnectEnum.BeginConnect:
+                    ShowStateConnectPsys = Visibility.Visible;
+                    MessageStateConnectPsys = "Ожидание подключения к стойке давления";
+                    ColorStateConnectPsys = Brushes.Yellow;
+                    break;
+                case PressSystemsConnectEnum.EndConnect:
+                    ShowStateConnectPsys = Visibility.Visible;
+                    MessageStateConnectPsys = "Подключение к стойке давления установлено";
+                    ColorStateConnectPsys = Brushes.Lime;
+                    break;
+                default:
+                    ShowStateConnectPsys = Visibility.Hidden;
+                    MessageStateConnectPsys = "";
+                    break;
+
+            }
+
         }
 
         private void SystemStatus_ChangeSysStatusEvent(object sender, EventArgs e)
@@ -430,7 +509,7 @@ namespace PressureSensorTest
 
         private void ShowResultIndicator()
         {
-            if (stand.Product.Error == ProcessErrorEnum.NoError)
+            if (stand.Product.Error == TestErrorEnum.NoError)
             {
                 VisResultError = Visibility.Hidden;
                 VisResultOK = Visibility.Visible;               
@@ -449,7 +528,7 @@ namespace PressureSensorTest
             StartButtonEnable = !settings.UsedRemoteControl;
             if (!settings.UsedRemoteControl)
             { 
-                SensorNameIndVisible = Visibility.Hidden;
+                DeviceNameIndVisible = Visibility.Hidden;
                 if (stand.Exception == null)
                 {
                     SensorSelectionControlsVis = Visibility.Visible;
@@ -465,7 +544,7 @@ namespace PressureSensorTest
             { 
                 SensorSelectionControlsVis = Visibility.Hidden;
                 ReadPsysInfoButtonVis = Visibility.Hidden;
-                SensorNameIndVisible = Visibility.Visible;
+                DeviceNameIndVisible = Visibility.Visible;
             }
         }
 
@@ -564,7 +643,6 @@ namespace PressureSensorTest
             RangeRow = new List<string>();
             RangeRow = specification.GetPressureRowLabels(RangeTypeLabelIndex, ClassIndex);
             RangeRowIndex = specification.GetIndexPressureRange(label, RangeTypeLabelIndex, ClassIndex);
-            // OnPropertyChanged("");
         }
 
         private void UpdSettings_event(object sender, EventArgs e)
@@ -586,10 +664,12 @@ namespace PressureSensorTest
 
         PressureIndication pressureIndication;
 
-        private void UpdSensorInfo_event(object sender, EventArgs e)
+        private void UpdProductInfo_event(object sender, EventArgs e)
         {
-            var stand = (Stand)sender;
-            pressureIndication = new PressureIndication(stand.Product.Device.Range.Pressure_Pa);
+            var product = ((Stand)sender).Product;
+            pressureIndication = new PressureIndication(product.Device.Range.Pressure_Pa);
+            SerialNumber = product.Device.SerialNumber;
+            DeviceName = product.Device.Name;
         }
 
         private void UpdTestResult_event(object sender, EventArgs e)
@@ -611,8 +691,11 @@ namespace PressureSensorTest
 
         private void ControlsToRunMode()
         {
-            StartButtonText = "СТОП";
-            UnlockControl = false;
+            if (!settings.UsedRemoteControl)
+            {
+                StartButtonText = "СТОП";
+                UnlockControl = false;
+            }
             VisResultOK = Visibility.Hidden;
             VisResultError = Visibility.Hidden;
         }

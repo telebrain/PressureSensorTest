@@ -11,6 +11,7 @@ namespace SDM_comm
         const int receiveTimeout = 5000;
         string ip;
         int port;
+        const int RecBufferSize = 1024;
 
 
         public Transport(string ip, int port)
@@ -32,6 +33,7 @@ namespace SDM_comm
             if (sock.Connected)
             {
                 sock.EndConnect(result);
+                sock.ReceiveBufferSize = RecBufferSize;
             }
             else
             {
@@ -58,7 +60,7 @@ namespace SDM_comm
         {
             try
             {
-                byte[] recv = new byte[1024];
+                byte[] recv = new byte[RecBufferSize];
                 int byteRecv = sock.Receive(recv);
                 string sRx = Encoding.ASCII.GetString(recv, 0, byteRecv);
                 return sRx.Remove(sRx.Length - 1, 1);
@@ -74,7 +76,7 @@ namespace SDM_comm
         public void Dispose()
         {
             sock.Close();
-            sock.Dispose();
+            // sock.Dispose();
         }
     }
 }

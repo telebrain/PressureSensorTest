@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Globalization;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SDM_comm
@@ -19,7 +19,7 @@ namespace SDM_comm
         public void InitCommand()
         {
             transport.Send("INIT");
-            (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
+            //Pause(1000);
         }
 
         public void SetCurrentRange(CurrentTypeEnum currentType, int value, CurrentUnitsEnum unit)
@@ -30,7 +30,7 @@ namespace SDM_comm
 
             for (int i = 0; i < 5; i++)
             {
-                (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
+                Pause(300);
                 string config = WriteRead("CONF?");
                 if (CheckSetCurrentRange(config, value, unit))
                     return;                
@@ -40,10 +40,21 @@ namespace SDM_comm
         }
 
 
+        public void SetSamples(int samples)
+        {
+            transport.Send($"SAMP:COUNT {samples}");            
+            Pause(2000);
+            string rec = WriteRead("SAMP:COUNT?");
+            string recVal = (new Regex(@"(?<=\+)(\w+)(?=\n)").Match(rec)).ToString();
+            if (!(int.TryParse(recVal, out int val) && samples == val))
+                throw new SDM_ErrException(Properties.Resources.SetSamples);           
+        }
+
         public double ReadMeasValue()
         {
             string val = WriteRead("READ?");
-            val = val.Substring(0, val.Length - 3);
+            val = val.Substring(0, val.IndexOf('\n'));
+            // Console.WriteLine(val);
             return ConvertRecevedValue(val);
         }
 
@@ -59,7 +70,7 @@ namespace SDM_comm
                 attempts --;
                 if (attempts <= 0)
                     throw ex;
-                (Task.Run(async () => await Task.Delay(1000))).GetAwaiter().GetResult();
+                Pause(1000);
                 return ReadMeasValue(attempts);
             }
         }
@@ -69,7 +80,7 @@ namespace SDM_comm
             try
             {
                 transport.Send(send);
-                (Task.Run(async () => await Task.Delay(200))).GetAwaiter().GetResult();
+                Pause(200);
                 return transport.Receive();
             }
             catch
@@ -108,9 +119,16 @@ namespace SDM_comm
             }
         }
 
+        private void Pause(int pause)
+        {
+            (Task.Run(async () => await Task.Delay(pause))).GetAwaiter().GetResult();
+        }
+
+
+        readonly NumberFormatInfo format = new CultureInfo("en-US", false).NumberFormat;
         private double ConvertRecevedValue(string val)
         {
-            var format = new CultureInfo("en-US", false).NumberFormat;
+            
             return Double.Parse(val, format);
         }
 

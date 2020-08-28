@@ -8,6 +8,6 @@
              d:DesignHeight="50" d:DesignWidth="50">
     <Grid>
         <Rectangle Stroke="Gray" RadiusX="3" RadiusY="3"></Rectangle>
-        <Rectangle x:Name="Led" Margin="2" Fill="Green" RadiusX="3" RadiusY="3"></Rectangle>    
+        <Rectangle x:Name="Led" Margin="3" Fill="Green" RadiusX="3" RadiusY="3"></Rectangle>    
     </Grid>
 </UserControl>

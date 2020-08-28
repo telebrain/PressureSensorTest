@@ -51,7 +51,11 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ManometrBlue.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -96,6 +100,8 @@
     <Compile Include="Progress.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ProductInfo.cs" />
+    <Compile Include="RemoteControl.cs" />
+    <Compile Include="ReqHandler.cs" />
     <Compile Include="SavingResults.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsArchivingResults.xaml.cs">
@@ -103,7 +109,7 @@
     </Compile>
     <Compile Include="SettingsArchivingResultsVM.cs" />
     <Compile Include="Stand.cs" />
-    <Compile Include="StandDatabase.cs" />
+    <Compile Include="ProductDb.cs" />
     <Compile Include="SysSettingsVM.cs" />
     <Compile Include="SysSettingsWindow.xaml.cs">
       <DependentUpon>SysSettingsWindow.xaml</DependentUpon>
@@ -175,13 +181,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Librarys\ProductDatabase\ProductDatabase\ProductDatabase.csproj">
+      <Project>{d4bca09c-b8d9-460e-ba6e-5beb04773081}</Project>
+      <Name>ProductDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Librarys\TCPserver\TCPserver\TCPserver.csproj">
+      <Project>{0fed9692-eeb8-436b-a80b-e0f442e312e0}</Project>
+      <Name>TCPserver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ArchvingTestResult\ArchvingTestResult\ArchvingTestResult.csproj">
       <Project>{d8a58d02-dc47-484c-9c92-866cc24b014b}</Project>
       <Name>ArchvingTestResult</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DbCalibration\Db_Calibration\StandDb.csproj">
-      <Project>{7bcc5e83-2a36-43b9-8105-6290d0df5490}</Project>
-      <Name>StandDb</Name>
     </ProjectReference>
     <ProjectReference Include="..\MetrologicUtils\MetrologicUtils.csproj">
       <Project>{549dbc57-db49-4497-8e0c-1ec326d9ca62}</Project>
@@ -190,6 +200,10 @@
     <ProjectReference Include="..\PressSystems\PressSystems.csproj">
       <Project>{aabd3295-9947-4a6c-bbb3-457aba73e25b}</Project>
       <Name>PressSystems</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PressureRack\PressureRack.csproj">
+      <Project>{57f83e2c-dcab-4b71-919f-745c526d8a0f}</Project>
+      <Name>PressureRack</Name>
     </ProjectReference>
     <ProjectReference Include="..\PressureSensorTestCore\PressureSensorTestCore.csproj">
       <Project>{28b19d76-a13d-44a0-8509-76647ed338a7}</Project>
@@ -225,6 +239,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ConnectRack2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ManometrBlue.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

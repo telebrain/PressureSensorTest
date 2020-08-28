@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace RemoteControl
 {
-    interface IRemoteControl
+    public interface IRemoteControl: IDisposable
     {
         event EventHandler StartProcessEvent;
-
         event EventHandler CancellationEvent;
 
-        void SendResult(bool state);
+        void ChangeState(StateProcessEnum stateProcess);
 
-        void SendError(Exception exception);
+        void StartListening();
+
     }
 }

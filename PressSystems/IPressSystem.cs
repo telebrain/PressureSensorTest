@@ -36,6 +36,9 @@ namespace PressSystems
         // Событие, извещающее об аварии
         event EventHandler ExceptionEvent;
 
+        // Событие начала подключения пневмосистемы к стенду (постановки в очередь)
+        event EventHandler BeginConnectEvent;
+
         // Событие подключения пневмосистемы к стенду
         event EventHandler ConnectEvent;
 

@@ -15,6 +15,7 @@ namespace PressureSensorTest
         public bool UsedStandDatabase { get; set; }
         public bool UsedRemoteControl { get; set; }
         public bool UsedAutomaticSortingOut { get; set; }
+        public string RemoteControlIp { get; set; }
 
         public event EventHandler UpdSettingsEvent;
         public JsonReportSettings JsonReportSettings { get; set; }
@@ -72,6 +73,7 @@ namespace PressureSensorTest
             UsedStandDatabase = settings.UsedStandDatabase;
             UsedRemoteControl = settings.UsedRemoteControl;
             UsedAutomaticSortingOut = settings.UsedAutomaticSortingOut;
+            RemoteControlIp = settings.RemoteControlIp;
         }
 
         private string GetSettingsFolderPath()

@@ -28,7 +28,7 @@ namespace PressureSensorTest
             // Утечка в системе
             catch (SetPressureTimeoutException ex)
             {
-                product.Error = ProcessErrorEnum.Leakage;
+                product.Error = TestErrorEnum.Leakage;
                 string message = ex.Message + ". Возможно, нарушена герметичность изделия";
                 if (!settings.UsedStandDatabase)
                 {
@@ -45,7 +45,7 @@ namespace PressureSensorTest
             // Изделие не поддерживается пневмосистемой
             catch(PsysSupportException ex)
             {
-                product.Error = ProcessErrorEnum.RangeNotSupportByPsys;
+                product.Error = TestErrorEnum.RangeNotSupportByPsys;
                 if (!settings.UsedStandDatabase)
                 {
                     Cancel(ex.Message);
@@ -62,7 +62,7 @@ namespace PressureSensorTest
             catch(SDM_ErrException ex)
             {
                 // Выводим сообщение и отменяем операцию
-                product.Error = ProcessErrorEnum.SystemError;
+                product.Error = TestErrorEnum.SystemError;
                 sysStatus.AmmetrStatusMessage = ex.Message;
                 sysStatus.AmmetrStatus = StatusEnum.Error;               
                 Cancel(ex.Message);
@@ -72,7 +72,7 @@ namespace PressureSensorTest
             catch (PressSystemException ex)
             {
                 // Выводим сообщение и отменяем операцию
-                product.Error = ProcessErrorEnum.SystemError;
+                product.Error = TestErrorEnum.SystemError;
                 sysStatus.PressSystemStatusMessage = ex.Message;
                 sysStatus.PressSystemStatus = StatusEnum.Error;
                 Cancel(ex.Message);
@@ -80,7 +80,7 @@ namespace PressureSensorTest
             // Непредусмотренные ошибки
             catch(Exception ex)
             {
-                product.Error = ProcessErrorEnum.SystemError;
+                product.Error = TestErrorEnum.SystemError;
                 Cancel("Непредусмотренная ошибка. Обратитесь к разработчику:\r\n" + ex.Message);
             }
         }

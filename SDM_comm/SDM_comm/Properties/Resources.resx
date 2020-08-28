@@ -126,4 +126,7 @@
   <data name="SetCurrentMeasureModeError" xml:space="preserve">
     <value>Не удалось переключить прибор АКИП 2101 в режим измерения тока</value>
   </data>
+  <data name="SetSamples" xml:space="preserve">
+    <value>Не удалось сконфигурировать фильтр прибора АКИП 2101</value>
+  </data>
 </root>

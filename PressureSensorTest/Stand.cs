@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using PressSystems;
 using SDM_comm;
 using OwenPressureDevices;
 using PressureSensorTestCore;
 using MetrologicUtils;
+
 
 
 
@@ -18,13 +20,15 @@ namespace PressureSensorTest
         #region События
 
         public event EventHandler UpdRowsTypesEvent;
-        public event EventHandler UpdSensorInfoEvent;
+        public event EventHandler UpdProductInfoEvent;
         public event EventHandler UpdTestResultEvent;
         public event EventHandler ContinueRequest;
         public event EventHandler SelectionRequest;
         public event EventHandler<int> ProgressEvent;
         public event EventHandler UpdateMeasurmendIndicators;
-        public event EventHandler ProcessComplete;
+        public event EventHandler ProcessComplete; // Вызывается при удачном (не аварийном) завершении процесса
+        public event EventHandler RemoteStartEvent; 
+        public event EventHandler StopEvent; // Вызывается при любом завершении процесса
 
         #endregion
 
@@ -38,6 +42,8 @@ namespace PressureSensorTest
         
         public Settings Settings { get; }
 
+        // IRemoteControl remoteControl;
+
         public Stand()
         {
             Settings = new Settings();
@@ -47,6 +53,8 @@ namespace PressureSensorTest
             SystemStatus = new SystemStatus();
         }
 
+        RemoteControl remoteControl;
+
         public void Init(IDialogService dialogService)
         {
             try
@@ -54,13 +62,18 @@ namespace PressureSensorTest
                 this.dialogService = dialogService;
                 Exception = null;
                 var psysCommands = new PsysCommandSimulator();
+                // var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
                 psys = new PressSystem(psysCommands, 20);
                 SystemStatus.Init(Settings);
                 psys.ExceptionEvent += Exception_psys_event;
                 psys.ConnectEvent += SystemStatus.PressSysten_ConnectEvent;
-                // ammetr = new Ammetr(Settings.AmmetrSettins.Ip);
+                psys.DisconnectEvent += SystemStatus.PressSystemDisconnectEvent;
+                psys.BeginConnectEvent += SystemStatus.PressSystem_BeginConnectEvent;
+                // InitAmmetr();
                 
                 savingResults = new SavingResults(Settings, SystemStatus);
+                remoteControl?.Dispose();
+
                 if (!Settings.UsedRemoteControl)
                 {
                     processErrorHandler = new ErrorHandler(Settings, SystemStatus);
@@ -69,15 +82,22 @@ namespace PressureSensorTest
                 else
                 {
                     processErrorHandler = new ErrorHandlerRemoteControlMode(Settings, SystemStatus);
+                    remoteControl = new RemoteControl(this, Settings.RemoteControlIp, 49003);
+                    remoteControl.StartListening();
                 }
                 // throw new Exception();
                 
             }
-            catch(Exception ex)
+            catch (PressSystemException ex)
             {
                 Exception = ex;
                 dialogService.ErrorMessage("Не удалось установить связь со стойкой давления по запросу. Проверьте состояние ее готовности  " +
                                         "и нажмите кнопку \"Установить связь со стойкой давления\". Или измените настройки в меню \"Система\"");
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+                dialogService.ErrorMessage(ex.Message);
             }
         }
 
@@ -99,7 +119,7 @@ namespace PressureSensorTest
                 this.cts = cts;
                 IDevice device = new PD100_Device(serialNumber, deviceName);
                 Product = new ProductInfo(device, DateTime.Now);
-                Start(cts.Token);
+                Start(device, cts.Token);
                 savingResults.SaveResult(Product, TestResults, dialogService);
                 ProcessComplete?.Invoke(this, new EventArgs());
             }
@@ -112,32 +132,38 @@ namespace PressureSensorTest
         }
 
         // Старт процесса в режиме удаленного управления
-        private void Start(ProductInfo productInfo, CancellationTokenSource cts)
+        public async Task RemoteStart(IDevice device, DateTime dateTime)
         {
             try
             {
-                this.cts = cts;
-                Product = productInfo;
-                IDevice device = Product.Device;
-                Start(cts.Token);
+                Product = new ProductInfo(device, dateTime);
+                RemoteStartEvent?.Invoke(this, new EventArgs());
+                cts = new CancellationTokenSource();
+                await Task.Run(() => Start(device, cts.Token));
                 savingResults.SaveResult(Product, TestResults, dialogService);
+                StopEvent?.Invoke(this, new EventArgs());
+                ProcessComplete?.Invoke(this, new EventArgs());
             }
-
-            catch (OperationCanceledException) { }
-           
+            catch (OperationCanceledException)
+            {
+                StopEvent?.Invoke(this, new EventArgs());
+            }        
         }
 
-        private void Start(CancellationToken cancellation)
+        public void RemoteCancel()
+        {
+            cts?.Cancel();
+        }
+
+        private void Start(IDevice device, CancellationToken cancellation)
         {
             try
             {
-                IDevice device = Product.Device;
+                Exception = null;
+                InitAmmetr(); // Для симуляции
                 ReadPsysInfo();
                 DeviceSpecification.CheckRangeSupport(device);
-                UpdSensorInfoEvent?.Invoke(this, new EventArgs());
-                ammetr = new AmmetrSimulator(psys, device.Range.Min, device.Range.Max, 0.05, device.Range.RangeType == RangeTypeEnum.DA);
-                ammetr.ExceptionEvent += Exception_ammetr_event;
-                ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;
+                UpdProductInfoEvent?.Invoke(this, new EventArgs());               
                 ammetr.StartCycleMeasureCurrent();
                 measurmendIndicator = new MeasurmendIndicator(ammetr, psys, device.Range.RangeType == RangeTypeEnum.DA);
                 measurmendIndicator.UpdDataEvent += UpdateMeasurmendIndicators;
@@ -147,21 +173,23 @@ namespace PressureSensorTest
                 if (Settings.UsedAutomaticSortingOut)
                 {
                     waitContinue = null;
-                    testProcess = new TestProcess(psys, ammetr, GetTestPoints());
+                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max, device.Range.Min));
                 }
                 else
                 {
                     waitContinue = new WaitContinue();
                     waitContinue.ContinueRequest += ContinueRequest;
                     waitContinue.SelectionRequest += (obj, e) => SelectionRequest(this, e);
-                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, GetTestPoints());
+                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, GetTestPoints(device.Range.Max, device.Range.Min));
                 }
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
                 testProcess.RunProcess(device.Range.Min, device.Range.Max, device.ClassPrecision, GetPsysOutChannel(),
                         device.Range.RangeType == RangeTypeEnum.DA, cancellation, progress);
                 if (TestResults.GetResume() != true)
-                    Product.Error = ProcessErrorEnum.BadPrecision;
+                    Product.Error = TestErrorEnum.BadPrecision;
+                else
+                    Product.Error = TestErrorEnum.NoError;
                 Stop();
                 waitContinue?.WaitSelection(cancellation);
             }
@@ -190,14 +218,14 @@ namespace PressureSensorTest
 
         public void Release()
         {
-            Product.Error = ProcessErrorEnum.NoError;
+            Product.Error = TestErrorEnum.NoError;
             waitContinue.Continue();
         }
 
         public void Reject()
         {
-            if (Product.Error == ProcessErrorEnum.NoError)
-                Product.Error = ProcessErrorEnum.OperatorSolution;
+            if (Product.Error == TestErrorEnum.NoError)
+                Product.Error = TestErrorEnum.OperatorSolution;
             waitContinue.Continue();
         }
 
@@ -246,18 +274,48 @@ namespace PressureSensorTest
             UpdRowsTypesEvent?.Invoke(this, new EventArgs());
         }
 
-        private double[] GetTestPoints()
+        private double[] GetTestPoints(double rangeMax, double rangeMin)
         {
-            return new double[] { 0, 0.25, 0.5, 0.75, 1 };
+            double[] targetPoints =  new double[] { 0, 0.25, 0.5, 0.75, 1 };
+            double span = rangeMax - rangeMin;
+            for (int i = 0; i < targetPoints.Length; i++)
+            {
+                double pressPoint = targetPoints[i] * span + rangeMin;
+                if (pressPoint < psys.Info.RangeLo)
+                {
+                    pressPoint = psys.Info.RangeLo;
+                    targetPoints[i] = (pressPoint - rangeMin) / span;
+                }
+                else if (pressPoint > psys.Info.RangeHi)
+                {
+                    pressPoint = psys.Info.RangeHi;
+                    targetPoints[i] = (pressPoint - rangeMin) / span;
+                }
+            }
+            return targetPoints;
         }
-
 
         private int GetPsysOutChannel()
         {
-            return 3;
+            if (Product.Device.ThreadType == "7")
+                return Settings.PsysSettings.ChannelsOut[1];
+            if (Product.Device.ThreadType == "8")
+                return Settings.PsysSettings.ChannelsOut[2];
+            return Settings.PsysSettings.ChannelsOut[0];
+
         }
 
-       
+        private void InitAmmetr()
+        {
+            //ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
+
+            // Для симуляции
+            ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min, Product.Device.Range.Max, 0.05, 
+                Product.Device.Range.RangeType == RangeTypeEnum.DA);
+
+            ammetr.ExceptionEvent += Exception_ammetr_event;
+            ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;
+        }
 
         private void CheckSerialNumber(string serialNumber)
         {
@@ -269,8 +327,4 @@ namespace PressureSensorTest
             }
         }
     }
-
-   
-
-    
 }

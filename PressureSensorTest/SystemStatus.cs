@@ -10,11 +10,27 @@ namespace PressureSensorTest
     {
         Settings settings;
 
+        public event EventHandler ChangeConnectPressSystemEvent;
+        public PressSystemsConnectEnum PressSystemsStateConnect { get; set; }
+
         public void PressSysten_ConnectEvent(object sender, EventArgs e)
         {
             PressSystemStatus = StatusEnum.Ok;
+            PressSystemsStateConnect = PressSystemsConnectEnum.EndConnect;
+            ChangeConnectPressSystemEvent?.Invoke(this, new EventArgs());
         }
 
+        public void PressSystem_BeginConnectEvent(object sender, EventArgs e)
+        {
+            PressSystemsStateConnect = PressSystemsConnectEnum.BeginConnect;
+            ChangeConnectPressSystemEvent?.Invoke(this, new EventArgs());
+        }
+
+        public void PressSystemDisconnectEvent(object sender, EventArgs e)
+        {
+            PressSystemsStateConnect = PressSystemsConnectEnum.Disconnect;
+            ChangeConnectPressSystemEvent?.Invoke(this, new EventArgs());
+        }
 
         public void Ammetr_ConnectEvent(object senser, EventArgs e)
         {
@@ -111,6 +127,7 @@ namespace PressureSensorTest
 
    
     public enum StatusEnum { Disabled = -1, Ok = 0, Error, Warning }
+    public enum PressSystemsConnectEnum { Disconnect = -1, BeginConnect = 0, EndConnect = 1 }
 
 }
 

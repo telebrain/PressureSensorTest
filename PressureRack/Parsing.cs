@@ -29,7 +29,7 @@ namespace PressureRack
         {
             //string sData = ExtractStringParametr(name, str);
             string sData = (new Regex(string.Format(@"(?<={0})(-?\d+|-?\d+\.\d+)(?=;)", name)).Match(str)).ToString();
-            if (!double.TryParse(sData, NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out double val))
+            if (!double.TryParse(sData, NumberStyles.Number, new CultureInfo("en-US"), out double val))
                 throw new PressureRackException(3);
             return val;
         }
