@@ -29,12 +29,13 @@ namespace PressureSensorTest
             Error = TestErrorEnum.InDefined;
         }
 
-        public ProductInfo(IDevice device, string deviceBox, DateTime openDateTime)
+        public ProductInfo(IDevice device, string deviceBox, DateTime openDateTime, bool primaryTest)
         {
             Device = device;
             DeviceBoxNumber = deviceBox;
             OpenDateTime = openDateTime;
             Error = TestErrorEnum.InDefined;
+            PrimaryTest = primaryTest;
         }
     }
 

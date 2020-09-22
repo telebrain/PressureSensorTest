@@ -92,7 +92,7 @@ namespace PressureSensorTest
                 var dt = ParseDateTime(productReq.DateOp);
                 IDevice device = GetDevice(productReq.SN, productReq.Name);
                 StateProcess = StateProcessEnum.Started;
-                Task t = stand.RemoteStart(device, dt);
+                Task t = stand.RemoteStart(device, productReq.Box, dt, productReq.PrimaryVerification);
                 t.GetAwaiter();
             }
             catch (ParseException) { }

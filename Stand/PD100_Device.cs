@@ -37,6 +37,7 @@ namespace OwenPressureDevices
                     Modification = components.Modification;
                     ThreadType = components.ThreadType;
                     ClassPrecision = Convert.ToSingle(components.Precision);
+                    TargetPrecision = ClassPrecision > 0.5F ? 0.5F : ClassPrecision;
                     int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
                     RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
                     Range = new DeviceRange(range_Pa, rangeType);
@@ -47,12 +48,15 @@ namespace OwenPressureDevices
                 }
             }
         }
-
+        // Модификация по типу сенсора
         public string Modification { get; private set; }
-
+        // Тип резьбы 1 - 20х1,5, 7 - G1/2, 8 - G1/4 
         public string ThreadType { get; private set; }
 
+        // Класс точности по паспорту
         public float ClassPrecision { get; private set; }
+        // Класс точности нового преобразователя (только что изготовленного)
+        public float TargetPrecision { get; private set; }
 
         public DeviceRange Range { get; private set; }
 

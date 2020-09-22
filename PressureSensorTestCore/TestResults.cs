@@ -18,6 +18,7 @@ namespace PressureSensorTestCore
         public MeasureResults MeasureResultsTopdown { get; private set; }
         public Variations Variations { get; private set; }
 
+
         public TestResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8)
         {
             RangeMin = rangeMin;

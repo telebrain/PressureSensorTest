@@ -14,6 +14,8 @@ namespace OwenPressureDevices
 
         float ClassPrecision { get; }
 
+        float TargetPrecision { get; }
+
         DeviceRange Range { get; }
 
         string Modification { get; }

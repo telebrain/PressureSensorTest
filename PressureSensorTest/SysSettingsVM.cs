@@ -237,7 +237,10 @@ namespace PressureSensorTest
             
             using (var ofd = new OpenFileDialog())
             {
-                ofd.InitialDirectory = Path.GetDirectoryName(DbPath);
+                if (!string.IsNullOrEmpty(DbPath))
+                    ofd.InitialDirectory = Path.GetDirectoryName(DbPath);
+                else
+                    ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 ofd.Filter = "Файлы MS Access (*.accdb)|*.accdb";
 
                 var result = ofd.ShowDialog();

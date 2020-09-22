@@ -128,6 +128,7 @@ namespace PressureSensorTest
         
     }
 
+    [Serializable]
     public class SingleValueRequest : SimpleRequest
     {
         public SingleValueRequest() : base() { }
@@ -150,6 +151,6 @@ namespace PressureSensorTest
         public string DateOp { get; set; }
         public string DateCl { get; set; }
         public int ProductStatus { get; set; }
-
+        public bool PrimaryVerification { get; set; }
     }
 }

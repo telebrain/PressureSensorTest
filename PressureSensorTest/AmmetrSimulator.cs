@@ -70,6 +70,7 @@ namespace PressureSensorTest
         public void Stop()
         {
             cts.Cancel();
+            cycleTask.GetAwaiter().GetResult();
             StateConnect = false;
             DisconnectEvent?.Invoke(this, new EventArgs());
         }
@@ -95,14 +96,14 @@ namespace PressureSensorTest
         //  int i = 0;
         private void CycleMeasureCurrent()
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 // Симуляция аварии
                 //i++;
                 //if (i >= 10)
                 //    throw new Exception("Нет связи с мультиметром");
                 Thread.Sleep(1000);
-                cancellationToken.ThrowIfCancellationRequested();
+                // cancellationToken.ThrowIfCancellationRequested();
                 double shift = absoluteType ? pressSystem.PressSystemVariables.Barometr*(-1) : rangeMin;
                 double span = rangeMax - rangeMin;
                 double point = pressSystem.ConnectState ? (pressSystem.PressSystemVariables.Pressure - shift) / span : shift/span;

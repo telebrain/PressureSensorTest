@@ -30,7 +30,7 @@ namespace SDM_comm
 
             for (int i = 0; i < 5; i++)
             {
-                Pause(300);
+                Pause(1000);
                 string config = WriteRead("CONF?");
                 if (CheckSetCurrentRange(config, value, unit))
                     return;                
@@ -43,7 +43,7 @@ namespace SDM_comm
         public void SetSamples(int samples)
         {
             transport.Send($"SAMP:COUNT {samples}");            
-            Pause(2000);
+            Pause(1000);
             string rec = WriteRead("SAMP:COUNT?");
             string recVal = (new Regex(@"(?<=\+)(\w+)(?=\n)").Match(rec)).ToString();
             if (!(int.TryParse(recVal, out int val) && samples == val))
@@ -75,12 +75,12 @@ namespace SDM_comm
             }
         }
 
-        private string WriteRead(string send)
+        public string WriteRead(string send)
         {
             try
             {
                 transport.Send(send);
-                Pause(200);
+                Pause(300);
                 return transport.Receive();
             }
             catch
@@ -93,16 +93,18 @@ namespace SDM_comm
         {
             try
             {
-                config = config.Substring(0, config.Length - 4);
-               
-                const string key = "CURR ";
-                if (config.IndexOf(key) < 0)
+                const string key = "\"CURR ";
+                const string endKey = "\"";
+                int firstPos = config.IndexOf(key);
+                if (firstPos < 0)
                     return false;
 
                 if (unit != CurrentUnitsEnum.AUTO)
                 {
+                    int lastPos = config.LastIndexOf(endKey);
                     long val = (long)(value * Math.Pow(10, (double)(unit - 1) * 3));
-                    string rec = config.Substring(key.Length + config.LastIndexOf(key));
+                    int valuePosirion = firstPos + key.Length;
+                    string rec = config.Substring(valuePosirion, lastPos - valuePosirion);
                     long receiveVal = (long)(ConvertRecevedValue(rec) * 1E+6);
                     return (val == receiveVal);
                 }
