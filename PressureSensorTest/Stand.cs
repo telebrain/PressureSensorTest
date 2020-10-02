@@ -77,7 +77,7 @@ namespace PressureSensorTest
 
                 if (!Settings.UsedRemoteControl)
                 {
-                    processErrorHandler = new ErrorHandler(Settings, SystemStatus);
+                    processErrorHandler = new ErrorHandler(Settings, SystemStatus, dialogService);
                     ReadPsysInfo();
                 }
                 else
@@ -161,7 +161,7 @@ namespace PressureSensorTest
             try
             {
                 Exception = null;
-                InitAmmetr(); // Для симуляции
+                InitAmmetr(); 
                 ReadPsysInfo();
                 DeviceSpecification.CheckRangeSupport(device);
                 UpdProductInfoEvent?.Invoke(this, new EventArgs());               
@@ -197,17 +197,19 @@ namespace PressureSensorTest
             }
             catch (OperationCanceledException)
             {
+                Product.Error = TestErrorEnum.InDefined;
                 Stop();
                 if (Exception != null)
-                    processErrorHandler.ErrorHanding(Exception, Product, dialogService);
+                    processErrorHandler.ErrorHanding(Exception, Product);
                 else
                     throw;
             }
             catch(Exception ex)
             {
+                Product.Error = TestErrorEnum.InDefined;
                 Stop();
                 Exception = ex;
-                processErrorHandler.ErrorHanding(ex, Product, dialogService);
+                processErrorHandler.ErrorHanding(ex, Product);
             }
         }
 
@@ -252,6 +254,7 @@ namespace PressureSensorTest
 
         private void Exception_psys_event(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("Отмена из второго потока");
             Exception = ((IPressSystem)sender).Exception;
             cts.Cancel();
         }
@@ -312,7 +315,7 @@ namespace PressureSensorTest
             ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
 
             // Для симуляции
-            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min, Product.Device.Range.Max, 0.05, 
+            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min, Product.Device.Range.Max, 0.05,
             //    Product.Device.Range.RangeType == RangeTypeEnum.DA);
 
             ammetr.ExceptionEvent += Exception_ammetr_event;

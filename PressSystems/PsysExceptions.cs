@@ -16,7 +16,7 @@ namespace PressSystems
     public class PressSystemException : Exception
     {
         public PressSystemException(string message) :
-            base(message)
+            base("Произошла ошибка при работе со стойкой давления: " + message)
         { }
     }
 

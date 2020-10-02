@@ -10,15 +10,15 @@ namespace PressureSensorTest
         protected SystemStatus sysStatus;
         protected IDialogService dialogService;
 
-        public ErrorHandler(Settings settings, SystemStatus sysStatus)
+        public ErrorHandler(Settings settings, SystemStatus sysStatus, IDialogService dialogService)
         {
             this.settings = settings;
             this.sysStatus = sysStatus;
+            this.dialogService = dialogService;
         }
 
-        public virtual void ErrorHanding(Exception exception, ProductInfo product, IDialogService dialogService)
+        public virtual void ErrorHanding(Exception exception, ProductInfo product)
         {
-            this.dialogService = dialogService;
             try
             {
                 throw exception;
@@ -95,7 +95,7 @@ namespace PressureSensorTest
 
         protected void Cancel(string message)
         {
-            dialogService.ErrorMessage(message);
+            dialogService?.ErrorMessage(message);
             throw new OperationCanceledException();
         }
     }

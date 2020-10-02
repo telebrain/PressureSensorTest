@@ -48,7 +48,8 @@ namespace PressureSensorTest
                 {
                     var jsonAdapter = new JsonAdapter(settings.JsonReportSettings);
                     jsonAdapter.AddResults(product.Device.SerialNumber, product.Device.DeviceTypeCode, product.Device.SensorTypeCode, product.PrimaryTest, 
-                        results, new PressureIndication(product.Device.Range.Pressure_Pa), product.Error == 0, product.ClosingDateTime);
+                        results, new PressureIndication(product.Device.Range.Pressure_Pa), product.Error == 0, product.ClosingDateTime, 
+                        product.Device.MetrologicGroupNumber);
                     jsonContent = jsonAdapter.JsonReportResult.GetJsonByString();
                     fileName = jsonAdapter.JsonReportResult.GetFileName();
                 }
@@ -82,6 +83,7 @@ namespace PressureSensorTest
                 }
                 else
                 {
+                    product.Error = TestErrorEnum.SystemError;
                     throw new OperationCanceledException();
                 }
             }

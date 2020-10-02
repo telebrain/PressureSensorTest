@@ -13,7 +13,11 @@ namespace ArchvingTestResult
         // Тип изделия
         public int deviceType { get; set; }
         // SN прибора
-        public string deviceSN { get; set; }
+        public string deviceSN { get; set; } = "";
+        // SN для Danfos
+        public string deviceSNDF { get; set; } = "";
+        // Метрологическая группа
+        public int metrologGrID { get; set; }
 
         public JsonSemiFinishedData[] semiFinished { get; set; } = new JsonSemiFinishedData[0];
         // Дата время
@@ -35,9 +39,9 @@ namespace ArchvingTestResult
         // Id линейки
         public string lineId { get; set; }
         // ПО стенда
-        public string firmwareStandVer { get; set; }
+        public string standFirmwareVer { get; set; }
         // Аппаратная часть стенда
-        public string hardwareStandVer { get; set; }
+        public string standHardwareVer { get; set; }
         // Вывод 
         public bool isGood { get; set; }
         // Флаг первичной поверки
@@ -45,11 +49,8 @@ namespace ArchvingTestResult
         // Таблица результатов
         public JsonTestPointData[] measuresMetrological { get; set; }
         // Дополнительные параметры
-        public JsonTestPointData[] measureComon { get; set; } = new JsonTestPointData[0];
-
-        public JsonTestPointData[] dataCheck { get; set; } = new JsonTestPointData[0];
-
-        
+        public JsonTestPointData[] measuresCommon { get; set; } = new JsonTestPointData[0];
+       
         
 
         public string GetJsonByString()

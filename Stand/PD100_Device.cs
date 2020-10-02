@@ -24,6 +24,8 @@ namespace OwenPressureDevices
 
         public string SerialNumber { get; set; }
 
+        public int MetrologicGroupNumber { get; set; }
+
         string name;
         public string Name
         {
@@ -41,6 +43,7 @@ namespace OwenPressureDevices
                     int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
                     RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
                     Range = new DeviceRange(range_Pa, rangeType);
+                    MetrologicGroupNumber = FindMetrologicGroupNumber(Range);
                 }
                 catch
                 {
@@ -60,10 +63,19 @@ namespace OwenPressureDevices
 
         public DeviceRange Range { get; private set; }
 
-        // Пока как заглушка. Когда метрологи разберутся с формированием кодов, нужно написать реализацию
-        public int DeviceTypeCode { get { return 3; } }
-        // Тоже пока непонятно, какой ставить
-        public int SensorTypeCode { get { return 2; } }
+        // Код для Json протокола
+         public int DeviceTypeCode { get { return 9; } }
+        // Код для Json протокола
+        public int SensorTypeCode { get { return 460; } }
+
+        private int FindMetrologicGroupNumber(DeviceRange range)
+        {
+            // Пока заглушка. Нужно сделать класс MetrologicGroup и грузить группы из Excel
+            if (range.Max <= 100000)
+                return 6;
+            return 5;
+        }
+
     }
 
     public class ParseDeviceNameException: Exception

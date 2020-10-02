@@ -48,11 +48,11 @@ namespace SDM_comm
             {
                 byte[] msg = Encoding.ASCII.GetBytes(sTx);
                 sock.Send(msg);
-                System.Diagnostics.Debug.WriteLine("Передано: " + sTx);
+                //System.Diagnostics.Debug.WriteLine("Передано: " + sTx);
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Ошибка: " + e.Message + " --Send");
+                //System.Diagnostics.Debug.WriteLine("Ошибка: " + e.Message + " --Send");
                 throw e;
             }
         }
@@ -73,12 +73,12 @@ namespace SDM_comm
                     }
                 }
                 string sRx = Encoding.ASCII.GetString(recv, shift, byteRecv);
-                System.Diagnostics.Debug.WriteLine("Принято: " + sRx);
+                //System.Diagnostics.Debug.WriteLine("Принято: " + sRx);
                 return sRx.Remove(sRx.Length - 1, 1);
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Ошибка: " + e.Message + " --Receive");
+                // System.Diagnostics.Debug.WriteLine("Ошибка: " + e.Message + " --Receive");
                 throw e;
             }
         }

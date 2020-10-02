@@ -9,13 +9,12 @@ namespace PressureSensorTest
     public class ErrorHandlerRemoteControlMode: ErrorHandler
     {
         public ErrorHandlerRemoteControlMode(Settings settings, SystemStatus sysStatus):
-            base(settings, sysStatus)
+            base(settings, sysStatus, null)
         {
         }
 
-        public override void ErrorHanding(Exception exception, ProductInfo product, IDialogService dialogService)
+        public override void ErrorHanding(Exception exception, ProductInfo product)
         {
-            base.dialogService = dialogService;
             try
             {
                 throw exception;

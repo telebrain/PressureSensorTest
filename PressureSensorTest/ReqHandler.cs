@@ -23,7 +23,7 @@ namespace PressureSensorTest
 
         public string Handle(string received)
         {
-            System.Diagnostics.Debug.WriteLine("Received: " + received + "\n");
+            // System.Diagnostics.Debug.WriteLine("Received: " + received + "\n");
             string toSend = "";
             try
             {
@@ -53,7 +53,7 @@ namespace PressureSensorTest
                 {
                     toSend = (new SimpleRequest("Error", 2)).GetJsonFormat();
                 }
-                System.Diagnostics.Debug.WriteLine("ToSend: " + toSend + "\n");
+                // System.Diagnostics.Debug.WriteLine("ToSend: " + toSend + "\n");
                 return toSend;
             }
             catch

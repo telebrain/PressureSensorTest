@@ -18,11 +18,14 @@ namespace OwenPressureDevices
 
         DeviceRange Range { get; }
 
+        // Метрологическая группа (для Json протокола) 
+        int MetrologicGroupNumber { get; set; }
+
         string Modification { get; }
 
-        // Метрологическая группа
+        // Группа изделий (для Json протокола) 
         int DeviceTypeCode { get; }
-        // Код сенсора
+        // Код сенсора (для Json протокола) 
         int SensorTypeCode { get; }
         // Тип резьбы
         string ThreadType { get; }

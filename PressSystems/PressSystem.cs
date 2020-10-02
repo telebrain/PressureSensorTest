@@ -36,9 +36,14 @@ namespace PressSystems
                 if (exception == null)
                 {
                     exception = value;
-                    ExceptionEvent(this, new EventArgs());
+                    ExceptionEvent?.Invoke(this, new EventArgs());
                 }
             }
+        }
+
+        private void ClearException()
+        {
+            exception = null;
         }
 
         public event EventHandler UpdateMeasures;
@@ -68,6 +73,7 @@ namespace PressSystems
         {
             try
             {
+                ClearException();
                 if (!ConnectState)
                 {
                     BeginConnectEvent?.Invoke(this, new EventArgs());
@@ -114,6 +120,7 @@ namespace PressSystems
             catch (Exception e)
             {
                 Exception = e;
+                System.Diagnostics.Debug.WriteLine("Catch на StartCycleRead");
             }
         }
 
@@ -137,7 +144,9 @@ namespace PressSystems
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("Catch на CycleReadVar");
                 throw new PressSystemException(ex.Message);
+                
             }
         }
 
@@ -262,6 +271,7 @@ namespace PressSystems
             {
                 cancellationToken.ThrowIfCancellationRequested();
             }
+            System.Diagnostics.Debug.WriteLine("Ожидание завершения установки давления");
 
         }
 
@@ -269,6 +279,8 @@ namespace PressSystems
         {
             commands.DisableControl();
         }
+
+        
     }
 
     

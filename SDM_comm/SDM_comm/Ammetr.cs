@@ -61,8 +61,8 @@ namespace SDM_comm
 
         public void Stop()
         {
-            cts.Cancel();
-            cycleTask.GetAwaiter().GetResult();
+            cts?.Cancel();
+            cycleTask?.GetAwaiter().GetResult();
             StateConnect = false;
             DisconnectEvent?.Invoke(this, new EventArgs());
         }

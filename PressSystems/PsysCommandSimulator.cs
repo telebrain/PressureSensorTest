@@ -15,16 +15,19 @@ namespace PressSystems
         public void Connect(int outChannelNumber, CancellationToken cancellationToken)
         {
             Thread.Sleep(3000);
+            // throw new Exception("Ошибка подключения к стойке давления");
         }
 
+        int i = 0;
         public PressSystemVariables ReadSysVar()
         {
             // Операция чтения всех переменных: Pressure, Inlim, Barometr
 
             // Симуляция аварии
-            //i++;
-            //if (i >= 5)
-            //    throw new Exception("Нет связи с пневмосистемой");
+            
+            i++;
+            if (i >= 5)
+                throw new Exception("Нет связи с пневмосистемой");
             variables.Barometr = 99000;
             variables.TimeStamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             return variables;
@@ -43,6 +46,7 @@ namespace PressSystems
             //    throw new Exception("Нет связи с пневмосистемой");
 
             ChangeSP(SP);
+            // throw new Exception("Ошибка связи при установке давления");
         }
 
         public void Disconnect()
