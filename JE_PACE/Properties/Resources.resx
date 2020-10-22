@@ -126,6 +126,9 @@
   <data name="ReadConfigError" xml:space="preserve">
     <value>Не удалось прочитать информацию о конфигурации калибратора давления</value>
   </data>
+  <data name="ReadInLimError" xml:space="preserve">
+    <value>Не удалось прочитать состояние выхода модуля {0}</value>
+  </data>
   <data name="ReadOutStateError" xml:space="preserve">
     <value>Не удалось прочитать состояние выхода "Регулирование/Измерение" {0}-го модуля калибратора давления</value>
   </data>

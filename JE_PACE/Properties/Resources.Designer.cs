@@ -88,6 +88,15 @@ namespace JE_PACE.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось прочитать состояние выхода модуля {0}.
+        /// </summary>
+        internal static string ReadInLimError {
+            get {
+                return ResourceManager.GetString("ReadInLimError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Не удалось прочитать состояние выхода &quot;Регулирование/Измерение&quot; {0}-го модуля калибратора давления.
         /// </summary>
         internal static string ReadOutStateError {

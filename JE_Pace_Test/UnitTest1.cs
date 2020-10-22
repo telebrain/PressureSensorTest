@@ -33,9 +33,9 @@ namespace JE_Pace_Test
             using (var pace = new Pace(exch))
             {
                 pace.Connect();
-                string message = pace.CheckBarometr() ? "Барометр в модуле 1 установлен" :
+                string message = pace.CheckBarometer() ? "Барометр в модуле 1 установлен" :
                     "Барометр в модуле 1 не установлен";
-                string message2 = pace.CheckBarometr() ? "Барометр в модуле 2 установлен" :
+                string message2 = pace.CheckBarometer(1) ? "Барометр в модуле 2 установлен" :
                     "Барометр в модуле 2 не установлен";
                 Debug.WriteLine(message);
                 Debug.WriteLine(message2);
@@ -102,18 +102,42 @@ namespace JE_Pace_Test
                 double press = pace.ReadPressure();
                 double srcMinus = pace.ReadSourceMinus();
                 double srcPlus = pace.ReadSourcePlus();
+                double secBar = 0;
+                secBar = pace.ReadBarPressure();
 
                 double press2 = pace.ReadPressure(1);
                 double srcMinus2 = pace.ReadSourceMinus(1);
                 double srcPlus2 = pace.ReadSourcePlus(1);
+                double secBar2 = 0;
+                secBar2 = pace.ReadBarPressure(1);
+
 
                 Debug.WriteLine($"Давление 1-го модуля {press}, Па");
                 Debug.WriteLine($"Давление источника + 1-го модуля {srcPlus}, Па");
                 Debug.WriteLine($"Давление источника - 1-го модуля {srcMinus}, Па");
+                Debug.WriteLine($"Барометрическое давление 1-го модуля {secBar}, Па");
 
                 Debug.WriteLine($"Давление 2-го модуля {press2}, Па");
                 Debug.WriteLine($"Давление источника + 2-го модуля {srcPlus2}, Па");
                 Debug.WriteLine($"Давление источника - 2-го модуля {srcMinus2}, Па");
+                Debug.WriteLine($"Барометрическое давление 2-го модуля {secBar2}, Па");
+            }
+        }
+        [TestMethod]
+        public void SetOutState()
+        {
+            var exch = new ComExchange(portName);
+            using (var pace = new Pace(exch))
+            {
+                pace.Connect();
+                pace.WriteOutStateWithCheck(true);
+                pace.WriteOutStateWithCheck(true, 1);
+                Thread.Sleep(3000);
+                bool state1 = pace.GetInLim();
+                bool state2 = pace.GetInLim(1);
+                pace.WriteOutStateWithCheck(false);
+                pace.WriteOutStateWithCheck(false, 1);
+
             }
         }
     }

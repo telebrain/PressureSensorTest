@@ -16,6 +16,11 @@ namespace JE_PACE
         public PaceUnitsEnum[] Units { get; private set; } = new PaceUnitsEnum[]
             {PaceUnitsEnum.NotDefined, PaceUnitsEnum.NotDefined};
 
+        public double CurrentSP { get; private set; }
+
+        public object SyncRoot { get; } = new object();
+
+
         public Pace(IExchange exchange)
         {
             this.exchange = exchange;
@@ -64,7 +69,7 @@ namespace JE_PACE
             }
         }
 
-        public bool CheckBarometr(int channel = 0)
+        public bool CheckBarometer(int channel = 0)
         {
             try
             {
@@ -109,32 +114,6 @@ namespace JE_PACE
             value = message.IndexOf("mbar") < 0 ? value * 100000 : value * 100;  
             return value;
         }
-
-        // Обозначение единиц измерения
-        //ATM atmosphere
-        //BAR bar
-        //CMH2O centimetres of water at 20°C
-        //CMHG centimetres of mercury
-        //FTH2O feet of water at 20°C
-        //FTH2O4 feet of water at 4°C
-        //HPA hecto Pascals
-        //INH2O inches of water at 20°C
-        //INH2O4 inches of water at 4°C
-        //INH2O60 inches of water at 60°F
-        //INHG inches of mercury
-        //KG/CM2 kilogrammes per square centimetre
-        //KG/M2 kilogrammes per square metre
-        //KPA kilo Pascals
-        //LB/FT2 pounds per square foot
-        //MH2O metres of water
-        //MHG metres of mercury
-        //MMH2O millimetres of water
-        //MMHG millimetres of mercury
-        //MPA mega Pascals
-        //PA Pascals
-        //PSI pounds per square inch
-        //TORR torr
-        //MBAR millibar
 
         private void WriteUnit(string unit, int channel = 0)
         {
@@ -199,6 +178,7 @@ namespace JE_PACE
                 string req = AddChannelToCommandStr(":SOUR{0} ", channel);
                 req += sp.ToString(new CultureInfo("en-us"));
                 exchange.Send(req);
+                CurrentSP = sp;
             }
             catch(Exception ex)
             {
@@ -238,6 +218,18 @@ namespace JE_PACE
                 return ReadPressureParametr(":SENS{0}", channel);
             }
             catch(Exception ex)
+            {
+                throw new PaceExchException("ReadPressureError", ex, channel);
+            }
+        }
+
+        public double ReadBarPressure(int channel = 0)
+        {
+            try
+            {
+                return ReadPressureParametr(":SENS{0}:BAR", channel);
+            }
+            catch (Exception ex)
             {
                 throw new PaceExchException("ReadPressureError", ex, channel);
             }
@@ -291,18 +283,41 @@ namespace JE_PACE
             }
         }
 
+        public bool GetInLim(int channel = 0)
+        {
+            try
+            {
+                string req = AddChannelToCommandStr(":SENS{0}:INL?", channel);
+                string received = exchange.Request(req);
+                return ParseInlim(received);
+            }
+            catch(Exception ex)
+            {
+                throw new PaceExchException("ReadInLimError", ex, channel);
+            }
+        }
+
+        private bool ParseInlim(string message)
+        {
+            string[] items = message.Split(' ');
+            if (!int.TryParse(items[2], out int state))
+                throw new ParseException();
+            return state == 1;
+        }
+
         public void WriteOutStateWithCheck(bool enable, int channel = 0)
         {
             try
             {
                 WriteOutState(enable, channel);
+                Thread.Sleep(50);
                 bool state = ReadOutState(channel);
                 if (state ^ enable)
                     throw new Exception();
             }
-            catch(Exception ex)
+            catch
             {
-                throw new PaceExchException("WriteOutStateError", ex, channel);
+                throw new PaceExchException("WriteOutStateError", channel);
             }
             
         }
