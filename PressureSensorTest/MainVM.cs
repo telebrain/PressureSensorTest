@@ -572,8 +572,8 @@ namespace PressureSensorTest
         {
             ShowResultIndicator();
             OutButtonsEnable = true;
-            SignalReleaseButton = stand.TestResults.GetResume() == true;
-            SignalRejectButton = !stand.TestResults.GetResume() == true;
+            SignalReleaseButton = stand.TestResults.GetResume() == 0;
+            SignalRejectButton = stand.TestResults.GetResume() != 0;
         }
 
         private void NextStep()

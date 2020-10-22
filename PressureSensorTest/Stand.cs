@@ -188,12 +188,9 @@ namespace PressureSensorTest
                 double precision = primaryVerification ? device.TargetPrecision : device.ClassPrecision;
                 testProcess.RunProcess(device.Range.Min, device.Range.Max, precision, GetPsysOutChannel(),
                         device.Range.RangeType == RangeTypeEnum.DA, cancellation, progress);
-                if (TestResults.GetResume() != true)
-                    Product.Error = TestErrorEnum.BadPrecision;
-                else
-                    Product.Error = TestErrorEnum.NoError;
+                Product.Error = (TestErrorEnum)TestResults.GetResume();
                 Stop();
-                waitContinue?.WaitSelection(cancellation);
+     
             }
             catch (OperationCanceledException)
             {

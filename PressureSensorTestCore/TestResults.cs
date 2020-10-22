@@ -48,10 +48,21 @@ namespace PressureSensorTestCore
             }
         }
 
-        public bool? GetResume()
+        public TestResultEnum GetResume()
         {
             CalcVariations();
-            return Variations.GetResume() & MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume();
+            if ((MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume()) != true)
+                return TestResultEnum.BadPrecision;
+            if (Variations.GetResume() != true)
+                return TestResultEnum.BadVariation;
+            return TestResultEnum.IsGood;
         }
+    }
+
+    public enum TestResultEnum
+    {
+        IsGood = 0,
+        BadPrecision = 14,
+        BadVariation = 19
     }
 }

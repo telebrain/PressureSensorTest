@@ -35,7 +35,8 @@ namespace PressureSensorTest
 
         public void SaveResult(ProductInfo product, TestResults results, IDialogService dialogService)
         {
-            // Смысл формировать и посылать Json есть только когда статус продукта 0 - нет ошибок, или 14 - неудачная поверка, или 18 - забракован оператором
+            // Смысл формировать и посылать Json есть только когда статус продукта 0 - нет ошибок, или 14 - не прошел по точности, 
+            // или 18 - забракован оператором или 19 - большая вариация
             // Если были другие ошибки, то и результатов нет, формировать Json не из чего
             product.ClosingDateTime = DateTime.Now;
             try
@@ -44,7 +45,7 @@ namespace PressureSensorTest
                 string fileName = null;
 
                 if ((product.Error == TestErrorEnum.NoError || product.Error == TestErrorEnum.BadPrecision ||
-                    product.Error == TestErrorEnum.OperatorSolution))
+                    product.Error == TestErrorEnum.OperatorSolution || product.Error == TestErrorEnum.BadVariation))
                 {
                     var jsonAdapter = new JsonAdapter(settings.JsonReportSettings);
                     jsonAdapter.AddResults(product.Device.SerialNumber, product.Device.DeviceTypeCode, product.Device.SensorTypeCode, product.PrimaryTest, 

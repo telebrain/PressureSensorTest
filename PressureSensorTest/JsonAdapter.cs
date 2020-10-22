@@ -24,7 +24,7 @@ namespace PressureSensorTest
         public void AddResults(string serialNumber, int deviceType, int sensorType, bool primaryTest, TestResults results,
             PressureIndication pressureIndication, DateTime dateTime, int metrologicGroup)
         {
-            bool isGood = testResults.GetResume() == true;
+            bool isGood = testResults.GetResume() == TestResultEnum.IsGood;
             AddResults(serialNumber, deviceType, sensorType, primaryTest, results, pressureIndication, isGood, dateTime, 
                 metrologicGroup);          
         }

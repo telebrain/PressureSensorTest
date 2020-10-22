@@ -115,7 +115,7 @@ namespace OwenPressureDevices
             }
             var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.ClassPrecision);
             if (pressureRow.SearshController(device.Range.Max, device.Range.Min, device.Range.Max, device.ClassPrecision) < 0)
-                throw new DeviceNotSupportByPsysException("Не обеспечивается точность установки давления");
+                throw new DeviceNotSupportByPsysException("Система не может обеспечить точность установки давления");
         }
 
         

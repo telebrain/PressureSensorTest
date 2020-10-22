@@ -25,7 +25,7 @@ namespace PressSystems
 
         public int MaxTimeSetPressureOperation { get; set; } = 30; // В секундах
 
-        const int DelayCheckInlim = 3; // в секундах
+        const int DelayCheckInlim = 5; // в секундах
 
         Exception exception = null;
         public virtual Exception Exception

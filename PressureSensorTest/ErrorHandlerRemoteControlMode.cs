@@ -2,6 +2,7 @@
 using PressSystems;
 using SDM_comm;
 using OwenPressureDevices;
+using PressureSensorTestCore;
 
 
 namespace PressureSensorTest
@@ -60,6 +61,18 @@ namespace PressureSensorTest
                 // Выводим сообщение и отменяем операцию
                 throw;
             }
+
+            // Неисправность изделия. Измеренный ток ниже нижнего предела
+            catch (LoCurrentAlarmException)
+            {
+                product.Error = TestErrorEnum.AlarmLoLimit;
+            }
+            // Неисправность изделия. Измеренный ток выше верхнего предела
+            catch (HiCurrentAlarmException)
+            {
+                product.Error = TestErrorEnum.AlarmHiLimit;
+            }
+
 
             // Непредусмотренные ошибки
             catch (Exception ex)

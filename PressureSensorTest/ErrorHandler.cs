@@ -1,6 +1,7 @@
 ﻿using System;
 using PressSystems;
 using SDM_comm;
+using PressureSensorTestCore;
 
 namespace PressureSensorTest
 {
@@ -77,8 +78,19 @@ namespace PressureSensorTest
                 sysStatus.PressSystemStatus = StatusEnum.Error;
                 Cancel(ex.Message);
             }
+            // Неисправность изделия. Измеренный ток ниже нижнего предела
+            catch (LoCurrentAlarmException)
+            {
+                product.Error = TestErrorEnum.AlarmLoLimit;
+            }
+            // Неисправность изделия. Измеренный ток выше верхнего предела
+            catch (HiCurrentAlarmException)
+            {
+                product.Error = TestErrorEnum.AlarmHiLimit;
+            }
+
             // Непредусмотренные ошибки
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 product.Error = TestErrorEnum.SystemError;
                 Cancel("Непредусмотренная ошибка. Обратитесь к разработчику:\r\n" + ex.Message);

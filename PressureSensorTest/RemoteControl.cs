@@ -58,9 +58,6 @@ namespace PressureSensorTest
                 address = IPAddress.Parse("127.0.0.1");
             this.port = port;
             stand.StopEvent += Stand_ProcessComplete;
-
-            // server.ErrorMessageEvent += Server_ErrorMessageEvent;
-            
         }
 
         private void Stand_ProcessComplete(object sender, EventArgs e)
@@ -169,7 +166,6 @@ namespace PressureSensorTest
         ParsingBoxError = 3, // Неверен формат номера оснастки
         ParsingNameError = 4, // Не удалось разобрать имя продукта
         ParsingDateTimeError = 5, // Не удалось преобразовать формат времени
-         
     }
 
     public enum ProductStatus
@@ -180,7 +176,10 @@ namespace PressureSensorTest
         Leakage = 15, // Утечка
         SystemError = 16, // Брак из-за неисправности оборудования
         RangeNotSupportByPsys = 17, // Диапазон изделия не поддерживается системой
-        OperatorSolution = 18 // В брак по решению оператора
+        OperatorSolution = 18, // В брак по решению оператора
+        BadVariation = 19, // Значение вариации больше допустимого
+        AlarmLoLimit = 20, // Датчик в аварийном состоянии, ток меньше 4 мА
+        AlarmHiLimit = 21 // Датчик в аварийном состоянии, ток больше 20 мА
     }
     
 }

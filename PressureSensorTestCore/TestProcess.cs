@@ -15,7 +15,7 @@ namespace PressureSensorTestCore
         readonly IPressSystem psys;
         readonly IAmmetr ammetr;
         const double marginCoefficient = 0.8;
-        readonly double[] testPoints;
+        readonly double[] testPoints; // Точки диапазона в долях
 
         bool psysIsConnect;
 
@@ -46,6 +46,7 @@ namespace PressureSensorTestCore
         AutoResetEvent updCurrentValueAutoReset;
         int outChannelPsys;
         bool absoluteType;
+        
 
         public void RunProcess(double rangeMin, double rangeMax, double classPrecision, int outChannelPsys,
             bool absoluteType, CancellationToken cancellationToken, IProgress<int> progress)
@@ -101,6 +102,9 @@ namespace PressureSensorTestCore
         {
             SetPressure(testPoint, rangeMin, rangeMax, cancellationToken);
             Measures(out double pressure, out double current, cancellationToken);
+            // Если уставка равна нулю, то тестируемое изделие связано с атмосферой. Давление считаем равным нулю
+            if ((int)((rangeMax - rangeMin) * testPoint - rangeMin) == 0)
+                pressure = 0;
             CheckPoint point = new CheckPoint((int)(testPoint * 100), pressure, current);
             return point;
         }
@@ -120,7 +124,7 @@ namespace PressureSensorTestCore
             }
             if (!psysIsConnect && (int)SP != 0)
             { 
-                // Если пневмосистема еще не была подключена, а устанвка отличается от 0, подключаем пневмосистему
+                // Если пневмосистема еще не была подключена, а уставка отличается от 0, подключаем пневмосистему
                 psys.Connect(outChannelPsys, cancellationToken);
                 psysIsConnect = psys.ConnectState;
             }
@@ -141,6 +145,7 @@ namespace PressureSensorTestCore
                 if (absoluteType)
                     pressureItems[i] += psys.PressSystemVariables.Barometr;
                 currentItems[i] = GetCurrent(cancellationToken);
+                CheckCurrent(currentItems[i]);
                 if (i < NumberOfMeasurements - 1)
                     Thread.Sleep(TimeoutBetwinMeasures*1000);
             }
@@ -184,6 +189,20 @@ namespace PressureSensorTestCore
                     await Task.Delay(500);
                 }
             }   
-        }     
+        }
+
+        const double LoCurrentAlarmLimit = 3.5;
+        const double HiCurrentAlarmLimit = 20.5;
+
+        private void CheckCurrent(double current)
+        {
+            if (current < LoCurrentAlarmLimit)
+                throw new LoCurrentAlarmException();
+            if (current > HiCurrentAlarmLimit)
+                throw new HiCurrentAlarmException();
+        }
     }
+
+    public class LoCurrentAlarmException : Exception { }
+    public class HiCurrentAlarmException : Exception { }
 }
