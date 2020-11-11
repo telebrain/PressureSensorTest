@@ -14,19 +14,22 @@ namespace PressureSensorTestCore
         public double ClassPrecision { get; }
         public double MarginCoefficient { get; }
 
+
         public MeasureResults MeasureResultsUpwards { get; private set; }
         public MeasureResults MeasureResultsTopdown { get; private set; }
         public Variations Variations { get; private set; }
 
+        public PressureUnitsEnum PressureUnits { get;}
 
-        public TestResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8)
+        public TestResults(double rangeMin, double rangeMax, PressureUnitsEnum pressureUnits, double classPrecision, double marginCoefficient = 0.8)
         {
             RangeMin = rangeMin;
             RangeMax = rangeMax;
+            PressureUnits = pressureUnits;
             ClassPrecision = classPrecision;
             MarginCoefficient = marginCoefficient;
-            MeasureResultsUpwards = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
-            MeasureResultsTopdown = new MeasureResults(rangeMin, rangeMax, classPrecision, marginCoefficient);
+            MeasureResultsUpwards = new MeasureResults();
+            MeasureResultsTopdown = new MeasureResults();
         }
 
         public void CalcVariations()
@@ -40,8 +43,12 @@ namespace PressureSensorTestCore
             for (int i = 0; i < points; i++)
             {
                 int percent = MeasureResultsUpwards[i].PercentRange;
-                double currentUp = (double)MeasureResultsUpwards[i].MeasuredCurrent;
-                double currentDown = (double)(MeasureResultsTopdown.GetCheckPointByPercent(percent)).MeasuredCurrent;
+
+                // if (percent == 0 || percent == 100)
+                //     continue; // Для точек 0% и 100% вариация не вычисляется
+
+                double currentUp = MeasureResultsUpwards[i].MeasuredCurrent;
+                double currentDown = (MeasureResultsTopdown.GetCheckPointByPercent(percent)).MeasuredCurrent;
 
                 var point = new VariationPoint(percent, currentUp, currentDown, ClassPrecision, MarginCoefficient);
                 Variations.Add(point);               
@@ -53,8 +60,8 @@ namespace PressureSensorTestCore
             CalcVariations();
             if ((MeasureResultsUpwards.GetResume() & MeasureResultsTopdown.GetResume()) != true)
                 return TestResultEnum.BadPrecision;
-            if (Variations.GetResume() != true)
-                return TestResultEnum.BadVariation;
+            //if (Variations.GetResume() != true)
+            //    return TestResultEnum.BadVariation;
             return TestResultEnum.IsGood;
         }
     }
@@ -65,4 +72,6 @@ namespace PressureSensorTestCore
         BadPrecision = 14,
         BadVariation = 19
     }
+
+    public enum PressureUnitsEnum { Pa = 0, KPa = 1, MPa = 2 }
 }

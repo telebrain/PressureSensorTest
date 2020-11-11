@@ -44,7 +44,42 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
-            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления">
+            <StackPanel Margin="15,20,15,10" Orientation="Horizontal">
+                <ComboBox MinWidth="210" ItemsSource="{Binding PressSourceList}" SelectedIndex="{Binding PressSourceItem}"/>
+                <TextBlock>Источник эталонного давления</TextBlock>
+            </StackPanel>
+            <GroupBox Margin ="5,10,5,5" Header="Настройки PACE" Visibility="{Binding PaceSettingsVisibility}">
+                <StackPanel Margin="5,10,5,5">
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox VerticalAlignment="Center" 
+                              ItemsSource="{Binding PortList}"
+                              SelectedItem="{Binding PacePortName}"></ComboBox>
+                        <!--ComboBox ItemsSource="{Binding PortList}" SelectedItem="PacePortName"/-->
+                        <TextBlock>COM порт</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding PaceSrcPlusValue}"></TextBox>
+                        <TextBlock>Значение давления на входе "Source + ", кПа</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding PaceSrcMinusValue}"></TextBox>
+                        <TextBlock>Значение давления на входе "Source - ", кПа</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox ItemsSource="{Binding PacePrecissionList}" SelectedItem="{Binding PaceClassPrecision}"/>
+                        <TextBlock>Класс точности</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding PaceMaxTimeSetPressure}"></TextBox>
+                        <TextBlock>Максимальное время выхода на уставку, с</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding PaceTimeStabPressure}"></TextBox>
+                        <TextBlock>Время стабилизации давления, с</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления" Visibility="{Binding PressureRackSettingsVisibility}">
                 <StackPanel Margin="5,10,5,5">
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{Binding PsysIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
@@ -63,7 +98,7 @@
                         </TextBox>
                         <TextBlock>Максимальное время выхода на уставку, с</TextBlock>
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Horizontal">
                         <TextBox>
                             <TextBox.Text>
@@ -102,6 +137,7 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
+
             <GroupBox Margin ="5" Header="Настройки мультиметра">
                 <StackPanel Margin="5,10,5,5">
                     <StackPanel Orientation="Horizontal">
@@ -137,6 +173,10 @@
             
             <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedAutomaticSortingOut, UpdateSourceTrigger=PropertyChanged}">
                 Использовать автоматическую разбраковку
+            </CheckBox>
+
+            <CheckBox Margin="15,5,0,10" IsChecked="{Binding ShowVariations, UpdateSourceTrigger=PropertyChanged}">
+                Показывать вариацию в таблице
             </CheckBox>
         </StackPanel>
         <Button Grid.Row="1" Margin="20,10,5,10" MinHeight="45" Command="{Binding AcceptCommand}">Применить</Button>

@@ -25,7 +25,6 @@ namespace PressureSensorTestCore
         public TestResults TestResults { get; private set; }
         public event EventHandler UpdResultsEvent;
 
-
         public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints)
         {
             this.psys = psys;
@@ -46,20 +45,30 @@ namespace PressureSensorTestCore
         AutoResetEvent updCurrentValueAutoReset;
         int outChannelPsys;
         bool absoluteType;
-        
+        double rangeMin_Pa;
+        double rangeMax_Pa;
+        double classPrecision;
+        PressureUnitsEnum pressureUnits;
 
-        public void RunProcess(double rangeMin, double rangeMax, double classPrecision, int outChannelPsys,
+
+
+        // Диапазон принимается всегда в Па, в результатах давление будет в переданных единицах измерения  
+        public void RunProcess(double rangeMin_Pa, double rangeMax_Pa, PressureUnitsEnum pressureUnits, double classPrecision, int outChannelPsys,
             bool absoluteType, CancellationToken cancellationToken, IProgress<int> progress)
         {
             this.outChannelPsys = outChannelPsys;
             this.absoluteType = absoluteType;
+            this.rangeMin_Pa = rangeMin_Pa;
+            this.rangeMax_Pa = rangeMax_Pa;
+            this.pressureUnits = pressureUnits;
+            this.classPrecision = classPrecision;
             updCurrentValueAutoReset = new AutoResetEvent(false);
             // При обновлении показаний миллиамперметра будет освобождаться AutoResetEvent updCurrentValueAutoReset
             ammetr.UpdMeasureResult += (obj, e) => updCurrentValueAutoReset.Set(); 
             deltaProgress = 100/(testPoints.Length*2 + 2);
 
 
-            TestResults = new TestResults(rangeMin, rangeMax, classPrecision);
+            TestResults = new TestResults(rangeMin_Pa, rangeMax_Pa, pressureUnits, classPrecision);
             UpdResultsEvent?.Invoke(this, new EventArgs());
             psysIsConnect = false;
             // Тест при движении вверх
@@ -87,8 +96,7 @@ namespace PressureSensorTestCore
         {
             foreach(double point in points)
             {
-                measureResults.Add(CheckPointMeasurmentsProcess(measureResults.RangeMin, measureResults.RangeMax, point, 
-                    measureResults.ClassPrecision, cancellationToken));
+                measureResults.Add(CreateCheckPoint(point, cancellationToken));
                 UpdResultsEvent?.Invoke(this, new EventArgs());
                 
                 progressValue += deltaProgress;
@@ -97,15 +105,15 @@ namespace PressureSensorTestCore
             }
         }
 
-        private CheckPoint CheckPointMeasurmentsProcess(double rangeMin, double rangeMax, double testPoint, double classPrecision, 
-            CancellationToken cancellationToken)
+        private CheckPoint CreateCheckPoint(double testPoint, CancellationToken cancellationToken)
         {
-            SetPressure(testPoint, rangeMin, rangeMax, cancellationToken);
+            SetPressure(testPoint, rangeMin_Pa, rangeMax_Pa, cancellationToken);
             Measures(out double pressure, out double current, cancellationToken);
             // Если уставка равна нулю, то тестируемое изделие связано с атмосферой. Давление считаем равным нулю
-            if ((int)((rangeMax - rangeMin) * testPoint - rangeMin) == 0)
+            if ((int)((rangeMax_Pa - rangeMin_Pa) * testPoint - rangeMin_Pa) == 0)
                 pressure = 0;
-            CheckPoint point = new CheckPoint((int)(testPoint * 100), pressure, current);
+            CheckPoint point = new CheckPoint((int)(testPoint * 100), rangeMin_Pa, rangeMax_Pa, pressure, current, classPrecision,
+                pressureUnits, marginCoefficient);
             return point;
         }
 
@@ -172,7 +180,7 @@ namespace PressureSensorTestCore
 
         private async Task Pause(CancellationToken cancellation, IProgress<int> progress)
         {
-            const int pause = 60; // Заменить потом на 60 с
+            const int pause = 3; // Заменить потом на 60 с
             bool exit = false;
             var startTime = DateTime.Now;
             double startProgerss = progressValue;
@@ -202,6 +210,8 @@ namespace PressureSensorTestCore
                 throw new HiCurrentAlarmException();
         }
     }
+
+   
 
     public class LoCurrentAlarmException : Exception { }
     public class HiCurrentAlarmException : Exception { }

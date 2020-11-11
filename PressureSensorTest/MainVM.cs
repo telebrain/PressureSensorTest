@@ -368,8 +368,20 @@ namespace PressureSensorTest
             get { return colorStateConnectPsys; }
             set { colorStateConnectPsys = value; OnPropertyChanged(); }
         }
-        
 
+        Visibility tableVisibility;
+        public Visibility TableVisibility
+        {
+            get { return tableVisibility; }
+            set { tableVisibility = value; OnPropertyChanged(); }
+        }
+
+        Visibility shortTableVisibility;
+        public Visibility ShortTableVisibility
+        {
+            get { return shortTableVisibility; }
+            set { shortTableVisibility = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Комманды
@@ -546,6 +558,7 @@ namespace PressureSensorTest
                 ReadPsysInfoButtonVis = Visibility.Hidden;
                 DeviceNameIndVisible = Visibility.Visible;
             }
+            ShowTable();
         }
 
         bool runState = false;
@@ -711,6 +724,20 @@ namespace PressureSensorTest
             SignalRejectButton = false;
             Pressure = "";
             Current = "";
+        }
+
+        private void ShowTable()
+        {
+            if (settings.ShowVariation)
+            {
+                TableVisibility = Visibility.Visible;
+                ShortTableVisibility = Visibility.Collapsed;
+            }
+            else
+            {
+                TableVisibility = Visibility.Collapsed;
+                ShortTableVisibility = Visibility.Visible;
+            }
         }
     }
 }

@@ -25,9 +25,9 @@ namespace PressSystems
 
             // Симуляция аварии
             
-            i++;
-            if (i >= 5)
-                throw new Exception("Нет связи с пневмосистемой");
+            //i++;
+            //if (i >= 5)
+            //    throw new Exception("Нет связи с пневмосистемой");
             variables.Barometr = 99000;
             variables.TimeStamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             return variables;

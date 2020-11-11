@@ -102,7 +102,7 @@ namespace OwenPressureDevices
                     // Если текцщий диапазон изделия выходит за границы пневмосистемы
                     if (!CheckSupportPsysRange(range))
                     {
-                        if (range.RangeType == RangeTypeEnum.DA && range.Max <= pressSystemInfo.RangeHi)
+                        if (range.RangeType == RangeTypeEnum.DA && range.Max_Pa <= pressSystemInfo.RangeHi)
                         {
                             // Для ДА поиск продолжим, если диапазон меньше верхней границы. 
                             // Возможно, текущий диапазон просто ниже нижней границы пневмосистемы
@@ -133,15 +133,15 @@ namespace OwenPressureDevices
             switch (rangeType)
             {
                 case RangeTypeEnum.DV:
-                    result = pressSystemInfo.CheckRange(0, range.Max);                  
+                    result = pressSystemInfo.CheckRange(0, range.Max_Pa);                  
                     break;
 
                 case RangeTypeEnum.DA:
-                    result = pressSystemInfo.CheckRange(range.Max + DeviceRange.VacuumPressure, range.Min + DeviceRange.VacuumPressure);
+                    result = pressSystemInfo.CheckRange(range.Max_Pa + DeviceRange.VacuumPressure, range.Min_Pa + DeviceRange.VacuumPressure);
                     break;
 
                 default:
-                    result = pressSystemInfo.CheckRange(range.Max, range.Min);
+                    result = pressSystemInfo.CheckRange(range.Max_Pa, range.Min_Pa);
                     break;
             }         
             return result;
@@ -152,19 +152,19 @@ namespace OwenPressureDevices
             // Минимальные значения проверяются только для ДИВ
             if (rangeType == RangeTypeEnum.DIV)
             {
-                if (SearshController(range.Min, range.Max, range.Min, devicePrecision) < 0)
+                if (SearshController(range.Min_Pa, range.Max_Pa, range.Min_Pa, devicePrecision) < 0)
                     return false;
             }
             // и ДА
             if (rangeType == RangeTypeEnum.DA)
             {
-                if (SearshController(range.Min + DeviceRange.VacuumPressure, range.Max + DeviceRange.VacuumPressure, 
-                    range.Min + DeviceRange.VacuumPressure, devicePrecision) < 0)
+                if (SearshController(range.Min_Pa + DeviceRange.VacuumPressure, range.Max_Pa + DeviceRange.VacuumPressure, 
+                    range.Min_Pa + DeviceRange.VacuumPressure, devicePrecision) < 0)
                     return false;
             }
 
             // Максимальные значения проверяются для всех типов
-            if (SearshController(range.Max, range.Max, range.Min, devicePrecision) < 0)
+            if (SearshController(range.Max_Pa, range.Max_Pa, range.Min_Pa, devicePrecision) < 0)
                 return false;
             return true;
         }

@@ -38,5 +38,5 @@ namespace OwenPressureDevices
         void CheckRangeSupport(IDevice device);
     }
 
-    public enum UnitsEnum { Pa = 0, kPa = 1, MPa = 2 }
+    public enum PressureUnitsEnum { Pa = 0, kPa = 1, MPa = 2 }
 }

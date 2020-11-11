@@ -198,8 +198,10 @@
                     IsEnabled="{Binding OutButtonsEnable, UpdateSourceTrigger=PropertyChanged}">Годен</Button-->
         </Grid>
 
-        <local:TableResult Grid.Row="4" Margin="5" 
-                           TableDataSrc="{Binding TableResultData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"></local:TableResult>
+        <local:TableResult Grid.Row="4" Margin="5" Visibility="{Binding TableVisibility}"
+                           TableDataSrc="{Binding TableResultData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        <local:ShortTableResult Grid.Row="4" Margin="5" Visibility="{Binding ShortTableVisibility}"
+                           TableDataSrc="{Binding TableResultData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
         <Grid Grid.Row="5" Margin="5">
             <Grid.ColumnDefinitions>

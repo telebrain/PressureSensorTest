@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="MainVM.cs" />
     <Compile Include="MeasurmendIndicator.cs" />
+    <Compile Include="PaceSettings.cs" />
     <Compile Include="PressureIndication.cs" />
     <Compile Include="PressureSystemSettings.cs" />
     <Compile Include="Progress.cs" />
@@ -115,6 +116,9 @@
       <DependentUpon>SysSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemStatus.cs" />
+    <Compile Include="ShortTableResult.xaml.cs">
+      <DependentUpon>ShortTableResult.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TableResult.xaml.cs">
       <DependentUpon>TableResult.xaml</DependentUpon>
     </Compile>
@@ -148,6 +152,10 @@
     <Page Include="SysSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShortTableResult.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="TableResult.xaml">
       <SubType>Designer</SubType>

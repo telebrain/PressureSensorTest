@@ -32,8 +32,8 @@ namespace OwenPressureDevices
 
         public float Percent { get; private set; }
 
-        UnitsEnum unit;
-        public UnitsEnum Unit
+        PressureUnitsEnum unit;
+        public PressureUnitsEnum Unit
         {
             get { return unit; }
             set { unit = value; UpdInd(); }
@@ -56,7 +56,7 @@ namespace OwenPressureDevices
             Pressure = 0;
             Percent = 0;
             Enable = false;
-            Unit = UnitsEnum.Pa;
+            Unit = PressureUnitsEnum.Pa;
         }
 
         public void SetEnable()

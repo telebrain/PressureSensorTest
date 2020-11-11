@@ -32,13 +32,15 @@ namespace PressureSensorTest
                 UnitLable = "Па";
                 multipler = 1;
             }
-            long unitRange = (long)(range * multipler);
-            if (unitRange < 10)
-                format = "0.0000";
-            else if (unitRange < 100)
-                format = "0.000";
-            else
-                format = "0.00";
+            format = "0.0000";
+
+            //long unitRange = (long)(range * multipler);
+            //if (unitRange < 10)
+            //    format = "0.0000";
+            //else if (unitRange < 100)
+            //    format = "0.000";
+            //else
+            //    format = "0.00";
         }       
 
         public string GetPressure(double pressure)

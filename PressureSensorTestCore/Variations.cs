@@ -13,10 +13,10 @@ namespace PressureSensorTestCore
 
         public int Count { get { return variationPoints.Count; } }
 
-        public VariationPoint this[int index]
-        {
-            get { return variationPoints[index]; }
-        }
+        //public VariationPoint this[int index]
+        //{
+        //    get { return variationPoints[index]; }
+        //}
 
         public void Add(VariationPoint point)
         {
@@ -26,6 +26,16 @@ namespace PressureSensorTestCore
         public IEnumerator GetEnumerator()
         {
             return variationPoints.GetEnumerator();
+        }
+
+        public VariationPoint GetVariationPointByPercent(int percentRange)
+        {
+            foreach (var point in variationPoints)
+            {
+                if (point.PercentRange == percentRange)
+                    return point;
+            }
+            return null;
         }
 
         public bool? GetResume()

@@ -8,31 +8,28 @@ using System.Net;
 
 namespace FtpConnect
 {
-    public class FtpConn
+    public class FtpService
     {
-        public string Addres { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
 
-        public FtpConn(string addres)
+        public FtpService()
         {
-            Addres = addres;
             Login = "";
             Password = "";
         }
 
-        public FtpConn(string addres, string login, string password)
+        public FtpService(string login, string password)
         {
-            Addres = addres;
             Login = login;
             Password = password;
         }
 
-        public string Load(string fileName)
+        public string Load(string path)
         {
             string data = "";
             
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Addres + fileName);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(path);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
             if (!string.IsNullOrEmpty(Password))
                 request.Credentials = new NetworkCredential(Login, Password);
@@ -51,15 +48,15 @@ namespace FtpConnect
             return data;
         }
 
-        public bool Write(string fileName, string content)
+        public bool Write(string path, string content)
         {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Addres + fileName);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(path);
             request.Method = WebRequestMethods.Ftp.UploadFile;
             if (!string.IsNullOrEmpty(Password))
                 request.Credentials = new NetworkCredential(Login, Password);
 
             Stream requestStream = request.GetRequestStream();
-            byte[] buffer = Encoding.Default.GetBytes(content);
+            byte[] buffer = Encoding.UTF8.GetBytes(content);
             requestStream.Write(buffer, 0, buffer.Length);
             requestStream.Close();
 

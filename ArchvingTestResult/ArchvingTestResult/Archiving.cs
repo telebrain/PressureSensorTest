@@ -74,7 +74,7 @@ namespace ArchvingTestResult
             using (FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate))
             {
                 fs.Seek(position, SeekOrigin.End);
-                byte[] bytes = Encoding.Default.GetBytes(data);
+                byte[] bytes = Encoding.UTF8.GetBytes(data);
                 fs.Write(bytes, 0, bytes.Length);
             }
         }

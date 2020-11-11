@@ -104,17 +104,17 @@ namespace OwenPressureDevices
         {
             if (device.Range.RangeType != RangeTypeEnum.DV)
             {
-                bool result = pressSystemInfo.CheckRange(device.Range.Max, device.Range.Min);
+                bool result = pressSystemInfo.CheckRange(device.Range.Max_Pa, device.Range.Min_Pa);
                 if (!result)
                     throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
             }
             else
             {
-                if (!pressSystemInfo.CheckRange(0, device.Range.Max))
+                if (!pressSystemInfo.CheckRange(0, device.Range.Max_Pa))
                     throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
             }
             var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.ClassPrecision);
-            if (pressureRow.SearshController(device.Range.Max, device.Range.Min, device.Range.Max, device.ClassPrecision) < 0)
+            if (pressureRow.SearshController(device.Range.Max_Pa, device.Range.Min_Pa, device.Range.Max_Pa, device.ClassPrecision) < 0)
                 throw new DeviceNotSupportByPsysException("Система не может обеспечить точность установки давления");
         }
 

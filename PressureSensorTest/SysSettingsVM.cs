@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows;
+using System.IO.Ports;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
@@ -33,6 +35,135 @@ namespace PressureSensorTest
 
 
         #region Bildings
+
+        public List<string> PressSourceList { get; } =
+            new List<string>(new string[] { "Стойка эталонов давления", "JE PACE5000" });
+
+        int pressSourceItem;
+        public int PressSourceItem
+        {
+            get { return pressSourceItem; }
+            set
+            {
+                pressSourceItem = value;
+                OnPropertyChanged();
+                if (pressSourceItem == 0)
+                {
+                    PaceSettingsVisibility = Visibility.Collapsed;
+                    PressureRackSettingsVisibility = Visibility.Visible;
+                }
+                else
+                {
+                    PaceSettingsVisibility = Visibility.Visible;
+                    PressureRackSettingsVisibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        Visibility paceSettingsVisibility = Visibility.Collapsed;
+        public Visibility PaceSettingsVisibility
+        {
+            get { return paceSettingsVisibility; }
+            set { paceSettingsVisibility = value; OnPropertyChanged(); }
+        }
+
+        Visibility pressureRackSettingsVisibility;
+        public Visibility PressureRackSettingsVisibility
+        {
+            get { return pressureRackSettingsVisibility; }
+            set { pressureRackSettingsVisibility = value; OnPropertyChanged(); }
+        }
+
+        List<string> portList;
+        public List<string> PortList
+        {
+            get { return portList; }
+            set { portList = value; OnPropertyChanged(); }
+        }
+
+        string pacePortName;
+        public string PacePortName
+        {
+            get { return pacePortName; }
+            set { pacePortName = value; OnPropertyChanged(); }
+        }
+
+        int paceSrcPlusValue;
+        public int PaceSrcPlusValue
+        {
+            get { return paceSrcPlusValue; }
+            set
+            {
+                paceSrcPlusValue = value;
+                OnPropertyChanged();
+                if (paceSrcPlusValue < 1 || paceSrcPlusValue > 10000)
+                    AddValidError("Значение может быть только в диапазоне от 1 до 10 000 кПа");
+                else
+                    ClearValidError();
+            }
+        }
+
+        int paceSrcMinusValue;
+        public int PaceSrcMinusValue
+        {
+            get { return paceSrcMinusValue; }
+            set
+            {
+                paceSrcMinusValue = value;
+                OnPropertyChanged();
+                if (paceSrcMinusValue < -110 || paceSrcPlusValue > 0)
+                    AddValidError("Значение может быть только в диапазоне от 0 до -110 кПа");
+                else
+                    ClearValidError();
+            }
+        }
+
+        public List<string> PacePrecissionList { get; } =
+            new List<string>(new string[] { "0,02", "0,01" });
+
+        string paceClassPrecision;
+        public string PaceClassPrecision
+        {
+            get { return paceClassPrecision; }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    paceClassPrecision = value;
+                else
+                    paceClassPrecision = PacePrecissionList[0];
+                OnPropertyChanged();
+            }
+        }
+
+        int paceMaxTimeSetPressure;
+        public int PaceMaxTimeSetPressure
+        {
+            get { return paceMaxTimeSetPressure; }
+            set
+            {
+                paceMaxTimeSetPressure = value;
+                OnPropertyChanged();
+                if (paceMaxTimeSetPressure < 1 || paceMaxTimeSetPressure > 360)
+                    AddValidError("Значение может быть только в диапазоне от 1 до 360 с");
+                else
+                    ClearValidError();
+            }
+        }
+
+        int paceTimeStabPressure;
+        public int PaceTimeStabPressure
+        {
+            get { return paceTimeStabPressure; }
+            set
+            {
+                paceTimeStabPressure = value;
+                OnPropertyChanged();
+                if (paceTimeStabPressure < 1 || paceTimeStabPressure > 30)
+                    AddValidError("Значение может быть только в диапазоне от 1 до 30 с");
+                else
+                    ClearValidError();
+            }
+        }
 
         string psysIp;
         public string PsysIp
@@ -165,6 +296,13 @@ namespace PressureSensorTest
             set { ipNetCard = value; OnPropertyChanged(); }
         }
 
+        bool showVariations;
+        public bool ShowVariations
+        {
+            get { return showVariations; }
+            set { showVariations = value; OnPropertyChanged(); }
+        }
+
         #endregion
 
         #region Commands
@@ -253,6 +391,7 @@ namespace PressureSensorTest
 
         private void VisToSettins()
         {
+            settings.PressSystemItem = (PressSystemEnum)PressSourceItem;
             settings.PsysSettings.IP = PsysIp;
             settings.PsysSettings.MaxTimeSetPressure = MaxTimeSetPressure;
             settings.PsysSettings.TimeStabilisation = TimeStabPressure;
@@ -263,10 +402,20 @@ namespace PressureSensorTest
             settings.UsedRemoteControl = UsedRemouteControl;
             settings.UsedAutomaticSortingOut = UsedAutomaticSortingOut;
             settings.RemoteControlIp = IpNetCard;
+
+            settings.PaceSettings.PortName = PacePortName;
+            settings.PaceSettings.MaxTimeSetPressure = PaceMaxTimeSetPressure;
+            settings.PaceSettings.TimeStabilisation = PaceTimeStabPressure;
+            settings.PaceSettings.SrcMinusValue = PaceSrcMinusValue*1000;
+            settings.PaceSettings.SrcPlusValue = PaceSrcPlusValue*1000;
+            settings.PaceSettings.ClassPrecision = PaceClassPrecision;
+
+            settings.ShowVariation = ShowVariations;
         }
 
         private void SettingsToVis()
         {
+            PressSourceItem = (int)settings.PressSystemItem;
             PsysIp = settings.PsysSettings.IP;
             MaxTimeSetPressure = settings.PsysSettings.MaxTimeSetPressure;
             TimeStabPressure = settings.PsysSettings.TimeStabilisation;
@@ -293,8 +442,36 @@ namespace PressureSensorTest
                     }
                 }
             }
+
+            InitPortList(settings.PaceSettings.PortName);
+            PaceMaxTimeSetPressure = settings.PaceSettings.MaxTimeSetPressure;
+            PaceTimeStabPressure = settings.PaceSettings.TimeStabilisation;
+            PaceSrcMinusValue = (int)(settings.PaceSettings.SrcMinusValue/1000);
+            PaceSrcPlusValue = (int)(settings.PaceSettings.SrcPlusValue/1000);
+            PaceClassPrecision = settings.PaceSettings.ClassPrecision;
+
+            ShowVariations = settings.ShowVariation;
         }
 
+        private void InitPortList(string portName)
+        {
+            PortList = new List<string> (SerialPort.GetPortNames());
+            if (PortList.Count == 0)
+            {
+                PacePortName = "";
+                return;
+            }
+            foreach (string item in PortList)
+            {
+                if (item == portName)
+                {
+                    PacePortName = item;
+                    // OnPropertyChanged("");
+                    return;
+                }
+            }
+            PacePortName = PortList[0];
+        }
         
     }
 }

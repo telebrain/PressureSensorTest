@@ -64,37 +64,35 @@ namespace PressureSensorTest
         {
             var testPointUpwards = testResults.MeasureResultsUpwards[number];
             var testPointTopdown = testResults.MeasureResultsTopdown[testResults.MeasureResultsTopdown.Count - number - 1];
-            int pressureUnitCode = 0;
-            if (pressureIndication.UnitLable == "МПа")
-                pressureUnitCode = 2;
-            else if (pressureIndication.UnitLable == "кПа")
-                pressureUnitCode = 1;
+            int pressureUnitCode = (int)testResults.PressureUnits;
+
             JsonTestPointData jsonTestPointData = new JsonTestPointData()
             {
                 channelNumber = 1,
                 checkPoint = settings.PointsCode[number],
-                sensorType = sensotType,
-                
-                
-                dataMetrological = new JsonParametr[]
-                {
-                    new JsonParametr(1 + pressureUnitCode, 
-                        Convert.ToSingle(pressureIndication.GetPressure(testPointUpwards.EtalonPressure))),
-                    new JsonParametr(4, Convert.ToSingle(testPointUpwards.CurrentFromEtalonPressure.ToString(CurrFormat))),
-                    new JsonParametr(5, Convert.ToSingle(testPointUpwards.MeasuredCurrent.ToString(CurrFormat))),
-                    new JsonParametr(6 + pressureUnitCode, 
-                        Convert.ToSingle(pressureIndication.GetPressure(testPointUpwards.Pressure))),
-                    new JsonParametr(9, Convert.ToSingle(testPointUpwards.ErrorMeasure.Value.ToString(ErrFormat))),
-                    new JsonParametr(10 + pressureUnitCode, 
-                        Convert.ToSingle(pressureIndication.GetPressure(testPointTopdown.EtalonPressure))),
-                    new JsonParametr(13, Convert.ToSingle(testPointTopdown.CurrentFromEtalonPressure.ToString(CurrFormat))),
-                    new JsonParametr(14, Convert.ToSingle(testPointTopdown.MeasuredCurrent.ToString(CurrFormat))),
-                    new JsonParametr(15 + pressureUnitCode, 
-                        Convert.ToSingle(pressureIndication.GetPressure(testPointTopdown.Pressure))),
-                    new JsonParametr(18, Convert.ToSingle(testPointTopdown.ErrorMeasure.Value.ToString(ErrFormat))),
-                    new JsonParametr(19, Convert.ToSingle(testResults.Variations[number].Value.ToString(ErrFormat)))
-                }
+                sensorType = sensotType
             };
+
+            List<JsonParametr> parametrs = new List<JsonParametr>()
+            {
+                new JsonParametr(1 + pressureUnitCode, testPointUpwards.ReferencePressure),
+                new JsonParametr(4,  testPointUpwards.CurrentFromEtalonPressure),
+                new JsonParametr(5, testPointUpwards.MeasuredCurrent),
+                new JsonParametr(6 + pressureUnitCode, testPointUpwards.Pressure),
+                new JsonParametr(9, testPointUpwards.ErrorMeasure),
+                new JsonParametr(10 + pressureUnitCode, testPointTopdown.ReferencePressure),
+                new JsonParametr(13, testPointTopdown.CurrentFromEtalonPressure),
+                new JsonParametr(14, testPointTopdown.MeasuredCurrent),
+                new JsonParametr(15 + pressureUnitCode, testPointTopdown.Pressure),
+                new JsonParametr(18, testPointTopdown.ErrorMeasure)
+            };
+
+            var variation = testResults.Variations.GetVariationPointByPercent(testPointUpwards.PercentRange);
+            if (variation != null)
+                parametrs.Add(new JsonParametr(19, variation.Value));
+
+            jsonTestPointData.dataMetrological = parametrs.ToArray();
+
             return jsonTestPointData;
         }
         

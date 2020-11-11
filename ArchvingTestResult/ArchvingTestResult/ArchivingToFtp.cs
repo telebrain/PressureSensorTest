@@ -9,7 +9,7 @@ namespace ArchvingTestResult
     {
         readonly string login;
         readonly string password;
-        FtpConn ftp;
+        FtpService ftp;
 
         public ArchivingToFtp(string remotePath, string localFolder, int maxArchivingIntervalInHours, string login = "", string password = ""):
             base(maxArchivingIntervalInHours)
@@ -18,14 +18,14 @@ namespace ArchvingTestResult
             LocalFolder = localFolder;
             this.login = login;
             this.password = password;
-            ftp = new FtpConn(RemotePath, login, password);
+            ftp = new FtpService(login, password);
         }
 
         public override void AddResultToArchive(string fileName, string data)
         {
             try
             {
-                ftp.Write(fileName, data);
+                ftp.Write(RemotePath + fileName, data);
             }
             catch
             {

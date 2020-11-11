@@ -62,8 +62,8 @@ namespace PressureSensorTest
             {
                 this.dialogService = dialogService;
                 Exception = null;
-                // var psysCommands = new PsysCommandSimulator();
-                var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
+                var psysCommands = new PsysCommandSimulator();
+                // var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
                 psys = new PressSystem(psysCommands, 20);
                 SystemStatus.Init(Settings);
                 psys.ExceptionEvent += Exception_psys_event;
@@ -174,20 +174,21 @@ namespace PressureSensorTest
                 if (Settings.UsedAutomaticSortingOut)
                 {
                     waitContinue = null;
-                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max, device.Range.Min));
+                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa));
                 }
                 else
                 {
                     waitContinue = new WaitContinue();
                     waitContinue.ContinueRequest += ContinueRequest;
                     waitContinue.SelectionRequest += (obj, e) => SelectionRequest(this, e);
-                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, GetTestPoints(device.Range.Max, device.Range.Min));
+                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa));
                 }
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
                 double precision = primaryVerification ? device.TargetPrecision : device.ClassPrecision;
-                testProcess.RunProcess(device.Range.Min, device.Range.Max, precision, GetPsysOutChannel(),
-                        device.Range.RangeType == RangeTypeEnum.DA, cancellation, progress);
+                testProcess.RunProcess(device.Range.Min_Pa, device.Range.Max_Pa, 
+                    (PressureSensorTestCore.PressureUnitsEnum)device.Range.PressureUnits, precision, GetPsysOutChannel(), 
+                    device.Range.RangeType == RangeTypeEnum.DA,  cancellation, progress);
                 Product.Error = (TestErrorEnum)TestResults.GetResume();
                 Stop();
      
@@ -309,11 +310,11 @@ namespace PressureSensorTest
 
         private void InitAmmetr()
         {
-            ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
+            // ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
 
             // Для симуляции
-            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min, Product.Device.Range.Max, 0.05,
-            //    Product.Device.Range.RangeType == RangeTypeEnum.DA);
+            ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
+                Product.Device.Range.RangeType == RangeTypeEnum.DA);
 
             ammetr.ExceptionEvent += Exception_ammetr_event;
             ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;

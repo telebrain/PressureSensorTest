@@ -58,7 +58,7 @@ namespace PressureSensorTest
                 // Передача в базу стенда
                 if (settings.UsedStandDatabase)
                 {
-                    db.AddTestInfo(product, jsonContent);
+                    db.AddTestInfo(product, jsonContent); 
                     sysStatus.DataBaseStatus = StatusEnum.Ok;
                 }
 

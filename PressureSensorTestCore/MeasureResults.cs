@@ -11,27 +11,12 @@ namespace PressureSensorTestCore
     {
         // Все значения давлений в Па
 
-        public double RangeMin { get; }
-        public double RangeMax { get; }
-
-        public double ClassPrecision { get; }
-        public double MarginCoefficient { get; }
-
         public int Count
         {
             get { return checkPoints.Count; }
         }
 
         List<CheckPoint> checkPoints = new List<CheckPoint>();
-
-        public MeasureResults(double rangeMin, double rangeMax, double classPrecision, double marginCoefficient = 0.8F)
-        {
-            RangeMin = rangeMin;
-            RangeMax = rangeMax;
-            ClassPrecision = classPrecision;
-            MarginCoefficient = marginCoefficient;
-        }
-
         
 
         public CheckPoint this[int index]
@@ -66,8 +51,6 @@ namespace PressureSensorTestCore
 
         public void Add(CheckPoint checkPoint)
         {
-            checkPoint.CalcError(RangeMin, RangeMax);
-            checkPoint.CheckResult(ClassPrecision, MarginCoefficient);
             checkPoints.Add(checkPoint);
         }
 
@@ -83,7 +66,7 @@ namespace PressureSensorTestCore
             bool? res = true;
             foreach (var point in checkPoints)
             {
-                res &= point.CheckResult(ClassPrecision, MarginCoefficient);
+                res &= point.Resume;
             }
             return res;
         }

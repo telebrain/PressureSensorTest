@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace PressureSensorTestCore
 {
-    public struct VariationPoint
+    public class VariationPoint
     {
         public int PercentRange { get; }
         public double Value { get; }
         public bool Resume { get; }
 
-        
+        const int CalcPrecision = 4;
 
         public VariationPoint(int percentRange, double currentUpwards, double currentTopdown, double classPrecision, double marginCoefficient = 0.8F)
         {
@@ -23,7 +23,7 @@ namespace PressureSensorTestCore
 
             // Вычисление вариации
             Value = Math.Round(Math.Abs(100 * (currentUpwards - currentTopdown) /
-            (СurrentMax - СurrentMin)), 3);
+            (СurrentMax - СurrentMin)), CalcPrecision);
 
             // Тест в точке пройден, если вариация меньше половины класса точности с учетом коэффициента запаса
             Resume = Value < classPrecision * marginCoefficient / 2;

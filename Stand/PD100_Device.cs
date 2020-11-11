@@ -40,6 +40,7 @@ namespace OwenPressureDevices
                     ThreadType = components.ThreadType;
                     ClassPrecision = Convert.ToSingle(components.Precision);
                     TargetPrecision = ClassPrecision > 0.5F ? 0.5F : ClassPrecision;
+                    TargetVariation = TargetVariation / 2;
                     int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
                     RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
                     Range = new DeviceRange(range_Pa, rangeType);
@@ -61,6 +62,9 @@ namespace OwenPressureDevices
         // Класс точности нового преобразователя (только что изготовленного)
         public float TargetPrecision { get; private set; }
 
+        // Вариация нового преобразователя (только что изготовленного)
+        public float TargetVariation { get; private set; }
+
         public DeviceRange Range { get; private set; }
 
         // Код для Json протокола
@@ -71,7 +75,7 @@ namespace OwenPressureDevices
         private int FindMetrologicGroupNumber(DeviceRange range)
         {
             // Пока заглушка. Нужно сделать класс MetrologicGroup и грузить группы из Excel
-            if (range.Max <= 100000)
+            if (range.Max_Pa <= 100000)
                 return 6;
             return 5;
         }

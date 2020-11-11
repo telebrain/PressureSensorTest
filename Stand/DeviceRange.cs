@@ -12,8 +12,13 @@ namespace OwenPressureDevices
         // Все величины давления в Па
 
         public double Span { get; private set; }
+        public double Min_Pa { get; private set; }
+        public double Max_Pa { get; private set; }
+
         public double Min { get; private set; }
         public double Max { get; private set; }
+        public PressureUnitsEnum PressureUnits { get; private set; }
+
         // public string RangeTypeLabel { get; private set; }
         public RangeTypeEnum RangeType { get; private set; }
         public long Pressure_Pa { get; private set; }
@@ -36,43 +41,65 @@ namespace OwenPressureDevices
                 case RangeTypeEnum.DIV:
                     if (pressure_Pa > Math.Abs(VacuumPressure))
                     {
-                        Min = VacuumPressure;
-                        Max = pressure_Pa;
+                        Min_Pa = VacuumPressure;
+                        Max_Pa = pressure_Pa;
                     }
                     else
                     {
-                        Min = (-1) * pressure_Pa;
-                        Max = pressure_Pa;
+                        Min_Pa = (-1) * pressure_Pa;
+                        Max_Pa = pressure_Pa;
                     }
                     break;
 
                 case RangeTypeEnum.DI:
-                    Min = 0;
-                    Max = pressure_Pa;
+                    Min_Pa = 0;
+                    Max_Pa = pressure_Pa;
                     break;
                 case RangeTypeEnum.DD:
-                    Min = 0;
-                    Max = pressure_Pa;
+                    Min_Pa = 0;
+                    Max_Pa = pressure_Pa;
                     break;
                 case RangeTypeEnum.DV:
-                    Min = 0;
-                    Max = (-1) * pressure_Pa;
+                    Min_Pa = 0;
+                    Max_Pa = (-1) * pressure_Pa;
                     break;
                 case RangeTypeEnum.DA:
-                    Min = 0;
-                    Max = pressure_Pa;
+                    Min_Pa = 0;
+                    Max_Pa = pressure_Pa;
                     AbsolutPressure = true;
                     break;
                 case RangeTypeEnum.DG:
-                    Min = 0;
-                    Max = pressure_Pa * 0.980665F;
+                    Min_Pa = 0;
+                    Max_Pa = pressure_Pa * 0.980665F;
                     break;
             }
 
-            Span = Math.Abs(Max - Min);
+            Span = Math.Abs(Max_Pa - Min_Pa);
+            SetUnits();
         }
 
-        
+        public void SetUnits()
+        {
+            if (Pressure_Pa < 10000)
+            {
+                PressureUnits = PressureUnitsEnum.Pa;
+                Min = Min_Pa;
+                Max = Max_Pa;
+            }
+            else if (Pressure_Pa < 10000000)
+            {
+                PressureUnits = PressureUnitsEnum.kPa;
+                Min = Min_Pa * 1e-3;
+                Max = Max_Pa * 1e-3;
+            }
+            else
+            {
+                PressureUnits = PressureUnitsEnum.MPa;
+                Min = Min_Pa * 1e-6;
+                Max = Max_Pa * 1e-6;
+            }
+
+        }
         //public RangeTypeEnum GetRangeTypeFromLabel(string label)
         //{
         //    return (RangeTypeEnum)Array.IndexOf(Labels, label);
@@ -90,4 +117,5 @@ namespace OwenPressureDevices
         NotDefined = -1
     }
 
+    // public enum PressureUnitsEnum: int { Pa = 0, KPa = 1, MPa = 2 }
 }

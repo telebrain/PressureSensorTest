@@ -12,7 +12,7 @@ namespace PressureSensorTest
         public ElementTableResult[,] Data { get; set; }
         public string Units { get; set; }
 
-        PressureIndication pressureIndication;
+        // PressureIndication pressureIndication;
 
         public TableResultData()
         {
@@ -30,11 +30,11 @@ namespace PressureSensorTest
         {
             if (testResults != null)
             {
-                pressureIndication = new PressureIndication(testResults.RangeMax);
-                Units = pressureIndication.UnitLable;
+                // pressureIndication = new PressureIndication(testResults.RangeMax);
+                Units = GetUnit(testResults.PressureUnits);
                 AddResultUpwards(testResults.MeasureResultsUpwards);
                 AddResultTopDown(testResults.MeasureResultsTopdown);
-                AddVariations(testResults.Variations);
+                AddVariations(testResults.MeasureResultsUpwards, testResults.Variations);
             }
         }
 
@@ -48,11 +48,12 @@ namespace PressureSensorTest
             AddMeasureResults(results, 5, true);
         }
 
+        const string PressValFormat = "0.0000";
+        const string CurrValFormat = "0.0000";
+        const string ErrValFormat = "0.0000";
+
         private void AddMeasureResults(MeasureResults results, int shiftColumn, bool reverse)
         {
-            const string CurrentFormat = "0.0000";
-            const string ErrorFormat = "0.000";
-
             if (results != null)
             {
                 for (int pos = 0; pos < results.Count; pos++)
@@ -61,25 +62,34 @@ namespace PressureSensorTest
                     if (reverse)
                         row = Rows - pos - 1; 
                     var point = results[pos];
-                    Data[row, shiftColumn].Content = pressureIndication.GetPressure((double)point.EtalonPressure);
-                    Data[row, 1 + shiftColumn].Content = (Convert.ToSingle(point.CurrentFromEtalonPressure)).ToString(CurrentFormat);
-                    Data[row, 2 + shiftColumn].Content = (Convert.ToSingle(point.MeasuredCurrent)).ToString(CurrentFormat);
-                    Data[row, 3 + shiftColumn].Content = pressureIndication.GetPressure((double)point.Pressure);
-                    Data[row, 4 + shiftColumn].Content = (Convert.ToSingle(point.ErrorMeasure)).ToString(ErrorFormat);
+                    Data[row, shiftColumn].Content = point.ReferencePressure.ToString(PressValFormat);
+                    Data[row, 1 + shiftColumn].Content = point.CurrentFromEtalonPressure.ToString(CurrValFormat);
+                    Data[row, 2 + shiftColumn].Content = point.MeasuredCurrent.ToString(CurrValFormat);
+                    Data[row, 3 + shiftColumn].Content = point.Pressure.ToString(PressValFormat);
+                    Data[row, 4 + shiftColumn].Content = point.ErrorMeasure.ToString(ErrValFormat);
                     Data[row, 4 + shiftColumn].Color = ResumeToColor(results[pos].Resume);                   
                 }
             }
         }
 
-        private void AddVariations(Variations result)
+        private void AddVariations(MeasureResults measureResults, Variations variationResults)
         {
-            const string VariationFormat = "0.000";
-            if (result != null)
+            const string VariationFormat = "0.0000";
+            if (variationResults != null)
             {
-                for (int row = 0; row < result.Count; row++)
+                for (int row = 0; row < measureResults.Count; row++)
                 {
-                    Data[row, 10].Content = result[row].Value.ToString(VariationFormat);
-                    Data[row, 10].Color = ResumeToColor(result[row].Resume);
+                    var variation = variationResults.GetVariationPointByPercent(measureResults[row].PercentRange);
+                    if (variation != null)
+                    {
+                        Data[row, 10].Content = variation.Value.ToString(VariationFormat);
+                        Data[row, 10].Color = ResumeToColor(variation.Resume);
+                    }
+                    else
+                    {
+                        Data[row, 10].Content = "-----";
+                        Data[row, 10].Color = ColorItem.Neutral;
+                    }
                 }
             }
         }
@@ -94,28 +104,11 @@ namespace PressureSensorTest
                 return ColorItem.Neutral;
         }
 
-        //private string SetUnitsAndGetPressureFormat(double rangeMax)
-        //{        
-        //    if (rangeMax >= 10000)
-        //    {
-        //        Units = kPa;
-        //        multipler = 0.001F;              
-        //    }
-        //    else
-        //    {
-        //        Units = Pa;
-        //        multipler = 1;
-        //    }
-
-        //    double range = rangeMax * multipler;
-        //    if (range < 10)
-        //        return "0.0000";
-        //    if (range < 100)
-        //        return "0.000";
-        //    return "0.00";
-        //}
-
-        // public event PropertyChangedEventHandler PropertyChanged;
+        private string GetUnit(PressureSensorTestCore.PressureUnitsEnum pressureUnits)
+        {
+            string[] units = new string[] { "Па", "КПа", "МПа" };
+            return units[(int)pressureUnits];
+        }
 
     }
 
