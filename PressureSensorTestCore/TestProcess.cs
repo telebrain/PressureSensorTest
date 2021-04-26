@@ -25,17 +25,18 @@ namespace PressureSensorTestCore
         public TestResults TestResults { get; private set; }
         public event EventHandler UpdResultsEvent;
 
-        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints)
+        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints, int pause100)
         {
             this.psys = psys;
             this.ammetr = ammetr;
             this.testPoints = testPoints;
+            this.pause100 = pause100;
         }
 
         readonly Action<CancellationToken> waitContinue;
 
         public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr, 
-            double[] testPoints): this(psys, ammetr, testPoints)
+            double[] testPoints, int pause100) : this(psys, ammetr, testPoints, pause100)
         {
             this.waitContinue = waitContinue;
         }
@@ -49,6 +50,7 @@ namespace PressureSensorTestCore
         double rangeMax_Pa;
         double classPrecision;
         PressureUnitsEnum pressureUnits;
+        int pause100 = 60;
 
 
 
@@ -158,7 +160,7 @@ namespace PressureSensorTestCore
                     Thread.Sleep(TimeoutBetwinMeasures*1000);
             }
             pressure = pressureItems.Sum() / pressureItems.Length;
-            current = Math.Round(currentItems.Sum() / pressureItems.Length, 4);
+            current = Math.Round(currentItems.Sum() / pressureItems.Length, 4, MidpointRounding.AwayFromZero);
         }
 
         private double GetCurrent(CancellationToken cancellation)
@@ -180,18 +182,17 @@ namespace PressureSensorTestCore
 
         private async Task Pause(CancellationToken cancellation, IProgress<int> progress)
         {
-            const int pause = 3; // Заменить потом на 60 с
             bool exit = false;
             var startTime = DateTime.Now;
             double startProgerss = progressValue;
-            using (System.Timers.Timer timer = new System.Timers.Timer(pause * 1000))
+            using (System.Timers.Timer timer = new System.Timers.Timer(pause100 * 1000))
             {
                 timer.Elapsed += (obj, e) => exit = true;
                 timer.Start();
                 while(!exit)
                 {
                     var timeSpan = DateTime.Now - startTime;
-                    progressValue = startProgerss + (2*deltaProgress * timeSpan.Seconds / pause);
+                    progressValue = startProgerss + (2*deltaProgress * timeSpan.Seconds / pause100);
                     progress.Report((int)progressValue);
                     cancellation.ThrowIfCancellationRequested();
                     await Task.Delay(500);

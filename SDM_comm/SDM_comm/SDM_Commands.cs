@@ -54,7 +54,6 @@ namespace SDM_comm
         {
             string val = WriteRead("READ?");
             val = val.Substring(0, val.IndexOf('\n'));
-            // Console.WriteLine(val);
             return ConvertRecevedValue(val);
         }
 
@@ -103,8 +102,8 @@ namespace SDM_comm
                 {
                     int lastPos = config.LastIndexOf(endKey);
                     long val = (long)(value * Math.Pow(10, (double)(unit - 1) * 3));
-                    int valuePosirion = firstPos + key.Length;
-                    string rec = config.Substring(valuePosirion, lastPos - valuePosirion);
+                    int valuePosition = firstPos + key.Length;
+                    string rec = config.Substring(valuePosition, lastPos - valuePosition);
                     long receiveVal = (long)(ConvertRecevedValue(rec) * 1E+6);
                     return (val == receiveVal);
                 }

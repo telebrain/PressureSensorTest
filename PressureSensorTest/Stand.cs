@@ -62,8 +62,8 @@ namespace PressureSensorTest
             {
                 this.dialogService = dialogService;
                 Exception = null;
-                var psysCommands = new PsysCommandSimulator();
-                // var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
+                // var psysCommands = new PsysCommandSimulator();
+                var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
                 psys = new PressSystem(psysCommands, 20);
                 SystemStatus.Init(Settings);
                 psys.ExceptionEvent += Exception_psys_event;
@@ -174,14 +174,16 @@ namespace PressureSensorTest
                 if (Settings.UsedAutomaticSortingOut)
                 {
                     waitContinue = null;
-                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa));
+                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa)
+                        , Settings.TestPause100);
                 }
                 else
                 {
                     waitContinue = new WaitContinue();
                     waitContinue.ContinueRequest += ContinueRequest;
                     waitContinue.SelectionRequest += (obj, e) => SelectionRequest(this, e);
-                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa));
+                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, 
+                        GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa), Settings.TestPause100);
                 }
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
@@ -310,11 +312,11 @@ namespace PressureSensorTest
 
         private void InitAmmetr()
         {
-            // ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
+            ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
 
             // Для симуляции
-            ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
-                Product.Device.Range.RangeType == RangeTypeEnum.DA);
+            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
+            //    Product.Device.Range.RangeType == RangeTypeEnum.DA);
 
             ammetr.ExceptionEvent += Exception_ammetr_event;
             ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;

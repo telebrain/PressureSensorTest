@@ -66,11 +66,13 @@ namespace PressureSensorTest
             catch (LoCurrentAlarmException)
             {
                 product.Error = TestErrorEnum.AlarmLoLimit;
+                throw new OperationCanceledException();
             }
             // Неисправность изделия. Измеренный ток выше верхнего предела
             catch (HiCurrentAlarmException)
             {
                 product.Error = TestErrorEnum.AlarmHiLimit;
+                throw new OperationCanceledException();
             }
 
 

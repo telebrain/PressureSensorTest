@@ -45,6 +45,19 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
             <StackPanel Margin="15,20,15,10" Orientation="Horizontal">
+                <TextBox>
+                    <TextBox.Text>
+                        <Binding Path="Pause"  UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <DataErrorValidationRule>
+                                </DataErrorValidationRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBlock>Время выдержки при давлении 100%, с</TextBlock>
+            </StackPanel>
+            <StackPanel Margin="15,5,15,5" Orientation="Horizontal">
                 <ComboBox MinWidth="210" ItemsSource="{Binding PressSourceList}" SelectedIndex="{Binding PressSourceItem}"/>
                 <TextBlock>Источник эталонного давления</TextBlock>
             </StackPanel>
@@ -170,7 +183,9 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
+
             
+
             <CheckBox Margin="15,5,0,10" IsChecked="{Binding UsedAutomaticSortingOut, UpdateSourceTrigger=PropertyChanged}">
                 Использовать автоматическую разбраковку
             </CheckBox>

@@ -282,13 +282,22 @@ namespace PressureRack
         private async Task WaitResultSendSP(CancellationToken token)
         {
             bool result = false;
+  
             while (true)
             {
                 if (token.IsCancellationRequested)
                     return;
                 lock (syncRoot)
                 {
-                    result = GetSysState();
+                    try
+                    {
+                        result = GetSysState();
+                    }
+                    catch
+                    {
+                        result = false;
+                        throw;
+                    }
                 }
                 if (result)
                     break;
@@ -299,7 +308,7 @@ namespace PressureRack
 
         // Чтение состояния пневмосистемы
         private bool GetSysState()
-        {
+        { 
             string rx = "";
             string tx = "SYSSTATE?";
             try

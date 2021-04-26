@@ -93,7 +93,7 @@ namespace PressureSensorTest
 
         }
 
-        //  int i = 0;
+        int i = 0;
         private void CycleMeasureCurrent()
         {
             while (!cancellationToken.IsCancellationRequested)
@@ -101,9 +101,9 @@ namespace PressureSensorTest
                 // Симуляция аварии
                 //i++;
                 //if (i >= 10)
-                //    throw new Exception("Нет связи с мультиметром");
+                //    throw new SDM_ErrException("Прервана связь с прибором АКИП 2101");
                 Thread.Sleep(1000);
-                // cancellationToken.ThrowIfCancellationRequested();
+                //cancellationToken.ThrowIfCancellationRequested();
                 double shift = absoluteType ? pressSystem.PressSystemVariables.Barometr*(-1) : rangeMin;
                 double span = rangeMax - rangeMin;
                 double point = pressSystem.ConnectState ? (pressSystem.PressSystemVariables.Pressure - shift) / span : shift/span;

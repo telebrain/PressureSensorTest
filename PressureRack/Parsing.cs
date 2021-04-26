@@ -27,11 +27,20 @@ namespace PressureRack
 
         internal static double ExtractDoubleParametr(string name, string str)
         {
-            //string sData = ExtractStringParametr(name, str);
-            string sData = (new Regex(string.Format(@"(?<={0})(-?\d+|-?\d+\.\d+)(?=;)", name)).Match(str)).ToString();
-            if (!double.TryParse(sData, NumberStyles.Number, new CultureInfo("en-US"), out double val))
+            try
+            {
+                //string sData = ExtractStringParametr(name, str);
+                string sData = (new Regex(string.Format(@"(?<={0})(\S+)(?=;)", name)).Match(str)).ToString();
+                NumberFormatInfo provider = new NumberFormatInfo();
+                provider.NumberDecimalSeparator = ".";
+                double val = Convert.ToDouble(sData, provider);
+                return val;
+            }
+            catch
+            {
                 throw new PressureRackException(3);
-            return val;
+            }
+            
         }
 
         internal static int ExtractIntParametr(string name, string str)

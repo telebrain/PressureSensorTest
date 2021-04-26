@@ -32,8 +32,8 @@ namespace PressureSensorTestCore
             double classPrecision, PressureUnitsEnum pressureUnits, double marginCoefficient = 0.8F)
         {
             PercentRange = percentRange;
-            ReferencePressure = Math.Round(GetPressureByUnits(referencePressure_Pa, pressureUnits), Precision);
-            MeasuredCurrent = Math.Round(measuredCurrent, Precision);
+            ReferencePressure = Math.Round(GetPressureByUnits(referencePressure_Pa, pressureUnits), Precision, MidpointRounding.AwayFromZero);
+            MeasuredCurrent = Math.Round(measuredCurrent, Precision, MidpointRounding.AwayFromZero);
             CalcError(GetPressureByUnits(rangeMin_Pa, pressureUnits), GetPressureByUnits(rangeMax_Pa, pressureUnits));
             // Тест пройден, если погрешность меньше класса с учетом коэффициента запаса
             Resume = Math.Abs(ErrorMeasure) < classPrecision * marginCoefficient;
@@ -46,13 +46,14 @@ namespace PressureSensorTestCore
 
             // Расчет тока, соответсвующего образцовому давлению
             CurrentFromEtalonPressure = Math.Round(СurrentMin + ((СurrentMax - СurrentMin) * (ReferencePressure - rangeMin) /
-                    (rangeMax - rangeMin)), Precision);
+                    (rangeMax - rangeMin)), Precision, MidpointRounding.AwayFromZero);
 
             // Считается для справки. Далее не участвует в разбраковке
             Pressure = Math.Round(((MeasuredCurrent - СurrentMin) * (rangeMax - rangeMin) / (СurrentMax - СurrentMin)) + rangeMin,
-                Precision);
+                Precision, MidpointRounding.AwayFromZero);
             // Расчет основной приведенной погрешности
-            ErrorMeasure = Math.Round(100 * (MeasuredCurrent - CurrentFromEtalonPressure) / (СurrentMax - СurrentMin), Precision);
+            ErrorMeasure = Math.Round(100 * (MeasuredCurrent - CurrentFromEtalonPressure) / (СurrentMax - СurrentMin), 
+                Precision, MidpointRounding.AwayFromZero);
         }
         
         public static double GetPressureByUnits(double val, PressureUnitsEnum pressureUnits)
@@ -70,7 +71,7 @@ namespace PressureSensorTestCore
                     result = val;
                     break;
             }
-            return Math.Round(result, Precision);
+            return Math.Round(result, Precision, MidpointRounding.AwayFromZero);
         }
     }
 }

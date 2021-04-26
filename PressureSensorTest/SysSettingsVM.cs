@@ -303,6 +303,21 @@ namespace PressureSensorTest
             set { showVariations = value; OnPropertyChanged(); }
         }
 
+        int pause;
+        public int Pause
+        {
+            get { return pause; }
+            set
+            {
+                pause = value;
+                OnPropertyChanged();
+                if (pause < 10 || pause > 100)
+                    AddValidError("Значение может быть только в диапазоне от 10 до 100 с");
+                else
+                    ClearValidError();
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -411,6 +426,7 @@ namespace PressureSensorTest
             settings.PaceSettings.ClassPrecision = PaceClassPrecision;
 
             settings.ShowVariation = ShowVariations;
+            settings.TestPause100 = Pause;
         }
 
         private void SettingsToVis()
@@ -451,6 +467,7 @@ namespace PressureSensorTest
             PaceClassPrecision = settings.PaceSettings.ClassPrecision;
 
             ShowVariations = settings.ShowVariation;
+            Pause = settings.TestPause100;
         }
 
         private void InitPortList(string portName)

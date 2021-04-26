@@ -78,15 +78,17 @@ namespace PressureSensorTest
                 sysStatus.PressSystemStatus = StatusEnum.Error;
                 Cancel(ex.Message);
             }
-            // Неисправность изделия. Измеренный ток ниже нижнего предела
+            // Неисправность изделия. Измеренный ток ниже допустимого предела
             catch (LoCurrentAlarmException)
             {
                 product.Error = TestErrorEnum.AlarmLoLimit;
+                Cancel("Измеренный ток ниже допустимого предела");
             }
-            // Неисправность изделия. Измеренный ток выше верхнего предела
+            // Неисправность изделия. Измеренный ток выше допустимого предела
             catch (HiCurrentAlarmException)
             {
                 product.Error = TestErrorEnum.AlarmHiLimit;
+                Cancel("Измеренный ток выше допустимого предела");
             }
 
             // Непредусмотренные ошибки

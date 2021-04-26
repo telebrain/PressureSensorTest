@@ -12,9 +12,9 @@ namespace SDMtest
     {
         static void Main(string[] args)
         {
-            CycleCurrMeasureMode sdm = new CycleCurrMeasureMode("10.4.14.103");
+            var sdm = new Ammetr("10.4.14.103");
 
-            sdm.UpdMeasureResult += Sdm_UpdMeasureResult;
+            sdm. += Sdm_UpdMeasureResult;
 
             try
             {

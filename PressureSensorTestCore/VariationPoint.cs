@@ -23,7 +23,7 @@ namespace PressureSensorTestCore
 
             // Вычисление вариации
             Value = Math.Round(Math.Abs(100 * (currentUpwards - currentTopdown) /
-            (СurrentMax - СurrentMin)), CalcPrecision);
+            (СurrentMax - СurrentMin)), CalcPrecision, MidpointRounding.AwayFromZero);
 
             // Тест в точке пройден, если вариация меньше половины класса точности с учетом коэффициента запаса
             Resume = Value < classPrecision * marginCoefficient / 2;

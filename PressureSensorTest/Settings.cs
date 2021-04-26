@@ -22,6 +22,9 @@ namespace PressureSensorTest
 
         public bool ShowVariation { get; set; }
 
+        // Пауза при тестировании на 100% диапазона в сек
+        public int TestPause100 { get; set; } = 60;
+
         public event EventHandler UpdSettingsEvent;
         public JsonReportSettings JsonReportSettings { get; set; }
 
@@ -83,6 +86,7 @@ namespace PressureSensorTest
             RemoteControlIp = settings.RemoteControlIp;
             PressSystemItem = settings.PressSystemItem;
             ShowVariation = settings.ShowVariation;
+            TestPause100 = settings.TestPause100;
         }
 
         private string GetSettingsFolderPath()

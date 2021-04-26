@@ -102,7 +102,7 @@ namespace PressureSensorTest
                 // Json сохранился в локальной папке, можно продолжать. При восстановлении связи, файлы будут переданы на сервыер
                 sysStatus.ServerStatusMessage = ex.Message;
                 sysStatus.ServerStatus = StatusEnum.Warning;
-                dialogService.WarningMessage(ex.Message);
+                // dialogService.WarningMessage(ex.Message);
             }
         }
     }
