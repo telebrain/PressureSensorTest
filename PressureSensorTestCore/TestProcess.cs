@@ -34,8 +34,7 @@ namespace PressureSensorTestCore
         }
 
         readonly Action<CancellationToken> waitContinue;
-
-        public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr, 
+        public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr,
             double[] testPoints, int pause100) : this(psys, ammetr, testPoints, pause100)
         {
             this.waitContinue = waitContinue;

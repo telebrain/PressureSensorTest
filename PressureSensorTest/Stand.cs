@@ -192,6 +192,7 @@ namespace PressureSensorTest
                     (PressureSensorTestCore.PressureUnitsEnum)device.Range.PressureUnits, precision, GetPsysOutChannel(), 
                     device.Range.RangeType == RangeTypeEnum.DA,  cancellation, progress);
                 Product.Error = (TestErrorEnum)TestResults.GetResume();
+                waitContinue?.WaitSelection(cancellation);
                 Stop();
      
             }

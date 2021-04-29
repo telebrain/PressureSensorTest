@@ -521,10 +521,15 @@ namespace PressureSensorTest
 
         private void ShowResultIndicator()
         {
-            if (stand.Product.Error == TestErrorEnum.NoError)
+            ShowResultIndicator(stand.Product.Error == TestErrorEnum.NoError);
+        }
+
+        private void ShowResultIndicator(bool result)
+        {
+            if (result)
             {
                 VisResultError = Visibility.Hidden;
-                VisResultOK = Visibility.Visible;               
+                VisResultOK = Visibility.Visible;
             }
             else
             {
@@ -583,10 +588,11 @@ namespace PressureSensorTest
 
         private void SelectedRequest_event(object sender, EventArgs e)
         {
-            ShowResultIndicator();
+            bool result = stand.TestResults.GetResume() == 0;
+            ShowResultIndicator(result);
             OutButtonsEnable = true;
-            SignalReleaseButton = stand.TestResults.GetResume() == 0;
-            SignalRejectButton = stand.TestResults.GetResume() != 0;
+            SignalReleaseButton = result;
+            SignalRejectButton = !result;
         }
 
         private void NextStep()

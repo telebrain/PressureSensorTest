@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PressureSensorTest"
         mc:Ignorable="d"
-        Title="Стенд поверки" Height="540" Width="900" Icon="Resources/ManometrBlue.ico" ResizeMode="NoResize">
+        Title="PST" Height="540" Width="900" Icon="Resources/ManometrBlue.ico" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="Button" x:Key="StartButtonStyle">
             <Setter Property="FontWeight" Value="Bold"></Setter>

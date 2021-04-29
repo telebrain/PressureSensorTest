@@ -19,6 +19,7 @@ namespace PressureSensorTest
         public bool UsedRemoteControl { get; set; }
         public bool UsedAutomaticSortingOut { get; set; }
         public string RemoteControlIp { get; set; }
+        public string RemoteControlVer { get; set; }
 
         public bool ShowVariation { get; set; }
 
@@ -84,6 +85,10 @@ namespace PressureSensorTest
             UsedRemoteControl = settings.UsedRemoteControl;
             UsedAutomaticSortingOut = settings.UsedAutomaticSortingOut;
             RemoteControlIp = settings.RemoteControlIp;
+            if (!string.IsNullOrEmpty(settings.RemoteControlVer))
+                RemoteControlVer = settings.RemoteControlVer;
+            else
+                RemoteControlVer = "v1.0";
             PressSystemItem = settings.PressSystemItem;
             ShowVariation = settings.ShowVariation;
             TestPause100 = settings.TestPause100;

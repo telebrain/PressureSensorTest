@@ -57,42 +57,8 @@
                 </TextBox>
                 <TextBlock>Время выдержки при давлении 100%, с</TextBlock>
             </StackPanel>
-            <StackPanel Margin="15,5,15,5" Orientation="Horizontal">
-                <ComboBox MinWidth="210" ItemsSource="{Binding PressSourceList}" SelectedIndex="{Binding PressSourceItem}"/>
-                <TextBlock>Источник эталонного давления</TextBlock>
-            </StackPanel>
-            <GroupBox Margin ="5,10,5,5" Header="Настройки PACE" Visibility="{Binding PaceSettingsVisibility}">
-                <StackPanel Margin="5,10,5,5">
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox VerticalAlignment="Center" 
-                              ItemsSource="{Binding PortList}"
-                              SelectedItem="{Binding PacePortName}"></ComboBox>
-                        <!--ComboBox ItemsSource="{Binding PortList}" SelectedItem="PacePortName"/-->
-                        <TextBlock>COM порт</TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding PaceSrcPlusValue}"></TextBox>
-                        <TextBlock>Значение давления на входе "Source + ", кПа</TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding PaceSrcMinusValue}"></TextBox>
-                        <TextBlock>Значение давления на входе "Source - ", кПа</TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <ComboBox ItemsSource="{Binding PacePrecissionList}" SelectedItem="{Binding PaceClassPrecision}"/>
-                        <TextBlock>Класс точности</TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding PaceMaxTimeSetPressure}"></TextBox>
-                        <TextBlock>Максимальное время выхода на уставку, с</TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding PaceTimeStabPressure}"></TextBox>
-                        <TextBlock>Время стабилизации давления, с</TextBlock>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления" Visibility="{Binding PressureRackSettingsVisibility}">
+          
+            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления">
                 <StackPanel Margin="5,10,5,5">
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{Binding PsysIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
@@ -160,14 +126,22 @@
                 </StackPanel>
             </GroupBox>
             <GroupBox Margin ="5" Header="Настройки удаленного управления">
-                <StackPanel Margin ="5,10,5,5" Orientation="Horizontal" VerticalAlignment="Center">
-                    <CheckBox  IsChecked="{Binding UsedRemouteControl, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
-                        Использовать удаленное управление
-                    </CheckBox>
-                    <ComboBox VerticalAlignment="Center" Margin="20,0,0,0" Width="130"
-                              ItemsSource="{Binding IpNetCardsContent}"
-                              SelectedItem="{Binding IpNetCard}"></ComboBox>
-                    <TextBlock >IP сетевой карты</TextBlock>
+                <StackPanel Margin ="5,10,5,2" Orientation="Vertical">
+                    <StackPanel  Orientation="Horizontal" VerticalAlignment="Center">
+                        <CheckBox  IsChecked="{Binding UsedRemouteControl, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
+                            Использовать удаленное управление
+                        </CheckBox>
+                        <ComboBox VerticalAlignment="Center" Margin="20,0,0,0" Width="130"
+                                  ItemsSource="{Binding IpNetCardsContent}"
+                                  SelectedItem="{Binding IpNetCard}"></ComboBox>
+                        <TextBlock >IP сетевой карты</TextBlock>
+                    </StackPanel>
+                    <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" Margin="0,3,0,0">
+                        <ComboBox VerticalAlignment="Center" Width="130"
+                                  ItemsSource="{Binding RemoteContrVersions}"
+                                  SelectedItem="{Binding RemoteContrVer}"></ComboBox>
+                        <TextBlock >Версия протокола</TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Margin ="5" Header="Настройки базы данных">
