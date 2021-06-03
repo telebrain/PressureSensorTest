@@ -11,6 +11,7 @@ using PressureRack;
 
 
 
+
 namespace PressureSensorTest
 {
     public class Stand
@@ -47,6 +48,7 @@ namespace PressureSensorTest
 
         public Stand()
         {
+            
             Settings = new Settings();
             Settings.Load();
             progress = new Progress();
@@ -61,6 +63,9 @@ namespace PressureSensorTest
             try
             {
                 this.dialogService = dialogService;
+                if (!CheckMetrologicPart())
+                    this.dialogService.ErrorMessage("Внимание! Метрологически значимая часть была изменена. " +
+                        "Для получения более подробной информации откройте меню \"О программе\"");
                 Exception = null;
                 // var psysCommands = new PsysCommandSimulator();
                 var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
@@ -71,7 +76,7 @@ namespace PressureSensorTest
                 psys.DisconnectEvent += SystemStatus.PressSystemDisconnectEvent;
                 psys.BeginConnectEvent += SystemStatus.PressSystem_BeginConnectEvent;
                 // InitAmmetr();
-                
+                metrologicGroups = new MetrologicGroups(Settings.JsonReportSettings.StandId);
                 savingResults = new SavingResults(Settings, SystemStatus);
                 remoteControl?.Dispose();
 
@@ -83,7 +88,10 @@ namespace PressureSensorTest
                 else
                 {
                     processErrorHandler = new ErrorHandlerRemoteControlMode(Settings, SystemStatus);
-                    remoteControl = new RemoteControl(this, Settings.RemoteControlIp, 49003);
+                    if (Settings.RemoteControlVer == "v2.0")
+                        remoteControl = new RemoteControl(this, Settings.RemoteControlIp, 49003, System.Text.Encoding.UTF8, metrologicGroups);
+                    else
+                        remoteControl = new RemoteControl(this, Settings.RemoteControlIp, 49003, System.Text.Encoding.Unicode, metrologicGroups);
                     remoteControl.StartListening();
                 }
                 // throw new Exception();
@@ -108,6 +116,7 @@ namespace PressureSensorTest
         Progress progress;
         ErrorHandler processErrorHandler; // Обработчик ошибок процесса тестирования (только их!)
         SavingResults savingResults;
+        MetrologicGroups metrologicGroups;
 
         IDialogService dialogService;
 
@@ -118,7 +127,7 @@ namespace PressureSensorTest
             {
                 CheckSerialNumber(serialNumber);
                 this.cts = cts;
-                IDevice device = new PD100_Device(serialNumber, deviceName);
+                IDevice device = new PD100_Device(serialNumber, deviceName, metrologicGroups.GetMetrologicGroup(deviceName));
                 Product = new ProductInfo(device, DateTime.Now);
                 Start(device, true, cts.Token);
                 savingResults.SaveResult(Product, TestResults, dialogService);
@@ -237,7 +246,7 @@ namespace PressureSensorTest
         public void ShowAboutTheProgramm()
         {
             var metrologicInfo = new MetrologicInfo();
-            string info = $"Версия сборки v.{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()}" +
+            string info = $"Версия программы v.{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()}" +
                 $"\n{new string('-', 80)}\n\n" + metrologicInfo.GetMetrologicInfo();
             
             dialogService.Message("О программе", info);
@@ -331,6 +340,12 @@ namespace PressureSensorTest
                 if (string.IsNullOrEmpty(serialNumber))
                     throw new Exception("Не введен заводской номер изделия");
             }
+        }
+
+        private bool CheckMetrologicPart()
+        {
+            MetrologicInfo info = new MetrologicInfo();
+            return info.CheckValid();
         }
     }
 }

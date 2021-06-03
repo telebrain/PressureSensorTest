@@ -14,6 +14,8 @@ namespace PressureSensorTest
         public string StandHardwareVer { get; set; }
         public bool ArchivingJsonFile { get; set; }
         public bool UsedFtp { get; set; }
+        public string FtpLogin { get; set; } = "";
+        public string FtpPassword { get; set; } = "";
         public string ArchivingPath { get; set; } = "";
         public int MaxCommunicationBreakWithArchive { get; set; }
         public int[] PointsCode { get; set; } = new int[] { 3, 6, 8, 10, 13 };

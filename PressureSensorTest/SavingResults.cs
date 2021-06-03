@@ -17,10 +17,10 @@ namespace PressureSensorTest
             this.sysStatus = sysStatus;
             var jsonSettings = settings.JsonReportSettings;
             archiving = new ArchivingProcess(jsonSettings.ArchivingPath, jsonSettings.MaxCommunicationBreakWithArchive, 
-                jsonSettings.UsedFtp);
+                jsonSettings.UsedFtp, jsonSettings.FtpLogin, jsonSettings.FtpPassword);
             archiving.SuccessfulCopyToServerEvent += Archiving_SuccessfulCopyToServerEvent;
             archiving.StartTracking();
-            db = new ProductDb(settings.PathToDb);
+            db = new ProductDb(settings.PathToDb, settings.DbPassword);
         }
 
         private void Archiving_SuccessfulCopyToServerEvent(object sender, EventArgs e)

@@ -23,7 +23,7 @@ namespace PressureRack
             try
             {
                 ErrorNumber = errNumber;
-                Properties.Resources.ResourceManager.GetString($"Err{errNumber}");
+                Message = Errors.Messages[ErrorNumber];
             }
             catch
             {

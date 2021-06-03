@@ -7,14 +7,11 @@ using System.Net;
 using System.Threading;
 using TCPserver;
 using OwenPressureDevices;
-using log4net;
-
 
 namespace PressureSensorTest
 {
     public class RemoteControl: IDisposable
     {
-        readonly static ILog log = LogManager.GetLogger(typeof(RemoteControl)); 
         readonly Stand stand;
         ReqHandler reqHandler;
         Server server = null;
@@ -49,14 +46,23 @@ namespace PressureSensorTest
             }
         }
 
-        MetrologicGroups metrologicGroops;
 
         public StateProcessEnum StateProcess { get; private set; } = StateProcessEnum.Indefined;
 
-        public RemoteControl(Stand stand, string ip, int port, Encoding encoding, MetrologicGroups metrologicGroops)
+        //public RemoteControl(Stand stand, string ip, int port)
+        //{
+        //    this.stand = stand;
+        //    reqHandler = new ReqHandler(this);
+        //    server = new Server(reqHandler, 1, 10000);
+        //    if (!IPAddress.TryParse(ip, out address))
+        //        address = IPAddress.Parse("127.0.0.1");
+        //    this.port = port;
+        //    stand.StopEvent += Stand_ProcessComplete;
+        //}
+
+        public RemoteControl(Stand stand, string ip, int port, Encoding encoding)
         {
             this.stand = stand;
-            this.metrologicGroops = metrologicGroops;
             reqHandler = new ReqHandler(this);
             server = new Server(reqHandler, 1, 10000, encoding);
             if (!IPAddress.TryParse(ip, out address))
@@ -76,7 +82,6 @@ namespace PressureSensorTest
         public void StartListening()
         {
             cts = new CancellationTokenSource();
-            log.Info($"Запуск прослушки IP: <{address.ToString()}>, порт: <{port}>");
             t = server.Listening(address, port, cts.Token);          
         }
 
@@ -95,7 +100,6 @@ namespace PressureSensorTest
                 var dt = ParseDateTime(productReq.DateOp);
                 IDevice device = GetDevice(productReq.SN, productReq.Name);
                 StateProcess = StateProcessEnum.Started;
-                // Task t = stand.RemoteStart(device, productReq.Box, dt, productReq.PrimaryVerification);
                 Task t = stand.RemoteStart(device, productReq.Box, dt, productReq.PrimaryVerification);
                 t.GetAwaiter();
             }
@@ -115,19 +119,10 @@ namespace PressureSensorTest
 
         private IDevice GetDevice(string sn, string name)
         {
-            string cirName = "";
             try
             {
-                cirName = DecodeName(name);
-                return new PD100_Device(sn, cirName, metrologicGroops.GetMetrologicGroup(cirName));
+                return new PD100_Device(sn, name);
             }
-            catch (PressureSensorTest.MetrologicGroupNotFounException)
-            {
-                StateProcess = StateProcessEnum.MetrologicGroupNotFound;
-                log.Error($"Не удалось разобрать название ПД: <{name}>, <{cirName}>");
-                throw;
-            }
-
             catch
             {
                 StateProcess = StateProcessEnum.ParsingNameError;
@@ -135,22 +130,11 @@ namespace PressureSensorTest
             }
         }
 
-        private string DecodeName(string name)
-        {
-            string nameOut = name;
-            string[] codeLa = new string[] { "PD100I", "PD", "DIV", "DI", "DV", "DG", "DA", "DD" };
-            string[] codeRus = new string[] { "ПД100И", "ПД", "ДИВ", "ДИ", "ДВ", "ДГ", "ДА", "ДД" };
-            for (int i = 0; i < codeLa.Length; i++)
-                nameOut = nameOut.Replace(codeLa[i], codeRus[i]);
-            return nameOut;
-        }
-
         private void CheckSerialNumber(string sn)
         {
             if (sn.Length < 17 || sn.Length > 19)
             {
                 StateProcess = StateProcessEnum.ParsingSnError;
-                log.Error($"Неверный формат серийного номера: <{sn}>");         
                 throw new ParseException();
             }
         }
@@ -160,7 +144,6 @@ namespace PressureSensorTest
             if (!(box.Length == 4 && int.TryParse(box, out int val)))
             {
                 StateProcess = StateProcessEnum.ParsingBoxError;
-                log.Error($"Неверный формат номера оснастки: <{box}>");
                 throw new ParseException();
             }
 
@@ -184,8 +167,6 @@ namespace PressureSensorTest
 
     public class ParseException: Exception { }
 
-    public class MetrologicGroupNotFounException: Exception { }
-
     public enum StateProcessEnum
     {
         Indefined = -100, // Неопределенное состояние     
@@ -196,7 +177,6 @@ namespace PressureSensorTest
         ParsingBoxError = 3, // Неверен формат номера оснастки
         ParsingNameError = 4, // Не удалось разобрать имя продукта
         ParsingDateTimeError = 5, // Не удалось преобразовать формат времени
-        MetrologicGroupNotFound = 6 // Не найдена метрологическая группа
     }
 
     public enum ProductStatus

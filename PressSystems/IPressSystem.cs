@@ -83,6 +83,11 @@ namespace PressSystems
             CancellationToken cancellationToken);
 
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
+        // из диапазона и класса точности калибруемого(тестируетого) изделия c передачей флага операции с абсоллютным давлением
+        void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure,
+            CancellationToken cancellationToken);
+
+        // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
         // из диапазона и класса точности калибруемого(тестируетого) изделия
         void SetPressure(double SP, double rangeMin, double rangeMax, 
             int maxOperationTime, CancellationToken cancellationToken);

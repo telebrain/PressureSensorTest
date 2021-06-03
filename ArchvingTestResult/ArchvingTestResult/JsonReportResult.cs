@@ -7,13 +7,18 @@ namespace ArchvingTestResult
     public class JsonReportResult
     {
         const string dateTimeFormat = "yyyy-MM-ddTHH:mm:sszz";
-
-
-        public string dataSource = "stand";
+        // Версия Json
+        public int fileVersion { get; set; } = 2;
+        // Источник данных
+        public string dataSource { get; set; } = "stand";
         // Тип изделия
         public int deviceType { get; set; }
+        // Статус изделия
+        public int deviceStat { get; set; } = 1;
         // SN прибора
         public string deviceSN { get; set; } = "";
+        // Номер части поверки
+        public int filePart { get; set; } = 0;
         // SN для Danfos
         public string deviceSNDF { get; set; } = "";
         // Метрологическая группа
@@ -45,7 +50,7 @@ namespace ArchvingTestResult
         // Вывод 
         public bool isGood { get; set; }
         // Флаг первичной поверки
-        public bool primaryVerification { get; set; }
+        public bool primaryVerification { get; set; } = true;
         // Таблица результатов
         public JsonTestPointData[] measuresMetrological { get; set; }
         // Дополнительные параметры

@@ -11,7 +11,7 @@ namespace PressureSensorTest
         public JsonReportResult JsonReportResult { get; private set; }
 
         TestResults testResults;
-        PressureIndication pressureIndication;
+        // PressureIndication pressureIndication;
         JsonReportSettings settings;
 
         public string FileName { get; private set; }
@@ -34,7 +34,7 @@ namespace PressureSensorTest
            PressureIndication pressureIndication, bool isGood, DateTime dateTime, int metrologicGroup)
         {
             testResults = results;
-            this.pressureIndication = pressureIndication;
+            // this.pressureIndication = pressureIndication;
             JsonReportResult = new JsonReportResult
             {
                 deviceSN = serialNumber,

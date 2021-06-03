@@ -72,6 +72,12 @@ namespace PressureSensorTest
             sysSettingsWin.ShowDialog();
         }
 
+        public void ShowSysSettingsWindow(object vm, string pw)
+        {
+            if (CheckPassword(pw))
+                ShowSysSettingsWindow(vm);
+        }
+
         public void CloseSysSettingsWindow()
         {
             sysSettingsWin.Close();
@@ -87,12 +93,30 @@ namespace PressureSensorTest
             settingsArchivingResultWin.ShowDialog();
         }
 
+        public void ShowArchivindSettingsWindow(object vm, string pw)
+        {
+            if (CheckPassword(pw))
+                ShowArchivindSettingsWindow(vm);
+        }
+
         public void CloseArchivindSettingsWindow()
         {
             settingsArchivingResultWin.Close();
         }
 
-        
+        private bool CheckPassword(string pas)
+        {
+            var passwordWin = new Password(pas);
+            passwordWin.ShowDialog();
+            if (passwordWin.PwChecked == null)
+                return false;
+            if (passwordWin.PwChecked == false)
+            {
+                ShowErrorDialog("Введен неверный пароль");
+                return false;
+            }
+            return true;
+        }
 
 
         #endregion

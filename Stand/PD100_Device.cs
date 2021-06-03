@@ -14,17 +14,18 @@ namespace OwenPressureDevices
             Name = "";
         }
 
-        public PD100_Device(string serialNumber, string name)
+        public PD100_Device(string serialNumber, string name, int metrologicGroup)
         {
             SerialNumber = serialNumber;
             Name = name;
+            MetrologicGroupNumber = metrologicGroup;
         }
 
         public string ChannelNumber { get; }
 
         public string SerialNumber { get; set; }
 
-        public int MetrologicGroupNumber { get; set; }
+        public int MetrologicGroupNumber { get; private set; }
 
         string name;
         public string Name
@@ -44,7 +45,7 @@ namespace OwenPressureDevices
                     int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
                     RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
                     Range = new DeviceRange(range_Pa, rangeType);
-                    MetrologicGroupNumber = FindMetrologicGroupNumber(Range);
+                    
                 }
                 catch
                 {
@@ -68,17 +69,9 @@ namespace OwenPressureDevices
         public DeviceRange Range { get; private set; }
 
         // Код для Json протокола
-         public int DeviceTypeCode { get { return 9; } }
+        public int DeviceTypeCode { get { return 9; } }
         // Код для Json протокола
         public int SensorTypeCode { get { return 460; } }
-
-        private int FindMetrologicGroupNumber(DeviceRange range)
-        {
-            // Пока заглушка. Нужно сделать класс MetrologicGroup и грузить группы из Excel
-            if (range.Max_Pa <= 100000)
-                return 6;
-            return 5;
-        }
 
     }
 

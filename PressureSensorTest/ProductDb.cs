@@ -11,9 +11,9 @@ namespace PressureSensorTest
     {
         ProductLineDb db;
 
-        public ProductDb(string dbPath)
+        public ProductDb(string dbPath, string password)
         {
-            db = new ProductLineDb(dbPath);
+            db = new ProductLineDb(dbPath, password);
         }
 
         public void AddTestInfo(ProductInfo productInfo, string jsonData)

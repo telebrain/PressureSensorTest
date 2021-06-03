@@ -95,19 +95,28 @@ namespace SDM_comm
             transport = new Transport(ip, Port);
             transport.Connect();
             commands = new SDM_Commands(transport);
+            
+
             commands.SetCurrentRange(CurrentType, Range, Units);
-            commands.SetSamples(1);
+            // commands.SetSamples(1);
+            // commands.SetIntegration(10);
+            // commands.CurrentFiltrOff();
+
             commands.InitCommand();
+
             StateConnect = true;
             ConnectEvent?.Invoke(this, new EventArgs());
             while (!cancellationToken.IsCancellationRequested)
             {
-                Current = commands.ReadMeasValue(5) * multipler;
+                for(int i = 0; i < 4; i++)
+                    Current = commands.ReadMeasValue(5) * multipler;
                 Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 UpdMeasureResult?.Invoke(this, new EventArgs());
                 Thread.Sleep(300);
+                //commands.InitCommand();
             }
             
         }
+        
     }
 }

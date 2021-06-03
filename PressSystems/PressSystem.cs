@@ -187,8 +187,31 @@ namespace PressSystems
 
         public void SetPressure(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken)
         {
-            int controller = Info.SearshController(SP, rangeMax, rangeMin);
+            double _rangeMin = rangeMin;
+            double _rangeMax = rangeMax;
+            if (rangeMax < rangeMin) // тип ДВ
+            {
+                _rangeMax = rangeMin;
+                _rangeMin = rangeMax;
+            }
+            int controller = Info.SearshController(SP, _rangeMax, _rangeMin);
             SetPressure(controller, SP, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, CancellationToken cancellationToken)
+        {
+            double _rangeMin = rangeMin;
+            double _rangeMax = rangeMax;
+            double sp = SP;
+            if (absolutePressure)
+            {
+                // Если поверка прибора абсолютного давления, корректируем уставку и диапазон по барометру
+                WaitUpdatePressureVar(cancellationToken);
+                sp -= PressSystemVariables.Barometr;
+                _rangeMin -= PressSystemVariables.Barometr;
+                _rangeMax -= PressSystemVariables.Barometr;
+            }
+            SetPressure(sp, _rangeMin, _rangeMax, cancellationToken);
         }
 
         public void SetPressure(double SP, double rangeMin, double rangeMax, int maxOperationTime, CancellationToken cancellationToken)
@@ -199,9 +222,14 @@ namespace PressSystems
 
         public void WriteNewSP(int controller, double SP, CancellationToken cancellationToken)
         {
+            double sp = SP;
             try
             {
-                commands.WriteSP(controller, SP, cancellationToken);
+                if (sp > Info.RangeHi)
+                    sp = Info.RangeHi;
+                if (sp < Info.RangeLo)
+                    sp = Info.RangeLo;
+                commands.WriteSP(controller, sp, cancellationToken);
             }
             catch (OperationCanceledException)
             {

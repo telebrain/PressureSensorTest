@@ -15,11 +15,13 @@ namespace PressureSensorTest
         public AmmetrSettins AmmetrSettins { get; set; }
 
         public string PathToDb { get; set; }
+        public string DbPassword { get; set; }
         public bool UsedStandDatabase { get; set; }
         public bool UsedRemoteControl { get; set; }
         public bool UsedAutomaticSortingOut { get; set; }
         public string RemoteControlIp { get; set; }
         public string RemoteControlVer { get; set; }
+        public string Password { get; set; } = "owen";
 
         public bool ShowVariation { get; set; }
 
@@ -81,6 +83,7 @@ namespace PressureSensorTest
             AmmetrSettins = settings.AmmetrSettins;
             JsonReportSettings = settings.JsonReportSettings;
             PathToDb = settings.PathToDb;
+            DbPassword = settings.DbPassword;
             UsedStandDatabase = settings.UsedStandDatabase;
             UsedRemoteControl = settings.UsedRemoteControl;
             UsedAutomaticSortingOut = settings.UsedAutomaticSortingOut;
@@ -92,6 +95,7 @@ namespace PressureSensorTest
             PressSystemItem = settings.PressSystemItem;
             ShowVariation = settings.ShowVariation;
             TestPause100 = settings.TestPause100;
+            Password = settings.Password;
         }
 
         private string GetSettingsFolderPath()

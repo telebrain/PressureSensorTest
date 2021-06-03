@@ -12,7 +12,7 @@ namespace SDM_test
     {
         static void Main(string[] args)
         {
-            var ammetr = new Ammetr("10.4.14.105", CurrentTypeEnum.DC, CurrentUnitsEnum.mA, 20);
+            var ammetr = new Ammetr("10.4.14.92", CurrentTypeEnum.DC, CurrentUnitsEnum.mA, 20);
             ammetr.UpdMeasureResult += Meas;
             ammetr.StartCycleMeasureCurrent();
            

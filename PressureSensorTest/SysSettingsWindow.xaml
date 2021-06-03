@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PressureSensorTest"
         mc:Ignorable="d"
-        Title="Настройки системы" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
+        Title="Настройки системы" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner" >
     <Window.Resources>
         <Style TargetType="ComboBox">
             <Setter Property="MinWidth" Value="100"></Setter>
@@ -44,7 +44,11 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
-            <StackPanel Margin="15,20,15,10" Orientation="Horizontal">
+            <StackPanel Margin="15,10,15,5" Orientation="Horizontal">
+                <TextBox Text="{Binding Password}"></TextBox>
+                <TextBlock>Пароль доступа к настройкам</TextBlock>
+            </StackPanel>
+            <StackPanel Margin="15,5,15,5" Orientation="Horizontal">
                 <TextBox>
                     <TextBox.Text>
                         <Binding Path="Pause"  UpdateSourceTrigger="PropertyChanged">
@@ -58,7 +62,7 @@
                 <TextBlock>Время выдержки при давлении 100%, с</TextBlock>
             </StackPanel>
           
-            <GroupBox Margin ="5,10,5,5" Header="Настройки стойки давления">
+            <GroupBox Margin ="5,5,5,5" Header="Настройки стойки давления">
                 <StackPanel Margin="5,10,5,5">
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{Binding PsysIp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
@@ -146,9 +150,13 @@
             </GroupBox>
             <GroupBox Margin ="5" Header="Настройки базы данных">
                 <StackPanel Margin="5,10,5,5">
-                    <CheckBox Margin="0,10,0,0" IsChecked="{Binding UsedWithDataBase, UpdateSourceTrigger=PropertyChanged}">
-                        Записывать результаты в базу стенда
-                    </CheckBox>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" >
+                        <CheckBox IsChecked="{Binding UsedWithDataBase, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center">
+                            Записывать результаты в базу стенда
+                        </CheckBox>
+                        <TextBox Margin="15,0,0,0" MinWidth="120" Text="{Binding DbPassword}" VerticalAlignment="Center"></TextBox>
+                        <TextBlock VerticalAlignment="Center">Пароль доступа к базе</TextBlock>
+                    </StackPanel>
                     <TextBlock Margin="0,15,0,0">Путь к базе</TextBlock>
                     <StackPanel Orientation="Horizontal">
                         <TextBox MinWidth="430" Text="{Binding DbPath, UpdateSourceTrigger=PropertyChanged}"

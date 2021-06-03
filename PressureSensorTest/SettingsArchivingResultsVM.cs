@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using System.Windows;
 
 namespace PressureSensorTest
 {
@@ -34,6 +35,10 @@ namespace PressureSensorTest
                 usedFtp = value;
                 OnPropertyChanged();
                 EnblObservrtButton = !usedFtp;
+                if (usedFtp)
+                    FtpElementsVis = Visibility.Visible;
+                else
+                    FtpElementsVis = Visibility.Collapsed;
             }
         }
 
@@ -48,7 +53,13 @@ namespace PressureSensorTest
         public bool EnableArchiving
         {
             get { return enableArchiving; }
-            set { enableArchiving = value; OnPropertyChanged(); }
+            set
+            {
+                enableArchiving = value;
+               
+
+                OnPropertyChanged();
+            }
         }
 
         int standID;
@@ -86,6 +97,28 @@ namespace PressureSensorTest
                     ClearValidError();
             }
         }
+
+        string login;
+        public string Login
+        {
+            get { return login; }
+            set { login = value; OnPropertyChanged(); }
+        }
+
+        string password;
+        public string Password
+        {
+            get { return password; }
+            set { password = value; OnPropertyChanged(); }
+        }
+
+        Visibility ftpElementsVis;
+        public Visibility FtpElementsVis
+        {
+            get { return ftpElementsVis; }
+            set { ftpElementsVis = value; OnPropertyChanged(); }
+        }
+
 
         RelayCommand saveSettingsCommand;
         public RelayCommand SaveSettingsCommand
@@ -145,9 +178,10 @@ namespace PressureSensorTest
             MaxComBreak = settings.JsonReportSettings.MaxCommunicationBreakWithArchive;
             HardwareVer = settings.JsonReportSettings.StandHardwareVer;
             StandID = settings.JsonReportSettings.StandId;
-
-            this.winService = winService; 
-            winService.ShowArchivindSettingsWindow(this);
+            Login = settings.JsonReportSettings.FtpLogin;
+            Password = settings.JsonReportSettings.FtpPassword;
+            this.winService = winService;
+            winService.ShowArchivindSettingsWindow(this, settings.Password);
 
         }
 
@@ -162,7 +196,8 @@ namespace PressureSensorTest
                 settings.JsonReportSettings.MaxCommunicationBreakWithArchive = MaxComBreak;
                 settings.JsonReportSettings.StandHardwareVer = HardwareVer;
                 settings.JsonReportSettings.StandId = StandID;
-
+                settings.JsonReportSettings.FtpLogin = Login;
+                settings.JsonReportSettings.FtpPassword = Password;
                 settings.Save();
                 winService.CloseArchivindSettingsWindow();
             }

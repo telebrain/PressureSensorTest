@@ -44,6 +44,7 @@
     <Compile Include="ArticulsTable.cs" />
     <Compile Include="ExternalDataFile.cs" />
     <Compile Include="ComponentsOfDeviceName.cs" />
+    <Compile Include="MetrologicGroups.cs" />
     <Compile Include="PD100_DeviceSpecification.cs" />
     <Compile Include="IDeviceSpecification.cs" />
     <Compile Include="PD100_Device.cs" />
@@ -55,13 +56,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Librarys\SimpleExcelClosedXML\SimpleExcelClosedXML\SimpleExcelClosedXML.csproj">
+      <Project>{3fb286c6-0ed7-4405-a31b-21d09149dd5a}</Project>
+      <Name>SimpleExcelClosedXML</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PressSystems\PressSystems.csproj">
       <Project>{aabd3295-9947-4a6c-bbb3-457aba73e25b}</Project>
       <Name>PressSystems</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimpleExcelClosedXML\SimpleExcelClosedXML\SimpleExcelClosedXML.csproj">
-      <Project>{3fb286c6-0ed7-4405-a31b-21d09149dd5a}</Project>
-      <Name>SimpleExcelClosedXML</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

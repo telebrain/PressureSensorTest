@@ -15,10 +15,10 @@ namespace ArchvingTestResult
 
         public event EventHandler SuccessfulCopyToServerEvent;
 
-        public ArchivingProcess(string path, int maxArchivingInterval, bool usedFtp)
+        public ArchivingProcess(string path, int maxArchivingInterval, bool usedFtp, string login, string password)
         {
             if (usedFtp)
-                archiving = new ArchivingToFtp(path, LocalFolder, maxArchivingInterval);
+                archiving = new ArchivingToFtp(path, LocalFolder, maxArchivingInterval, login, password);
             else
                 archiving = new ArchivingToFolder(path, LocalFolder, maxArchivingInterval);
             trackingResultFiles = new TrackingResultFiles(archiving, 1);

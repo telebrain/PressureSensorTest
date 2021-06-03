@@ -110,8 +110,9 @@ namespace PressureSensorTestCore
         {
             SetPressure(testPoint, rangeMin_Pa, rangeMax_Pa, cancellationToken);
             Measures(out double pressure, out double current, cancellationToken);
-            // Если уставка равна нулю, то тестируемое изделие связано с атмосферой. Давление считаем равным нулю
-            if ((int)((rangeMax_Pa - rangeMin_Pa) * testPoint - rangeMin_Pa) == 0)
+            // Если уставка равна нулю, то тестируемое изделие связано с атмосферой. Давление считаем равным нулю, 
+            // кроме случая с абсолютным давлением
+            if (((int)((rangeMax_Pa - rangeMin_Pa) * testPoint - rangeMin_Pa) == 0) && ! absoluteType)
                 pressure = 0;
             CheckPoint point = new CheckPoint((int)(testPoint * 100), rangeMin_Pa, rangeMax_Pa, pressure, current, classPrecision,
                 pressureUnits, marginCoefficient);
@@ -124,21 +125,19 @@ namespace PressureSensorTestCore
             double _rangeMax = rangeMax;
             // Находим уставку по точке диапазона
             double SP = testPoint * (_rangeMax - _rangeMin) + _rangeMin;
-            if (absoluteType)
+            
+            if (!psysIsConnect && ((int)SP != 0 || absoluteType))
             {
-                // Если поверка прибора абсолютного давления, корректируем уставку и диапазон по барометру
-                SP -= psys.PressSystemVariables.Barometr;
-                _rangeMin -= psys.PressSystemVariables.Barometr;
-                _rangeMax -= psys.PressSystemVariables.Barometr;
-            }
-            if (!psysIsConnect && (int)SP != 0)
-            { 
-                // Если пневмосистема еще не была подключена, а уставка отличается от 0, подключаем пневмосистему
+                // Если уставка отличается от 0 или это датчик абсолютного давления,
+                // и пневмосистема еще не подключена, подключаем пневмосистему
                 psys.Connect(outChannelPsys, cancellationToken);
                 psysIsConnect = psys.ConnectState;
             }
             if (psysIsConnect)
-                psys.SetPressure(SP, _rangeMin, _rangeMax, cancellationToken);
+            {
+                psys.SetPressure(SP, _rangeMin, _rangeMax, absoluteType, cancellationToken);
+            }
+                
         }
 
         private void Measures(out double pressure, out double current, CancellationToken cancellationToken)

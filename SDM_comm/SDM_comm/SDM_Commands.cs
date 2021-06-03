@@ -19,7 +19,7 @@ namespace SDM_comm
         public void InitCommand()
         {
             transport.Send("INIT");
-            //Pause(1000);
+            Pause(300);
         }
 
         public void SetCurrentRange(CurrentTypeEnum currentType, int value, CurrentUnitsEnum unit)
@@ -42,18 +42,33 @@ namespace SDM_comm
 
         public void SetSamples(int samples)
         {
-            transport.Send($"SAMP:COUNT {samples}");            
+            transport.Send($"SAMP:COUN {samples}");            
             Pause(1000);
-            string rec = WriteRead("SAMP:COUNT?");
+            string rec = WriteRead("SAMP:COUN?", 1000);
             string recVal = (new Regex(@"(?<=\+)(\w+)(?=\n)").Match(rec)).ToString();
             if (!(int.TryParse(recVal, out int val) && samples == val))
                 throw new SDM_ErrException(Properties.Resources.SetSamples);           
         }
 
+        public void SetIntegration(float nplc)
+        {
+            transport.Send($"CURR:DC:NPLC 1");
+            Pause(1000);
+        }
+
+        public void CurrentFiltrOff()
+        {
+            transport.Send($"CURR:FILT OFF");
+            string rec = WriteRead("CURR:FILT?");
+            Pause(1000);
+        }
+
         public double ReadMeasValue()
         {
-            string val = WriteRead("READ?");
-            val = val.Substring(0, val.IndexOf('\n'));
+            string read = WriteRead("READ?", 300);
+            string[] vals = read.Split(',');
+            string val = vals[vals.Length - 1];
+            val = val.Substring(0, val.IndexOf('\n')); //val.Substring(0, val.IndexOf('\n'));
             return ConvertRecevedValue(val);
         }
 
@@ -78,8 +93,20 @@ namespace SDM_comm
         {
             try
             {
+                return WriteRead(send, 300);
+            }
+            catch
+            {
+                throw new SDM_ErrException(Properties.Resources.ExchangeError);
+            }
+        }
+
+        public string WriteRead(string send, int timeout)
+        {
+            try
+            {
                 transport.Send(send);
-                Pause(300);
+                Pause(timeout);
                 return transport.Receive();
             }
             catch

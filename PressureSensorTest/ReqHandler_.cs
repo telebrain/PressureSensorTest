@@ -5,15 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TCPserver;
 using Newtonsoft.Json;
-using log4net;
-using log4net.Config;
+
 
 namespace PressureSensorTest
 {
     public class ReqHandler : IRequestHandler
     {
-        public static readonly ILog log = LogManager.GetLogger(typeof(ReqHandler));
-
         public int ReceiveBuffer { get; } = 512;
         public event EventHandler ClosingConnection;
 
@@ -21,7 +18,6 @@ namespace PressureSensorTest
 
         public ReqHandler(RemoteControl remoteControl)
         {
-            // log4net.Config.XmlConfigurator.Configure();
             this.remoteControl = remoteControl;
         }
 
@@ -56,15 +52,12 @@ namespace PressureSensorTest
                 else
                 {
                     toSend = (new SimpleRequest("Error", 2)).GetJsonFormat();
-                    log.Error($"Не удалось разобрать сообщение: <{received}>");
-                    return "";
                 }
                 // System.Diagnostics.Debug.WriteLine("ToSend: " + toSend + "\n");
                 return toSend;
             }
             catch
             {
-                log.Error($"Не удалось разобрать сообщение: <{received}>");
                 return "";
             }
         }
@@ -129,8 +122,10 @@ namespace PressureSensorTest
 
         public virtual string GetJsonFormat()
         {
-            return JsonConvert.SerializeObject(this, Formatting.None);
-        }        
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        
     }
 
     [Serializable]

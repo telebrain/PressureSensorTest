@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PressureSensorTest"
         mc:Ignorable="d"
-        Title="Настройки сохранения результатов" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStyle="ToolWindow">
+        Title="Настройки сохранения результатов" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Style.Triggers>
@@ -46,6 +46,14 @@
                 <CheckBox Margin="5,10,15,10" IsChecked="{Binding UsedFtp, UpdateSourceTrigger=PropertyChanged}">
                     Использовать FTP
                 </CheckBox>
+                <StackPanel Orientation="Horizontal" Margin="5" Visibility="{Binding FtpElementsVis}">
+                    <TextBox MinWidth="200" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBlock Margin="10,0,0,0">Логин</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5" Visibility="{Binding FtpElementsVis}">
+                    <TextBox MinWidth="200" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    <TextBlock Margin="10,0,0,0">Пароль</TextBlock>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBox MinWidth="50" Margin="5,5,5,5" VerticalAlignment="Center">
                         <TextBox.Text>

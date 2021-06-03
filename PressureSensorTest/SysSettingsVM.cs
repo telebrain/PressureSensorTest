@@ -29,12 +29,18 @@ namespace PressureSensorTest
             this.settings = settings;
             this.winService = winService;
             SettingsToVis();
-            winService.ShowSysSettingsWindow(this);
-
+            winService.ShowSysSettingsWindow(this, settings.Password);
         }
 
 
         #region Bildings
+
+        string password;
+        public string Password
+        {
+            get { return password; }
+            set { password = value; OnPropertyChanged(); }
+        }
 
         public List<string> PressSourceList { get; } =
             new List<string>(new string[] { "Стойка эталонов давления", "JE PACE5000" });
@@ -159,6 +165,13 @@ namespace PressureSensorTest
             set { usedAutomaticSortingOut = value; OnPropertyChanged(); }
         }
 
+        string dbPassword;
+        public string DbPassword
+        {
+            get { return dbPassword; }
+            set { dbPassword = value; OnPropertyChanged(); }
+        }
+
         string dbPath;
         public string DbPath
         {
@@ -180,7 +193,6 @@ namespace PressureSensorTest
             set { ipNetCard = value; OnPropertyChanged(); }
         }
 
-        List<string> remoteContrVersions;
         public List<string> RemoteContrVersions { get; } = new List<string> { "v1.0", "v2.0" };
 
         string remoteContrVer;
@@ -300,12 +312,14 @@ namespace PressureSensorTest
 
         private void VisToSettins()
         {
+            settings.Password = Password;
             settings.PsysSettings.IP = PsysIp;
             settings.PsysSettings.MaxTimeSetPressure = MaxTimeSetPressure;
             settings.PsysSettings.TimeStabilisation = TimeStabPressure;
             settings.PsysSettings.ChannelsOut = new int[] { OutChannelByThread_20, OutChannelByThread_12, outChannelByThread_14};
             settings.AmmetrSettins.Ip = SdmIp;
             settings.PathToDb = DbPath;
+            settings.DbPassword = DbPassword;
             settings.UsedStandDatabase = UsedWithDataBase;
             settings.UsedRemoteControl = UsedRemouteControl;
             settings.UsedAutomaticSortingOut = UsedAutomaticSortingOut;
@@ -317,6 +331,7 @@ namespace PressureSensorTest
 
         private void SettingsToVis()
         {
+            Password = settings.Password; 
             PsysIp = settings.PsysSettings.IP;
             MaxTimeSetPressure = settings.PsysSettings.MaxTimeSetPressure;
             TimeStabPressure = settings.PsysSettings.TimeStabilisation;
@@ -325,6 +340,7 @@ namespace PressureSensorTest
             OutChannelByThread_14 = settings.PsysSettings.ChannelsOut[2];
             SdmIp = settings.AmmetrSettins.Ip;
             DbPath = settings.PathToDb;
+            DbPassword = settings.DbPassword;
             UsedWithDataBase = settings.UsedStandDatabase;
             UsedRemouteControl = settings.UsedRemoteControl;
             RemoteContrVer = settings.RemoteControlVer;
