@@ -69,7 +69,7 @@ namespace PressureSensorTest
                 Exception = null;
                 // var psysCommands = new PsysCommandSimulator();
                 var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
-                psys = new PressSystem(psysCommands, 20);
+                psys = new PressSystem(psysCommands, Settings.PsysSettings.MaxTimeSetPressure);
                 SystemStatus.Init(Settings);
                 psys.ExceptionEvent += Exception_psys_event;
                 psys.ConnectEvent += SystemStatus.PressSysten_ConnectEvent;
@@ -325,7 +325,7 @@ namespace PressureSensorTest
             ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
 
             // Для симуляции
-            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
+            // ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
             //    Product.Device.Range.RangeType == RangeTypeEnum.DA);
 
             ammetr.ExceptionEvent += Exception_ammetr_event;

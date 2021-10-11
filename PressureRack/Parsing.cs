@@ -62,12 +62,16 @@ namespace PressureRack
             var info = new PressControllerInfo()
             {
                 IsEnabled = (ExtractStringParametr("STATE:", str) == "ON"),
-                RangeLo = ExtractDoubleParametr("LO:", str) * 1000,
-                RangeHi = ExtractDoubleParametr("HI:", str) * 1000,
-                Precision = ExtractDoubleParametr("PREC:", str),
-                SN = ExtractStringParametr("SN:", str),
                 Number = number
             };
+            if (info.IsEnabled)
+            {
+                info.RangeLo = ExtractDoubleParametr("LO:", str) * 1000;
+                info.RangeHi = ExtractDoubleParametr("HI:", str) * 1000;
+                info.Precision = ExtractDoubleParametr("PREC:", str);
+                info.SN = ExtractStringParametr("SN:", str);
+            }
+
             return info;
         }
 

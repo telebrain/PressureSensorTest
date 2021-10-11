@@ -101,7 +101,7 @@ namespace PressureSensorTest
                 // Симуляция аварии
                 //i++;
                 //if (i >= 10)
-                //    throw new SDM_ErrException("Прервана связь с прибором АКИП 2101");
+                //      throw new SDM_ErrException("Прервана связь с прибором АКИП 2101");
                 Thread.Sleep(1000);
                 //cancellationToken.ThrowIfCancellationRequested();
                 double shift = absoluteType ? pressSystem.PressSystemVariables.Barometr*(-1) : rangeMin;

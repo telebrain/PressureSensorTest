@@ -108,8 +108,8 @@ namespace SDM_comm
             ConnectEvent?.Invoke(this, new EventArgs());
             while (!cancellationToken.IsCancellationRequested)
             {
-                for(int i = 0; i < 4; i++)
-                    Current = commands.ReadMeasValue(5) * multipler;
+                // for(int i = 0; i < 4; i++)
+                Current = commands.ReadMeasValue(5) * multipler;
                 Timestamp = (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 UpdMeasureResult?.Invoke(this, new EventArgs());
                 Thread.Sleep(300);

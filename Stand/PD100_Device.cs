@@ -37,15 +37,22 @@ namespace OwenPressureDevices
                 try
                 {
                     ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
-                    Modification = components.Modification;
-                    ThreadType = components.ThreadType;
-                    ClassPrecision = Convert.ToSingle(components.Precision);
-                    TargetPrecision = ClassPrecision > 0.5F ? 0.5F : ClassPrecision;
-                    TargetVariation = TargetVariation / 2;
                     int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
                     RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
                     Range = new DeviceRange(range_Pa, rangeType);
-                    
+                    Modification = components.Modification;
+                    ThreadType = components.ThreadType;
+                    ClassPrecision = Convert.ToSingle(components.Precision);
+                    if (components.Title == "ПД100")
+                    {
+                        TargetPrecision = ClassPrecision > 0.5F ? 0.5F : ClassPrecision;                       
+                    }
+                    else
+                    {
+                        TargetPrecision = ClassPrecision;
+                    }
+                    TargetVariation = TargetVariation / 2;
+
                 }
                 catch
                 {

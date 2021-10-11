@@ -63,13 +63,27 @@ namespace SDM_comm
             Pause(1000);
         }
 
+
+        
         public double ReadMeasValue()
         {
-            string read = WriteRead("READ?", 300);
-            string[] vals = read.Split(',');
-            string val = vals[vals.Length - 1];
-            val = val.Substring(0, val.IndexOf('\n')); //val.Substring(0, val.IndexOf('\n'));
-            return ConvertRecevedValue(val);
+            string read = "";
+            string[] vals = null;
+            read = WriteRead("READ?", 1500);
+            try
+            {
+                
+                vals = read.Split(',');
+                string val = vals[vals.Length - 1];
+                val = val.Substring(0, val.IndexOf('\n')); //val.Substring(0, val.IndexOf('\n'));
+                return ParseReceivedData(val);
+            }
+            catch
+            {
+                System.Diagnostics.Debug.WriteLine($"rec:{read}");
+                System.Diagnostics.Debug.WriteLine($"valsLenght:{vals.Length}");
+                throw;
+            }
         }
 
         public double ReadMeasValue(int attempts)
@@ -81,6 +95,7 @@ namespace SDM_comm
             }
             catch (Exception ex)
             {
+                
                 attempts --;
                 if (attempts <= 0)
                     throw ex;
@@ -131,7 +146,7 @@ namespace SDM_comm
                     long val = (long)(value * Math.Pow(10, (double)(unit - 1) * 3));
                     int valuePosition = firstPos + key.Length;
                     string rec = config.Substring(valuePosition, lastPos - valuePosition);
-                    long receiveVal = (long)(ConvertRecevedValue(rec) * 1E+6);
+                    long receiveVal = (long)(ParseReceivedData(rec) * 1E+6);
                     return (val == receiveVal);
                 }
                 else
@@ -154,9 +169,9 @@ namespace SDM_comm
 
 
         readonly NumberFormatInfo format = new CultureInfo("en-US", false).NumberFormat;
-        private double ConvertRecevedValue(string val)
+        private double ParseReceivedData(string received)
         {
-            
+            string val = received.Split(',')[0];
             return Double.Parse(val, format);
         }
 

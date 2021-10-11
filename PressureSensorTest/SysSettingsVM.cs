@@ -100,7 +100,7 @@ namespace PressureSensorTest
             {
                 outChannelByThread_20 = value;
                 OnPropertyChanged();
-                if (outChannelByThread_20 < 1 || outChannelByThread_20 > 8)
+                if (outChannelByThread_20 < 1 || outChannelByThread_20 > 12)
                     AddValidError("Значение может быть только в диапазоне от 1 до 8");
                 else
                     ClearValidError();
@@ -115,7 +115,7 @@ namespace PressureSensorTest
             {
                 outChannelByThread_12 = value;
                 OnPropertyChanged();
-                if (outChannelByThread_12 < 1 || outChannelByThread_12 > 8)
+                if (outChannelByThread_12 < 1 || outChannelByThread_12 > 12)
                     AddValidError("Значение может быть только в диапазоне от 1 до 8");
                 else
                     ClearValidError();
@@ -130,7 +130,7 @@ namespace PressureSensorTest
             {
                 outChannelByThread_14 = value;
                 OnPropertyChanged();
-                if (outChannelByThread_14 < 1 || outChannelByThread_14 > 8)
+                if (outChannelByThread_14 < 1 || outChannelByThread_14 > 12)
                     AddValidError("Значение может быть только в диапазоне от 1 до 8");
                 else
                     ClearValidError();

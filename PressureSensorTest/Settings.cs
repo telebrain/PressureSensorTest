@@ -101,7 +101,7 @@ namespace PressureSensorTest
         private string GetSettingsFolderPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "PressureSensorTest");
+                "PST");
         }
 
         private string GetSettingFilePath()

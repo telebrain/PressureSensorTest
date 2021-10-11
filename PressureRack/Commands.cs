@@ -54,6 +54,7 @@ namespace PressureRack
         //    return info;
         //}
 
+        const int NumberOfControllers = 8;
 
         public PressSystemInfo ReadInfo()
         {
@@ -61,7 +62,7 @@ namespace PressureRack
 
             PressSystemInfo info = new PressSystemInfo();
             info.Controllers = new PressControllersList();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < NumberOfControllers; i++)
             {
                 info.Controllers.Add(GetControllerInfo(i + 1));
             }
