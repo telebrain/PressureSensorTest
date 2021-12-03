@@ -129,6 +129,50 @@ namespace PressureSensorTest
             }
         }
 
+        List<string> modification2;
+        public List<string> Modification2
+        {
+            get { return modification2; }
+            set
+            {
+                modification2 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int modification2Index;
+        public int Modification2Index
+        {
+            get { return modification2Index; }
+            set
+            {
+                modification2Index = value;
+                OnPropertyChanged();
+            }
+        }
+
+        List<string> outPortType;
+        public List<string> OutPortType
+        {
+            get { return outPortType; }
+            set
+            {
+                outPortType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int outPortTypeIndex;
+        public int OutPortTypeIndex
+        {
+            get { return outPortTypeIndex; }
+            set
+            {
+                outPortTypeIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
         List<string> classes;
         public List<string> Classes
         {
@@ -625,13 +669,14 @@ namespace PressureSensorTest
         {
             OutButtonsEnable = false;
             cts = new CancellationTokenSource();
-            var componentsName = new ComponentsOfDeviceName(TitlesDevice[TitleDeviceIndex], RangeTypesLabels[RangeTypeLabelIndex],
-                RangeRow[RangeRowIndex], Modifications[ModificationIndex], ThreadTypes[ThreadTypeIndex], Classes[ClassIndex]);
-            string deviceName = specification.ConcateName(componentsName);
+            var name = new DeviceName(TitlesDevice[TitleDeviceIndex], RangeTypesLabels[RangeTypeLabelIndex],
+                RangeRow[RangeRowIndex], Modifications[ModificationIndex], ThreadTypes[ThreadTypeIndex], Modification2[Modification2Index], 
+                    Classes[ClassIndex], OutPortType[OutPortTypeIndex]);
+            var device = new PD100_Device(SerialNumber, name);
             runState = true;
             ControlsToRunMode();           
 
-            await Task.Run(() => stand.Start(SerialNumber, deviceName, cts));
+            await Task.Run(() => stand.Start(device, cts));
             
             ControlsToStopMode();
             runState = false;
@@ -676,8 +721,10 @@ namespace PressureSensorTest
             TitlesDevice = specification.Titles;
             RangeTypesLabels = specification.RangeTypesLabels;
             Modifications = specification.Modifications;
+            Modification2 = specification.Modifications2;
             ThreadTypes = specification.ThreadTypes;
             Classes = specification.Classes;
+            OutPortType = specification.OutPortType;
             UpdRangeRow();
         }
 
@@ -688,7 +735,7 @@ namespace PressureSensorTest
             var product = ((Stand)sender).Product;
             pressureIndication = new PressureIndication(product.Device.Range.Pressure_Pa);
             SerialNumber = product.Device.SerialNumber;
-            DeviceName = product.Device.Name;
+            DeviceName = product.Device.Name.Name;
         }
 
         private void UpdTestResult_event(object sender, EventArgs e)
@@ -700,7 +747,7 @@ namespace PressureSensorTest
         { 
             var ind = (MeasurmendIndicator)sender;
             Pressure = pressureIndication.GetPressureWithUnit(ind.Pressure);
-            Current = ind.Current.ToString("0.0000") + " мА";
+            Current = ind.Current != null ? ind.Current.Value.ToString("0.0000") + " мА" : "";
         }        
 
         private void Progress_event(object sender, int val)

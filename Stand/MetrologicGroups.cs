@@ -34,17 +34,17 @@ namespace OwenPressureDevices
             }
         }
 
-        public int GetMetrologicGroup(string deviceName)
+        public int GetMetrologicGroup(IDevice device)
         {
             if (!fileWasLoaded)
                 LoadFile();
-            var nameInfo = ParserNamePD100.ParseName(deviceName);
+            
             int firsyRow = GetFirstRow(standID);
-            int typeRow = GetTypeRow(firsyRow, nameInfo.RangeType);
+            int typeRow = GetTypeRow(firsyRow, device.Name.RangeType);
             var groups = GetGroupsByRange(typeRow);
             foreach(var group in groups)
             {
-                if (group.CheckRange(nameInfo.PressureRange))
+                if (group.CheckRange(device.Name.Range))
                     return group.GroupId;
             }
             throw new MetrologicGroupNotFoundException();
@@ -169,25 +169,25 @@ namespace OwenPressureDevices
                 return 0;
         }
     }
-
+    [Serializable]
     public class MetrologicGroupFileNotFoundException: Exception
     {
         public MetrologicGroupFileNotFoundException(string message): base($"Не найден файл метрологических групп: {message}")
         { }
     }
-
+    [Serializable]
     public class StandIdNotFoundException : Exception
     {
         public StandIdNotFoundException(int standID) : base($"ID стенда {standID} не найден в файле метрологических групп")
         { }
     }
-
+    [Serializable]
     public class MetrologicGroupNotFoundException : Exception
     {
         public MetrologicGroupNotFoundException() : base($"Для поверяемого изделия не удалось определить метрологическую группу")
         { }
     }
-
+    [Serializable]
     public class MetrologicGroupFileFormatException : Exception
     {
         public MetrologicGroupFileFormatException(int row, int column) : 

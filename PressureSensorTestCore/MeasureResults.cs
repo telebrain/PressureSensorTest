@@ -16,10 +16,10 @@ namespace PressureSensorTestCore
             get { return checkPoints.Count; }
         }
 
-        List<CheckPoint> checkPoints = new List<CheckPoint>();
+        List<ICheckPoint> checkPoints = new List<ICheckPoint>();
         
 
-        public CheckPoint this[int index]
+        public ICheckPoint this[int index]
         {
             get
             {
@@ -34,7 +34,7 @@ namespace PressureSensorTestCore
             }
         }
 
-        public CheckPoint GetCheckPointByPercent(int percentRange)
+        public ICheckPoint GetCheckPointByPercent(int percentRange)
         {
             foreach(var point in checkPoints)
             {
@@ -49,7 +49,7 @@ namespace PressureSensorTestCore
             return checkPoints.GetEnumerator();
         }
 
-        public void Add(CheckPoint checkPoint)
+        public void Add(ICheckPoint checkPoint)
         {
             checkPoints.Add(checkPoint);
         }

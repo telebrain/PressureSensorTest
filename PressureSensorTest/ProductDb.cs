@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProductDatabase;
+using ProductDatabase2;
 
 namespace PressureSensorTest
 {
     public class ProductDb
     {
-        ProductLineDb db;
+        ProductDatabase2.ProductDb db;
 
-        public ProductDb(string dbPath, string password)
+        public ProductDb(string dbPath, string dbPassword)
         {
-            db = new ProductLineDb(dbPath, password);
+            db = new ProductDatabase2.ProductDb(dbPath, dbPassword);
         }
 
         public void AddTestInfo(ProductInfo productInfo, string jsonData)
@@ -25,13 +25,15 @@ namespace PressureSensorTest
                 {
                     SN = productInfo.Device.SerialNumber,
                     Box = productInfo.DeviceBoxNumber,
-                    Name = productInfo.Device.Name,
+                    Name = productInfo.Device.Name.Name,
                     Date = productInfo.OpenDateTime,
                     DateCl = productInfo.ClosingDateTime,
                     Error = (int)productInfo.Error,
                     Log = testResultFile
                 };
-                db.TestComplete(product);
+
+                db.AddToTestResults(product);
+                // db.LogToCalResults(product.SN, product.Log);
             }
             catch(Exception ex)
             {

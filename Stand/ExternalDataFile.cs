@@ -104,10 +104,10 @@ namespace OwenPressureDevices
             }
         }
     }
-
+    [Serializable]
     public class FileSearshException: Exception { }
-
+    [Serializable]
     public class DataSearshException: Exception { }
-
+    [Serializable]
     public class UpdateFileException: Exception { }
 }

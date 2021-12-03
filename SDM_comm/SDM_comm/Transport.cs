@@ -5,7 +5,7 @@ using System.Net;
 
 namespace SDM_comm
 {
-    public class Transport: IDisposable
+    public sealed class Transport: IDisposable
     {
         Socket sock;
         const int receiveTimeout = 5000;
@@ -87,6 +87,7 @@ namespace SDM_comm
         public void Dispose()
         {
             sock.Close();
+            GC.SuppressFinalize(this);
             // sock.Dispose();
         }
     }

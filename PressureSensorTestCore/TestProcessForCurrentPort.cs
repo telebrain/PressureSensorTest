@@ -10,7 +10,7 @@ using SDM_comm;
 
 namespace PressureSensorTestCore
 {
-    public class TestProcess : ITestProcess
+    public sealed class TestProcessForCurrentPort : ITestProcess, IDisposable
     {
         readonly IPressSystem psys;
         readonly IAmmetr ammetr;
@@ -25,7 +25,7 @@ namespace PressureSensorTestCore
         public TestResults TestResults { get; private set; }
         public event EventHandler UpdResultsEvent;
 
-        public TestProcess(IPressSystem psys, IAmmetr ammetr, double[] testPoints, int pause100)
+        public TestProcessForCurrentPort(IPressSystem psys, IAmmetr ammetr, double[] testPoints, int pause100)
         {
             this.psys = psys;
             this.ammetr = ammetr;
@@ -34,7 +34,7 @@ namespace PressureSensorTestCore
         }
 
         readonly Action<CancellationToken> waitContinue;
-        public TestProcess(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr,
+        public TestProcessForCurrentPort(Action<CancellationToken> waitContinue, IPressSystem psys, IAmmetr ammetr,
             double[] testPoints, int pause100) : this(psys, ammetr, testPoints, pause100)
         {
             this.waitContinue = waitContinue;
@@ -106,7 +106,7 @@ namespace PressureSensorTestCore
             }
         }
 
-        private CheckPoint CreateCheckPoint(double testPoint, CancellationToken cancellationToken)
+        private CurrentCheckPoint CreateCheckPoint(double testPoint, CancellationToken cancellationToken)
         {
             SetPressure(testPoint, rangeMin_Pa, rangeMax_Pa, cancellationToken);
             Measures(out double pressure, out double current, cancellationToken);
@@ -114,7 +114,7 @@ namespace PressureSensorTestCore
             // кроме случая с абсолютным давлением
             if (((int)((rangeMax_Pa - rangeMin_Pa) * testPoint - rangeMin_Pa) == 0) && ! absoluteType)
                 pressure = 0;
-            CheckPoint point = new CheckPoint((int)(testPoint * 100), rangeMin_Pa, rangeMax_Pa, pressure, current, classPrecision,
+            CurrentCheckPoint point = new CurrentCheckPoint((int)(testPoint * 100), rangeMin_Pa, rangeMax_Pa, pressure, current, classPrecision,
                 pressureUnits, marginCoefficient);
             return point;
         }
@@ -208,10 +208,16 @@ namespace PressureSensorTestCore
             if (current > HiCurrentAlarmLimit)
                 throw new HiCurrentAlarmException();
         }
+
+        public void Dispose()
+        {
+            updCurrentValueAutoReset.Dispose();
+        }
     }
 
    
-
+    [Serializable]
     public class LoCurrentAlarmException : Exception { }
+    [Serializable]
     public class HiCurrentAlarmException : Exception { }
 }

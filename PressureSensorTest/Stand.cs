@@ -67,7 +67,7 @@ namespace PressureSensorTest
                     this.dialogService.ErrorMessage("Внимание! Метрологически значимая часть была изменена. " +
                         "Для получения более подробной информации откройте меню \"О программе\"");
                 Exception = null;
-                // var psysCommands = new PsysCommandSimulator();
+                //var psysCommands = new PsysCommandSimulator();
                 var psysCommands = new Commands(Settings.PsysSettings.IP, 49002);
                 psys = new PressSystem(psysCommands, Settings.PsysSettings.MaxTimeSetPressure);
                 SystemStatus.Init(Settings);
@@ -75,7 +75,6 @@ namespace PressureSensorTest
                 psys.ConnectEvent += SystemStatus.PressSysten_ConnectEvent;
                 psys.DisconnectEvent += SystemStatus.PressSystemDisconnectEvent;
                 psys.BeginConnectEvent += SystemStatus.PressSystem_BeginConnectEvent;
-                // InitAmmetr();
                 metrologicGroups = new MetrologicGroups(Settings.JsonReportSettings.StandId);
                 savingResults = new SavingResults(Settings, SystemStatus);
                 remoteControl?.Dispose();
@@ -121,13 +120,13 @@ namespace PressureSensorTest
         IDialogService dialogService;
 
         // Старт процесса в режиме ручного управления
-        public void Start(string serialNumber, string deviceName, CancellationTokenSource cts)
+        public void Start(IDevice device, CancellationTokenSource cts)
         {
             try
             {
-                CheckSerialNumber(serialNumber);
+                CheckSerialNumber(device.SerialNumber);
                 this.cts = cts;
-                IDevice device = new PD100_Device(serialNumber, deviceName, metrologicGroups.GetMetrologicGroup(deviceName));
+                device.MetrologicGroupNumber = metrologicGroups.GetMetrologicGroup(device);
                 Product = new ProductInfo(device, DateTime.Now);
                 Start(device, true, cts.Token);
                 savingResults.SaveResult(Product, TestResults, dialogService);
@@ -157,7 +156,7 @@ namespace PressureSensorTest
             catch (OperationCanceledException)
             {
                 StopEvent?.Invoke(this, new EventArgs());
-            }        
+            }
         }
 
         public void RemoteCancel()
@@ -170,33 +169,50 @@ namespace PressureSensorTest
             try
             {
                 Exception = null;
-                InitAmmetr(); 
                 ReadPsysInfo();
                 DeviceSpecification.CheckRangeSupport(device);
-                UpdProductInfoEvent?.Invoke(this, new EventArgs());               
-                ammetr.StartCycleMeasureCurrent();
-                measurmendIndicator = new MeasurmendIndicator(ammetr, psys, device.Range.RangeType == RangeTypeEnum.DA);
-                measurmendIndicator.UpdDataEvent += UpdateMeasurmendIndicators;
-                measurmendIndicator.Start();
+                UpdProductInfoEvent?.Invoke(this, new EventArgs());
+                
+                Action<CancellationToken> waitContinueAction = null;
+                waitContinue = null;
 
-                TestProcess testProcess;
-                if (Settings.UsedAutomaticSortingOut)
-                {
-                    waitContinue = null;
-                    testProcess = new TestProcess(psys, ammetr, GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa)
-                        , Settings.TestPause100);
-                }
-                else
+                ITestProcess testProcess;
+                if (!Settings.UsedAutomaticSortingOut)
                 {
                     waitContinue = new WaitContinue();
                     waitContinue.ContinueRequest += ContinueRequest;
                     waitContinue.SelectionRequest += (obj, e) => SelectionRequest(this, e);
-                    testProcess = new TestProcess(waitContinue.Wait, psys, ammetr, 
-                        GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa), Settings.TestPause100);
+                    waitContinueAction = waitContinue.Wait;                  
+                }
+                if (device.OutPort == OutPortEnum.Current)
+                {
+                    InitAmmetr();
+                    ammetr.StartCycleMeasureCurrent();
+                    measurmendIndicator = new MeasurmendIndicator(ammetr, psys, device.Range.RangeType == RangeTypeEnum.DA);
+                    measurmendIndicator.UpdDataEvent += UpdateMeasurmendIndicators;
+                    measurmendIndicator.Start();
+                    testProcess = new TestProcessForCurrentPort(waitContinueAction, psys, ammetr,
+                            GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa), Settings.TestPause100);                  
+                }
+                else
+                {
+                    // Для симуляции преобразователя давления с цифровым портом
+                    //var digitalDevice = new DigitalPdSimulator(psys, device.Range.Min_Pa, device.Range.Max_Pa, 0.05,
+                    //    device.Range.RangeType == RangeTypeEnum.DA);
+
+                    var digitalDevice = new PD_RS_device("COM5");
+
+                    // Индикатор давления
+                    measurmendIndicator = new MeasurmendIndicator(psys, device.Range.RangeType == RangeTypeEnum.DA);
+                    measurmendIndicator.UpdDataEvent += UpdateMeasurmendIndicators;
+                    measurmendIndicator.Start();
+
+                    testProcess = new TestProcessForDigitalPort(waitContinueAction, psys, digitalDevice,
+                            GetTestPoints(device.Range.Max_Pa, device.Range.Min_Pa), Settings.TestPause100);
                 }
                 testProcess.UpdResultsEvent += UpdTestResult_event;
                 progress.Report(0);
-                double precision = primaryVerification ? device.TargetPrecision : device.ClassPrecision;
+                double precision = primaryVerification ? device.TargetPrecision : device.Precision;
                 testProcess.RunProcess(device.Range.Min_Pa, device.Range.Max_Pa, 
                     (PressureSensorTestCore.PressureUnitsEnum)device.Range.PressureUnits, precision, GetPsysOutChannel(), 
                     device.Range.RangeType == RangeTypeEnum.DA,  cancellation, progress);
@@ -277,7 +293,7 @@ namespace PressureSensorTest
 
         private void UpdTestResult_event(object sender, EventArgs e)
         {
-            TestResults = ((TestProcess)sender).TestResults;
+            TestResults = ((ITestProcess)sender).TestResults;
             UpdTestResultEvent?.Invoke(this, new EventArgs());
         }
 
@@ -312,9 +328,9 @@ namespace PressureSensorTest
 
         private int GetPsysOutChannel()
         {
-            if (Product.Device.ThreadType == "7")
+            if (Product.Device.Name.ThreadType == "7")
                 return Settings.PsysSettings.ChannelsOut[1];
-            if (Product.Device.ThreadType == "8")
+            if (Product.Device.Name.ThreadType == "8")
                 return Settings.PsysSettings.ChannelsOut[2];
             return Settings.PsysSettings.ChannelsOut[0];
 
@@ -325,8 +341,8 @@ namespace PressureSensorTest
             ammetr = new Ammetr(Settings.AmmetrSettins.Ip, CurrentTypeEnum.DC, CurrentUnitsEnum.AUTO, 20);
 
             // Для симуляции
-            // ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
-            //    Product.Device.Range.RangeType == RangeTypeEnum.DA);
+            //ammetr = new AmmetrSimulator(psys, Product.Device.Range.Min_Pa, Product.Device.Range.Max_Pa, 0.05,
+            //   Product.Device.Range.RangeType == RangeTypeEnum.DA);
 
             ammetr.ExceptionEvent += Exception_ammetr_event;
             ammetr.ConnectEvent += SystemStatus.Ammetr_ConnectEvent;

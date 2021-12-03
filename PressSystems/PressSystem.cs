@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PressSystems
 {
-    public class PressSystem : IPressSystem
+    public sealed class PressSystem : IPressSystem, IDisposable
     {
 
         public PressSystemInfo Info { get; private set; }
@@ -28,7 +28,7 @@ namespace PressSystems
         const int DelayCheckInlim = 5; // в секундах
 
         Exception exception = null;
-        public virtual Exception Exception
+        public Exception Exception
         {
             get { return exception; }
             private set
@@ -93,7 +93,7 @@ namespace PressSystems
             }
         }
 
-        public virtual void Disconnect()
+        public void Disconnect()
         {
             if (ConnectState)
             {
@@ -308,7 +308,10 @@ namespace PressSystems
             commands.DisableControl();
         }
 
-        
+        public void Dispose()
+        {
+            updatePressureVarAutoReset.Dispose();
+        }
     }
 
     

@@ -7,9 +7,13 @@ namespace OwenPressureDevices
     {
         List<string> Classes { get; }
 
+        List<string> OutPortType { get; }
+
         string ImagePath { get; }
 
         List<string> Modifications { get; }
+
+        List<string> Modifications2 { get; }
 
         List<string> ThreadTypes { get; }
 
@@ -17,15 +21,15 @@ namespace OwenPressureDevices
 
         List<string> Titles { get; }
 
-        int RangeFromLabel(string rangeLabel);
+        // int RangeFromLabel(string rangeLabel);
 
         List<string> GetPressureRowLabels(int rangeTypeIndex, int classIndex);
 
         RangeTypeEnum RangeTypeFromLabel(string RangeLabel);
 
-        ComponentsOfDeviceName ParseName(string name);
+        // ComponentsOfDeviceName ParseName(string name);
 
-        string ConcateName(ComponentsOfDeviceName nameItems);
+        // string ConcateName(ComponentsOfDeviceName nameItems);
 
         int GetIndexClass(string classLabel);
 

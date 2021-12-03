@@ -119,7 +119,9 @@ namespace PressureSensorTest
             try
             {
                 cirName = DecodeName(name);
-                return new PD100_Device(sn, cirName, metrologicGroops.GetMetrologicGroup(cirName));
+                var device =  new PD100_Device(sn, cirName);
+                device.MetrologicGroupNumber = metrologicGroops.GetMetrologicGroup(device);
+                return device;
             }
             catch (PressureSensorTest.MetrologicGroupNotFounException)
             {
@@ -128,8 +130,9 @@ namespace PressureSensorTest
                 throw;
             }
 
-            catch
+            catch(Exception ex)
             {
+                log.Error($"Ошибка парсинга имени: {ex.ToString()}; {ex.Message}");
                 StateProcess = StateProcessEnum.ParsingNameError;
                 throw new ParseException();
             }
@@ -174,6 +177,7 @@ namespace PressureSensorTest
             }
             else
             {
+                log.Error($"Неверный формат времени: <{dt}>");
                 StateProcess = StateProcessEnum.ParsingDateTimeError;
                 throw new ParseException();
             }

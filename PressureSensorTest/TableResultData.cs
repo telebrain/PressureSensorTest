@@ -62,10 +62,18 @@ namespace PressureSensorTest
                     if (reverse)
                         row = Rows - pos - 1; 
                     var point = results[pos];
-                    Data[row, shiftColumn].Content = point.ReferencePressure.ToString(PressValFormat);
-                    Data[row, 1 + shiftColumn].Content = point.CurrentFromEtalonPressure.ToString(CurrValFormat);
-                    Data[row, 2 + shiftColumn].Content = point.MeasuredCurrent.ToString(CurrValFormat);
-                    Data[row, 3 + shiftColumn].Content = point.Pressure.ToString(PressValFormat);
+                    Data[row, shiftColumn].Content = point.ReferencePressure.PressureByUnits.ToString(PressValFormat);
+                    if (point is CurrentCheckPoint)
+                    {
+                        Data[row, 1 + shiftColumn].Content = (point as CurrentCheckPoint).CurrentFromEtalonPressure.ToString(CurrValFormat);
+                        Data[row, 2 + shiftColumn].Content = (point as CurrentCheckPoint).MeasuredCurrent.ToString(CurrValFormat);
+                    }
+                    else
+                    {
+                        Data[row, 1 + shiftColumn].Content = "-";
+                        Data[row, 2 + shiftColumn].Content = "-";
+                    }
+                    Data[row, 3 + shiftColumn].Content = point.Pressure.PressureByUnits.ToString(PressValFormat);
                     Data[row, 4 + shiftColumn].Content = point.ErrorMeasure.ToString(ErrValFormat);
                     Data[row, 4 + shiftColumn].Color = ResumeToColor(results[pos].Resume);                   
                 }

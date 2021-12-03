@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace OwenPressureDevices
 {
+    // Кдасс хранит данные о диапазоне преобразователя давления
     public class DeviceRange
     {
-        // Диапазон сенсора
+
         // Все величины давления в Па
 
         public double Span { get; private set; }
@@ -17,14 +18,37 @@ namespace OwenPressureDevices
 
         public double Min { get; private set; }
         public double Max { get; private set; }
+
         public PressureUnitsEnum PressureUnits { get; private set; }
 
-        // public string RangeTypeLabel { get; private set; }
+        public string RangeTypeLabel { get; private set; }
         public RangeTypeEnum RangeType { get; private set; }
         public long Pressure_Pa { get; private set; }
         public bool AbsolutPressure { get; private set; } // Флаг датчика абсолютного давления
 
         public static long VacuumPressure = -100000; // Относительное давление вакуума
+
+        static Dictionary<string, RangeTypeEnum> rangeTypes = new Dictionary<string, RangeTypeEnum>()
+        {
+            { "ДИ", RangeTypeEnum.DI }, { "ДИВ", RangeTypeEnum.DIV }, { "ДВ", RangeTypeEnum.DV }, { "ДД", RangeTypeEnum.DD },
+                { "ДГ", RangeTypeEnum.DG }, {"ДА", RangeTypeEnum.DA}
+        };
+            
+
+        public static string GetRangeTypeLabel(RangeTypeEnum rangeType)
+        {
+            return (rangeTypes.FirstOrDefault(item => item.Value == rangeType)).Key;
+        }
+
+        public static RangeTypeEnum GetRangeTypeByLable(string rangeType)
+        {
+            return rangeTypes[rangeType];
+        }
+
+        public DeviceRange(int pressure_Pa, string rangeTypeLabel):
+            this(pressure_Pa, GetRangeTypeByLable(rangeTypeLabel))
+        { }
+
 
         public DeviceRange(int pressure_Pa, RangeTypeEnum rangeType)
         {

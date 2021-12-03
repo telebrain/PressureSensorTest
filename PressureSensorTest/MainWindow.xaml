@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PressureSensorTest"
         mc:Ignorable="d"
-        Title="PST" Height="540" Width="900" Icon="Resources/ManometrBlue.ico" ResizeMode="CanMinimize" WindowStyle="ThreeDBorderWindow">
+        Title="PST" MaxHeight="600" MaxWidth="900" Icon="Resources/ManometrBlue.ico" ResizeMode="CanMinimize" WindowStyle="ThreeDBorderWindow">
     <Window.Resources>
         <Style TargetType="Button" x:Key="StartButtonStyle">
             <Setter Property="FontWeight" Value="Bold"></Setter>
@@ -26,6 +26,7 @@
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <!--Grid.ColumnDefinitions>
@@ -94,17 +95,21 @@
         </Grid>
         <Grid Grid.Row="2" Margin="5,0,5,0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--Grid.ColumnDefinitions>
                 <ColumnDefinition Width="294*"></ColumnDefinition>
                 <ColumnDefinition Width="470*"></ColumnDefinition>
                 <ColumnDefinition Width="119*"/>
-            </Grid.ColumnDefinitions>
+            </-->
             <GroupBox VerticalAlignment="Center" Margin="5,5,2.4,5" Header="Заводской номер">
                 <TextBox FontSize="16" Margin="8" Text="{Binding SerialNumber, UpdateSourceTrigger=PropertyChanged}"
                          TextAlignment="Center" IsReadOnly="{Binding SnInputEnabl, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding UnlockControl, UpdateSourceTrigger=PropertyChanged}"></TextBox>
             </GroupBox>
 
-            <GroupBox Grid.Column="1" VerticalAlignment="Center" Margin="1.6,5,5.2,5" Header="Название изделия" Grid.ColumnSpan="2">
+            <GroupBox Grid.Column="1" VerticalAlignment="Center"  Margin="1.6,5,5.2,5" Header="Название изделия" Grid.ColumnSpan="2">
                 <Grid Margin="8" IsEnabled="{Binding UnlockControl, UpdateSourceTrigger=PropertyChanged}" >
                     <Grid.Resources>
                         <Style TargetType="TextBlock">
@@ -119,45 +124,55 @@
                             <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
                         </Style>
                     </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="0.1*"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1.4*"></ColumnDefinition>
                         <ColumnDefinition Width="0.1*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.5*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.4*"></ColumnDefinition>
                         <ColumnDefinition Width="0.1*"></ColumnDefinition>
                         <ColumnDefinition Width="0.8*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.4*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBox FontSize="16" Grid.ColumnSpan="10" IsReadOnly="True" VerticalAlignment="Center" 
                              Visibility="{Binding DeviceNameIndVisible, UpdateSourceTrigger=PropertyChanged}"
-                             Text="{Binding DeviceName}" TextAlignment="Center"></TextBox>
+                             Text="{Binding DeviceName}" TextAlignment="Center" Grid.RowSpan="2"></TextBox>
                     <Button Grid.ColumnSpan="10" Visibility="{Binding ReadPsysInfoButtonVis, UpdateSourceTrigger=PropertyChanged}"
-                            Command="{Binding ReadPsysInfoCommand}">Установить связь со стойкой давления</Button>
+                            Command="{Binding ReadPsysInfoCommand}" Grid.RowSpan="2">Установить связь со стойкой давления</Button>
                     <ComboBox ItemsSource="{Binding TitlesDevice, UpdateSourceTrigger=PropertyChanged}" 
                               SelectedIndex="{Binding TitleDeviceIndex, UpdateSourceTrigger=PropertyChanged}"
-                              Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
-                    <TextBlock Grid.Column="1" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}">-</TextBlock>
-                    <ComboBox Grid.Column="2" ItemsSource="{Binding RangeTypesLabels, UpdateSourceTrigger=PropertyChanged}" 
+                              Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0.4,0" Grid.RowSpan="2"></ComboBox>
+                    <TextBlock Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="82,2,0.4,2" Grid.RowSpan="2">-</TextBlock>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding RangeTypesLabels, UpdateSourceTrigger=PropertyChanged}" 
                           Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="{Binding RangeTypeLabelIndex, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
+                          SelectedIndex="{Binding RangeTypeLabelIndex, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="7.6,0,0,0" Grid.RowSpan="2"></ComboBox>
                     <ComboBox Grid.Column="3" ItemsSource="{Binding RangeRow, UpdateSourceTrigger=PropertyChanged}"
                           Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="{Binding RangeRowIndex, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
-                    <TextBlock Grid.Column="4" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}">-</TextBlock>
-                    <ComboBox Grid.Column="5" ItemsSource="{Binding Modifications, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedIndex="{Binding RangeRowIndex, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0.2,0" Grid.RowSpan="2"></ComboBox>
+                    <TextBlock Grid.Column="3" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="115,2,0.2,2" Grid.RowSpan="2">-</TextBlock>
+                    <ComboBox Grid.Column="4" ItemsSource="{Binding Modifications, UpdateSourceTrigger=PropertyChanged}" 
                           Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="{Binding ModificationIndex, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
+                          SelectedIndex="{Binding ModificationIndex, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="7.8,0,0,0" Grid.RowSpan="2"></ComboBox>
                     <ComboBox Grid.Column="6" ItemsSource="{Binding ThreadTypes, UpdateSourceTrigger=PropertyChanged}"
                           Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="{Binding ThreadTypeIndex, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
-                    <TextBlock Grid.Column="7" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}">X</TextBlock>
-                    <TextBlock Grid.Column="8" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}">-</TextBlock>
-                    <ComboBox Grid.Column="9" ItemsSource="{Binding Classes, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="{Binding ThreadTypeIndex, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="0,0,32.6,0" Grid.RowSpan="2"></ComboBox>
+                    <ComboBox Grid.Column="7" ItemsSource="{Binding Modification2, UpdateSourceTrigger=PropertyChanged}"
                           Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="{Binding ClassIndex, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
+                          SelectedIndex="{Binding Modification2Index, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="0.2,0,8.4,0" Grid.RowSpan="2"></ComboBox>
+                    <TextBlock Grid.Column="8" Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="0.4,2,65,2" Grid.RowSpan="2">-</TextBlock>
+                    <ComboBox Grid.Column="8" ItemsSource="{Binding Classes, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="{Binding ClassIndex, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="8.4,0,0,0" Grid.RowSpan="2"></ComboBox>
+                    <ComboBox Grid.Column="10" ItemsSource="{Binding OutPortType, UpdateSourceTrigger=PropertyChanged}"
+                          Visibility="{Binding SensorSelectionControlsVis, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="{Binding OutPortTypeIndex, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,-0.2,0" Grid.RowSpan="2"></ComboBox>
                 </Grid>
             </GroupBox>
 
@@ -203,7 +218,7 @@
         <local:ShortTableResult Grid.Row="4" Margin="5" Visibility="{Binding ShortTableVisibility}"
                            TableDataSrc="{Binding TableResultData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
-        <Grid Grid.Row="5" Margin="5">
+        <Grid Grid.Row="6" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="0.15*"></ColumnDefinition>

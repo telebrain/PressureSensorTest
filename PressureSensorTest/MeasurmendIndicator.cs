@@ -12,7 +12,7 @@ namespace PressureSensorTest
     {
         public double Pressure { get; private set; }
         public bool Inlim { get; private set; }
-        public double Current { get; private set; }
+        public double? Current { get; private set; }
 
         readonly IAmmetr ammetr;
         readonly IPressSystem psys;
@@ -26,6 +26,11 @@ namespace PressureSensorTest
             this.ammetr = ammetr;
             this.psys = psys;
             this.absolutePressure = absolutePressure;
+        }
+
+        public MeasurmendIndicator(IPressSystem psys, bool absolutePressure)
+            : this(null, psys, absolutePressure)
+        {
         }
 
         CancellationTokenSource cts;
@@ -57,7 +62,7 @@ namespace PressureSensorTest
             if (ammetr != null && ammetr.StateConnect)
                 Current = ammetr.Current;
             else
-                Current = 0;
+                Current = null;
 
             if (psys != null && psys.ConnectState)
             {

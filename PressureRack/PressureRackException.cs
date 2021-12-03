@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PressureRack
 {
+    [Serializable]
     public class PressureRackException: Exception
     {
         public int ErrorNumber { get; private set; } = -1;

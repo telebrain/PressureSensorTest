@@ -45,7 +45,7 @@ namespace OwenPressureDevices
 
 
     }
-
+    [Serializable]
     public class ArticulslDataFileException : Exception
     {
         public override string Message { get; }

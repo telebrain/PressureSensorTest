@@ -16,16 +16,24 @@ namespace OwenPressureDevices
 
         public string ImagePath { get; } = "";
 
-        public List<string> ThreadTypes { get => ParserNamePD100.ThreadType; }
+        public List<string> Titles { get; } = new List<string>() { "ПД100", "ПД100И" };
 
-        public List<string> Modifications { get => ParserNamePD100.Modifications; }
+        public List<string> RangeTypesLabels { get; } = new List<string>() { "ДИ", "ДВ", "ДИВ", "ДГ", "ДА" };
 
-        public List<string> Classes { get => ParserNamePD100.Classes; }
+        public List<string> Modifications { get; } = new List<string>() { "1", "3", "8" };
 
-        public List<string> RangeTypesLabels { get => ParserNamePD100.RangeTypesLabels; }
+        public List<string> ThreadTypes { get; } = new List<string>() { "1", "2", "4", "6", "7", "8" };
 
-        public List<string> Titles { get => ParserNamePD100.Titles; }
 
+
+        public List<string> Modifications2 { get; } = new List<string>() { "1", "3", "5", "7" };
+
+
+        public List<string> Classes { get; } = new List<string>() { "0,25", "0,5", "1,0", "1,5", "2,5" };
+
+        public List<string> OutPortType { get; } = new List<string>() { "", "-" + DeviceName.RS485label };
+
+                          
         public PD100_DeviceSpecification() { }
 
         public PD100_DeviceSpecification(PressSystemInfo pressSystemInfo)
@@ -33,15 +41,6 @@ namespace OwenPressureDevices
             this.pressSystemInfo = pressSystemInfo;
         }
 
-        public string ConcateName(ComponentsOfDeviceName nameItems)
-        {
-            return ParserNamePD100.ConcateName(nameItems);
-        }
-
-        public ComponentsOfDeviceName ParseName(string name)
-        {
-            return ParserNamePD100.ParseName(name);
-        }
 
         public int GetIndexClass(string classLabel)
         {
@@ -78,7 +77,7 @@ namespace OwenPressureDevices
             {
                 foreach (int item in pressRow)
                 {
-                    row.Add(ParserNamePD100.GetPressLabel(item));
+                    row.Add(GetPressLabel(item));
                 }
             }
             else
@@ -88,9 +87,13 @@ namespace OwenPressureDevices
             return row;
         }
 
-        public int RangeFromLabel(string rangeLabel)
+        private string GetPressLabel(int PressValue_Pa)
         {
-            return ParserNamePD100.GetPressureRange(rangeLabel);
+            double range = Convert.ToDouble(PressValue_Pa) / 1000000;
+            string lbl = range.ToString();
+            if (lbl.Length == 1)
+                lbl = range.ToString("0.0");
+            return lbl;
         }
 
         public RangeTypeEnum RangeTypeFromLabel(string RangeLabel)
@@ -113,8 +116,8 @@ namespace OwenPressureDevices
                 if (!pressSystemInfo.CheckRange(0, device.Range.Max_Pa))
                     throw new DeviceNotSupportByPsysException("Диапазон изделия превышает диапазон пневмосистемы");
             }
-            var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.ClassPrecision);
-            if (pressureRow.SearshController(device.Range.Max_Pa, device.Range.Min_Pa, device.Range.Max_Pa, device.ClassPrecision) < 0)
+            var pressureRow = new PressureRow(device.Range.RangeType, pressSystemInfo, device.Precision);
+            if (pressureRow.SearshController(device.Range.Max_Pa, device.Range.Min_Pa, device.Range.Max_Pa, device.Precision) < 0)
                 throw new DeviceNotSupportByPsysException("Система не может обеспечить точность установки давления");
         }
 
@@ -131,7 +134,7 @@ namespace OwenPressureDevices
             return index;
         }
     }
-
+    [Serializable]
     public class DeviceNotSupportByPsysException : Exception
     {
         public DeviceNotSupportByPsysException(string message) :

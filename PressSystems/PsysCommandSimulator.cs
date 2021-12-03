@@ -18,7 +18,6 @@ namespace PressSystems
             // throw new Exception("Ошибка подключения к стойке давления");
         }
 
-        int i = 0;
         public PressSystemVariables ReadSysVar()
         {
             // Операция чтения всех переменных: Pressure, Inlim, Barometr

@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="PressureSensorTest.RelayTable"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PressureSensorTest"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="800" Background="White">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Rectangle">
+                <Setter Property="Stroke" Value="Black"></Setter>
+                <Setter Property="StrokeThickness" Value="0.5"></Setter>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Setter Property="TextAlignment" Value="Center"></Setter>
+                <Setter Property="FontSize" Value="11"></Setter>
+            </Style>
+            <Style TargetType="StackPanel">
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            </Style>
+            <Style x:Key="LittleFont>" TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                <Setter Property="TextAlignment" Value="Center"></Setter>
+                <Setter Property="FontSize" Value="9"></Setter>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Rectangle></Rectangle>
+        <StackPanel>
+            <TextBlock>Уставка,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="1"></Rectangle>
+        <StackPanel Grid.Column="1">
+            <TextBlock>Гистерезис,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="2"></Rectangle>
+        <StackPanel Grid.Column="2">
+            <TextBlock>Уставка</TextBlock>
+            <TextBlock>включения,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="3"></Rectangle>
+        <StackPanel Grid.Column="3">
+            <TextBlock>Давление</TextBlock>
+            <TextBlock>включения,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="4"></Rectangle>
+        <StackPanel Grid.Column="4">
+            <TextBlock>Погрешность</TextBlock>
+            <TextBlock>включения,</TextBlock>
+            <TextBlock>%</TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="5"></Rectangle>
+        <StackPanel Grid.Column="5">
+            <TextBlock>Уставка</TextBlock>
+            <TextBlock>выключения,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="6"></Rectangle>
+        <StackPanel Grid.Column="6">
+            <TextBlock>Давление</TextBlock>
+            <TextBlock>вкылючения,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="7"></Rectangle>
+        <StackPanel Grid.Column="7">
+            <TextBlock>Погрешность</TextBlock>
+            <TextBlock>выключения,</TextBlock>
+            <TextBlock>%</TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

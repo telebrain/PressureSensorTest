@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{484AB14B-C806-4B57-A774-C46FE276CB1D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OwenPressureDevices</RootNamespace>
-    <AssemblyName>OwenPressureDevices</AssemblyName>
+    <ProjectGuid>{3085CD5C-9BC7-4081-BA39-B4610C074B24}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TestPD_RS</RootNamespace>
+    <AssemblyName>TestPD_RS</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,27 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArticulsTable.cs" />
-    <Compile Include="DeviceName.cs" />
-    <Compile Include="ExternalDataFile.cs" />
-    <Compile Include="MetrologicGroups.cs" />
-    <Compile Include="PD100_DeviceSpecification.cs" />
-    <Compile Include="IDeviceSpecification.cs" />
-    <Compile Include="PD100_Device.cs" />
-    <Compile Include="DeviceRange.cs" />
-    <Compile Include="IDevice.cs" />
-    <Compile Include="PressIndicatorData.cs" />
-    <Compile Include="PressureRow.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Librarys\SimpleExcelClosedXML\SimpleExcelClosedXML\SimpleExcelClosedXML.csproj">
-      <Project>{3fb286c6-0ed7-4405-a31b-21d09149dd5a}</Project>
-      <Name>SimpleExcelClosedXML</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PressSystems\PressSystems.csproj">
-      <Project>{aabd3295-9947-4a6c-bbb3-457aba73e25b}</Project>
-      <Name>PressSystems</Name>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PD_RS\PD_RS.csproj">
+      <Project>{dc4e5803-bb1e-4dd8-b726-3f5d26319b26}</Project>
+      <Name>PD_RS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

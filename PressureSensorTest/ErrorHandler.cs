@@ -90,7 +90,24 @@ namespace PressureSensorTest
                 product.Error = TestErrorEnum.AlarmHiLimit;
                 Cancel("Измеренный ток выше допустимого предела");
             }
-
+            // Ошибка открытия порта цифрового датчика
+            catch (OpenConnectPortException)
+            {
+                product.Error = TestErrorEnum.OpenPortError;
+                Cancel("Ошибка открытия порта связи с поверяемым ПД");
+            }
+            // Ошибка подключения (для датчиков с цифровым интерфейсом)
+            catch (ConnectException)
+            {
+                product.Error = TestErrorEnum.ConnectError;
+                Cancel("Не удалось установить связь с поверяемым ПД");
+            }
+            // Потеря связи (для датчиков с цифровым интерфейсом)
+            catch (LostConnectException)
+            {
+                product.Error = TestErrorEnum.LostConnect;
+                Cancel("Потеря связи связи с поверяемым ПД");
+            }
             // Непредусмотренные ошибки
             catch (Exception ex)
             {

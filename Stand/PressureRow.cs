@@ -170,13 +170,17 @@ namespace OwenPressureDevices
         }
 
         // Поиск номера контроллера. Если контроллер не найден, возвращает -1
+        // double targetPressure - максиальное давление, которое нужно подать контроллером для калибровки датчика
+        // double targetRangeMax - верхняя граница диапазона датчика 
+        // double targetRangeMin - нижняя граница диапазона датчика 
+        // double precisionClas - класс точности датчика
         public int SearshController(double targetPressure, double targetRangeMax, double targetRangeMin, double precisionClass)
         {
             const double precisionCoef = 3; // Коэффициент запаса точности образцовых приборов
 
             foreach (PressControllerInfo controller in pressSystemInfo.Controllers)
             {
-                if (controller.IsEnabled)
+                if (controller.IsEnabled) // State On
                 {
                     // Проверка диапазона контроллера
                     bool checkRange = targetPressure >= 0 ? targetRangeMax <= controller.RangeHi : targetRangeMin >= controller.RangeLo;

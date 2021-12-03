@@ -73,19 +73,24 @@ namespace PressureSensorTest
                 sensorType = sensotType
             };
 
-            List<JsonParametr> parametrs = new List<JsonParametr>()
+            List<JsonParametr> parametrs = new List<JsonParametr>();
+            parametrs.Add(new JsonParametr(1 + pressureUnitCode, testPointUpwards.ReferencePressure.PressureByUnits));
+            if (testPointUpwards is CurrentCheckPoint)
             {
-                new JsonParametr(1 + pressureUnitCode, testPointUpwards.ReferencePressure),
-                new JsonParametr(4,  testPointUpwards.CurrentFromEtalonPressure),
-                new JsonParametr(5, testPointUpwards.MeasuredCurrent),
-                new JsonParametr(6 + pressureUnitCode, testPointUpwards.Pressure),
-                new JsonParametr(9, testPointUpwards.ErrorMeasure),
-                new JsonParametr(10 + pressureUnitCode, testPointTopdown.ReferencePressure),
-                new JsonParametr(13, testPointTopdown.CurrentFromEtalonPressure),
-                new JsonParametr(14, testPointTopdown.MeasuredCurrent),
-                new JsonParametr(15 + pressureUnitCode, testPointTopdown.Pressure),
-                new JsonParametr(18, testPointTopdown.ErrorMeasure)
-            };
+                parametrs.Add(new JsonParametr(4, (testPointUpwards as CurrentCheckPoint).CurrentFromEtalonPressure));
+                parametrs.Add(new JsonParametr(4, (testPointUpwards as CurrentCheckPoint).MeasuredCurrent));
+            }
+            parametrs.Add(new JsonParametr(6 + pressureUnitCode, testPointUpwards.Pressure.PressureByUnits));
+            parametrs.Add(new JsonParametr(9, testPointUpwards.ErrorMeasure));
+            parametrs.Add(new JsonParametr(10 + pressureUnitCode, testPointTopdown.ReferencePressure.PressureByUnits));
+            if (testPointTopdown is CurrentCheckPoint)
+            {
+                parametrs.Add(new JsonParametr(13, (testPointTopdown as CurrentCheckPoint).CurrentFromEtalonPressure));
+                parametrs.Add(new JsonParametr(13, (testPointTopdown as CurrentCheckPoint).MeasuredCurrent));
+            }
+            parametrs.Add(new JsonParametr(15 + pressureUnitCode, testPointTopdown.Pressure.PressureByUnits));
+            parametrs.Add(new JsonParametr(18, testPointTopdown.ErrorMeasure));
+
 
             var variation = testResults.Variations.GetVariationPointByPercent(testPointUpwards.PercentRange);
             if (variation != null)

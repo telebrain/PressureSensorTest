@@ -11,66 +11,65 @@ namespace OwenPressureDevices
         public PD100_Device()
         {
             SerialNumber = "";
-            Name = "";
+            Name = null;
         }
 
-        public PD100_Device(string serialNumber, string name, int metrologicGroup)
+        public PD100_Device(string serialNumber, string name): this(serialNumber, name, 0)
         {
-            SerialNumber = serialNumber;
-            Name = name;
-            MetrologicGroupNumber = metrologicGroup;
         }
 
-        public string ChannelNumber { get; }
+        public PD100_Device(string serialNumber, string name, int metrologicGroup):
+            this (serialNumber, new DeviceName(name), metrologicGroup)
+        {
+        }
+
+        public PD100_Device(string serialNumber, DeviceName name): this(serialNumber, name, 0) { }
+
+        public PD100_Device(string serialNumber, DeviceName name, int metrologicGroup)
+        {
+            try
+            {
+                SerialNumber = serialNumber;
+                Name = name;
+                MetrologicGroupNumber = metrologicGroup;
+                Range = new DeviceRange(GetRangePaByPressureLabel(Name.Range), Name.RangeType);
+                Precision = Convert.ToSingle(Name.Precision);
+                if (Name.Title == "ПД100")
+                {
+                    // У ПД100 любого класса точность должна быть не хуже 0.5
+                    TargetPrecision = Precision > 0.5F ? 0.5F : Precision;
+                }
+                else
+                {
+                    TargetPrecision = Precision;
+                }
+                TargetVariation = TargetPrecision / 2;
+                OutPort = OutPortEnum.Current;
+                if (Name.OutPortLabel == DeviceName.RS485label || Name.OutPortLabel == "-" + DeviceName.RS485label)
+                    OutPort = OutPortEnum.RS485;
+            }
+            catch
+            {
+                throw new ParseDeviceNameException();
+            }
+        }
 
         public string SerialNumber { get; set; }
 
-        public int MetrologicGroupNumber { get; private set; }
+        public int MetrologicGroupNumber { get; set; }
 
-        string name;
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                try
-                {
-                    ComponentsOfDeviceName components = ParserNamePD100.ParseName(value);
-                    int range_Pa = ParserNamePD100.GetPressureRange(components.PressureRange);
-                    RangeTypeEnum rangeType = (RangeTypeEnum)ParserNamePD100.RangeTypesLabels.IndexOf(components.RangeType);
-                    Range = new DeviceRange(range_Pa, rangeType);
-                    Modification = components.Modification;
-                    ThreadType = components.ThreadType;
-                    ClassPrecision = Convert.ToSingle(components.Precision);
-                    if (components.Title == "ПД100")
-                    {
-                        TargetPrecision = ClassPrecision > 0.5F ? 0.5F : ClassPrecision;                       
-                    }
-                    else
-                    {
-                        TargetPrecision = ClassPrecision;
-                    }
-                    TargetVariation = TargetVariation / 2;
+        public OutPortEnum OutPort { get; private set; }
 
-                }
-                catch
-                {
-                    throw new ParseDeviceNameException();
-                }
-            }
-        }
-        // Модификация по типу сенсора
-        public string Modification { get; private set; }
-        // Тип резьбы 1 - 20х1,5, 7 - G1/2, 8 - G1/4 
-        public string ThreadType { get; private set; }
+        public DeviceName Name { get; }
 
-        // Класс точности по паспорту
-        public float ClassPrecision { get; private set; }
-        // Класс точности нового преобразователя (только что изготовленного)
+        public float Precision { get; private set; }
+
+        public float Variation { get; private set; }
+
+        // Погрешность отбраковки при первичной поверке
         public float TargetPrecision { get; private set; }
 
-        // Вариация нового преобразователя (только что изготовленного)
+        // Значение вариации отбраковки при первичной поверке
         public float TargetVariation { get; private set; }
 
         public DeviceRange Range { get; private set; }
@@ -80,12 +79,19 @@ namespace OwenPressureDevices
         // Код для Json протокола
         public int SensorTypeCode { get { return 460; } }
 
+        private int GetRangePaByPressureLabel(string rangeLabel)
+        {
+            return (int)(Convert.ToDouble(rangeLabel) * 1000000);
+        }
     }
 
+    [Serializable]
     public class ParseDeviceNameException: Exception
     {
         public ParseDeviceNameException():
             base("Не удалось определить изделие по названию")
         { }
     }
+
+    
 }

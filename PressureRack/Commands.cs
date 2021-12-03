@@ -6,7 +6,7 @@ using PressSystems;
 
 namespace PressureRack
 {
-    public class Commands: IPressSystemCommands
+    public sealed class Commands: IPressSystemCommands, IDisposable
     {
         Exchange exchange;
         readonly object syncRoot = new object();
@@ -329,6 +329,11 @@ namespace PressureRack
             System.Diagnostics.Debug.WriteLine("Ошибка. Принятое сообщение: " + rx);
             Parsing.DecodeError(rx);
             return false;
+        }
+
+        public void Dispose()
+        {
+            exchange.Dispose();
         }
     }
 

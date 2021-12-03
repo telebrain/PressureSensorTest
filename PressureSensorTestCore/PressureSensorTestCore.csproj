@@ -41,11 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheckPoint.cs" />
+    <Compile Include="DigitalCheckPoint.cs" />
+    <Compile Include="CurrentCheckPoint.cs" />
+    <Compile Include="ICheckPoint.cs" />
+    <Compile Include="IDigitalPort.cs" />
     <Compile Include="ITestProcess.cs" />
     <Compile Include="MeasureResults.cs" />
+    <Compile Include="Pressure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestProcess.cs" />
+    <Compile Include="RelayTestResultcs.cs" />
+    <Compile Include="TestProcessForDigitalPort.cs" />
+    <Compile Include="TestProcessForCurrentPort.cs" />
     <Compile Include="TestResults.cs" />
     <Compile Include="VariationPoint.cs" />
     <Compile Include="Variations.cs" />

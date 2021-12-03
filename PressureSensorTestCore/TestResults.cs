@@ -46,11 +46,10 @@ namespace PressureSensorTestCore
 
                 // if (percent == 0 || percent == 100)
                 //     continue; // Для точек 0% и 100% вариация не вычисляется
+                var pointUp = MeasureResultsUpwards[i];
+                var pointDown = (MeasureResultsTopdown.GetCheckPointByPercent(percent));
 
-                double currentUp = MeasureResultsUpwards[i].MeasuredCurrent;
-                double currentDown = (MeasureResultsTopdown.GetCheckPointByPercent(percent)).MeasuredCurrent;
-
-                var point = new VariationPoint(percent, currentUp, currentDown, ClassPrecision, MarginCoefficient);
+                var point = new VariationPoint(percent, pointUp, pointDown, RangeMin, RangeMax, ClassPrecision, MarginCoefficient);
                 Variations.Add(point);               
             }
         }
@@ -73,5 +72,5 @@ namespace PressureSensorTestCore
         BadVariation = 19
     }
 
-    public enum PressureUnitsEnum { Pa = 0, KPa = 1, MPa = 2 }
+    
 }
