@@ -30,7 +30,7 @@ namespace PressureSensorTest
     public class RelayTableData
     {
         public const int Rows = 3;
-        public const int Columns = 8;
+        public const int Columns = 10;
 
         public ElementTableResult[,] Data { get; set; }
         public string Units { get; set; }

@@ -12,7 +12,7 @@ namespace PressureSensorTestCore
         event EventHandler UpdResultsEvent;
 
         void RunProcess(double rangeMin_Pa, double rangeMax_Pa, PressureUnitsEnum pressureUnits, double classPrecision, 
-            int outChannelPsys, bool absoluteType, CancellationToken cancellation, IProgress<int> progress);
+            bool absoluteType, CancellationToken cancellation, IProgress<int> progress);
     }
 
    

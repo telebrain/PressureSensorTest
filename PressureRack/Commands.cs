@@ -119,10 +119,15 @@ namespace PressureRack
             return variables;
         }
 
-
         public void WriteSP(int controller, double SP, CancellationToken cancellationToken)
         {
-            SendSP(SP, controller);
+            const double maxRate = -1;
+            WriteSP(controller, SP, maxRate, cancellationToken);
+        }
+
+        public void WriteSP(int controller, double SP, double rate, CancellationToken cancellationToken)
+        {
+            SendSP(SP, controller, rate);
             WaitResultSendSP(cancellationToken).GetAwaiter().GetResult();
         }
 
@@ -255,10 +260,13 @@ namespace PressureRack
         }
 
         // Передача уставки
-        private void SendSP(double sp, int ch)
+        private void SendSP(double sp, int ch, double rate)
         {
             string rx = "";
-            string tx = "SP: VOL:" + (sp*0.001).ToString(new CultureInfo("en-En")) + ";" + "CH:" + Convert.ToString(ch) + ";";
+            string tx = $"SP: VOL:{(sp * 0.001).ToString(new CultureInfo("en-En"))};CH:{ch};";
+            if (rate> 0)
+                tx += $"RATE:{(rate*0.001).ToString(new CultureInfo("en-En"))};";
+
             System.Diagnostics.Debug.WriteLine("Запись уставки: " + tx);
             try
             {

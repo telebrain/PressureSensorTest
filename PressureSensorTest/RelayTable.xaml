@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PressureSensorTest"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="800" Background="White">
+             d:DesignHeight="200" d:DesignWidth="800" Background="White">
     <Grid>
         <Grid.Resources>
             <Style TargetType="Rectangle">
@@ -28,6 +28,7 @@
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -41,49 +42,67 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Rectangle></Rectangle>
-        <StackPanel>
+        <Rectangle Grid.RowSpan="2"></Rectangle>
+        <StackPanel Grid.RowSpan="2">
             <TextBlock>Уставка,</TextBlock>
             <TextBlock></TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="1"></Rectangle>
-        <StackPanel Grid.Column="1">
+        <Rectangle Grid.Column="1" Grid.RowSpan="2"></Rectangle>
+        <StackPanel Grid.Column="1" Grid.RowSpan="2">
             <TextBlock>Гистерезис,</TextBlock>
             <TextBlock></TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="2"></Rectangle>
-        <StackPanel Grid.Column="2">
-            <TextBlock>Уставка</TextBlock>
-            <TextBlock>включения,</TextBlock>
-            <TextBlock></TextBlock>
-        </StackPanel>
-        <Rectangle Grid.Column="3"></Rectangle>
-        <StackPanel Grid.Column="3">
+        <Rectangle Grid.Column="2" Grid.ColumnSpan="4"></Rectangle>
+        <TextBlock Grid.Column="2" Grid.ColumnSpan="4">Выход 1</TextBlock>
+        <Rectangle Grid.Column="6" Grid.ColumnSpan="4"></Rectangle>
+        <TextBlock Grid.Column="6" Grid.ColumnSpan="4">Выход 2</TextBlock>
+        <Rectangle Grid.Column="2" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="2" Grid.Row="1">
             <TextBlock>Давление</TextBlock>
             <TextBlock>включения,</TextBlock>
             <TextBlock></TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="4"></Rectangle>
-        <StackPanel Grid.Column="4">
+        <Rectangle Grid.Column="3" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="3" Grid.Row="1">
             <TextBlock>Погрешность</TextBlock>
             <TextBlock>включения,</TextBlock>
             <TextBlock>%</TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="5"></Rectangle>
-        <StackPanel Grid.Column="5">
-            <TextBlock>Уставка</TextBlock>
+        <Rectangle Grid.Column="4" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="4" Grid.Row="1">
+            <TextBlock>Давление</TextBlock>
             <TextBlock>выключения,</TextBlock>
             <TextBlock></TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="6"></Rectangle>
-        <StackPanel Grid.Column="6">
+        <Rectangle Grid.Column="5" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="5" Grid.Row="1">
+            <TextBlock>Погрешность</TextBlock>
+            <TextBlock>выключения,</TextBlock>
+            <TextBlock>%</TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="6" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="6" Grid.Row="1">
             <TextBlock>Давление</TextBlock>
-            <TextBlock>вкылючения,</TextBlock>
+            <TextBlock>включения,</TextBlock>
             <TextBlock></TextBlock>
         </StackPanel>
-        <Rectangle Grid.Column="7"></Rectangle>
-        <StackPanel Grid.Column="7">
+        <Rectangle Grid.Column="7" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="7" Grid.Row="1">
+            <TextBlock>Погрешность</TextBlock>
+            <TextBlock>включения,</TextBlock>
+            <TextBlock>%</TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="8" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="8" Grid.Row="1">
+            <TextBlock>Давление</TextBlock>
+            <TextBlock>выключения,</TextBlock>
+            <TextBlock></TextBlock>
+        </StackPanel>
+        <Rectangle Grid.Column="9" Grid.Row="1"></Rectangle>
+        <StackPanel Grid.Column="9" Grid.Row="1">
             <TextBlock>Погрешность</TextBlock>
             <TextBlock>выключения,</TextBlock>
             <TextBlock>%</TextBlock>

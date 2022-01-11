@@ -124,12 +124,17 @@ namespace PressSystems
 
         public void DisableControl(int controller)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public void DisableControl()
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+        }
+
+        public void WriteSP(int controller, double SP, double speed, CancellationToken cancellationToken)
+        {
+            ChangeSP(SP);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace PressSystems
 
         void WriteSP(int controller, double SP, CancellationToken cancellationToken);
 
+        void WriteSP(int controller, double SP, double speed, CancellationToken cancellationToken);
+
         void DisableControl();
 
         void Disconnect();

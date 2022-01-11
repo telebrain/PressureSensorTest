@@ -63,14 +63,20 @@ namespace PressSystems
         // Поиск номера контроллера. Если контроллер не найден, возвращает -1
         public int SearshController(double sp, double targetRangeMax, double targetRangeMin)
         {
-            
+            int targetMax = (int)targetRangeMax;
+            int targetMin = (int)targetRangeMin;
+            if (targetRangeMax < targetRangeMin)
+            {
+                targetMax = (int)targetRangeMin;
+                targetMin = (int)targetRangeMax;
+            }
             foreach (PressControllerInfo controller in Controllers)
             {
                 if (controller.IsEnabled)
                 {
                     // Проверка диапазона контроллера
-                    bool checkRange = sp >= 0 ? (int)targetRangeMax <= (int)controller.RangeHi : 
-                        (int)targetRangeMin >= (int)controller.RangeLo;
+                    bool checkRange = sp >= 0 ? targetMax <= (int)controller.RangeHi : 
+                        targetMin >= (int)controller.RangeLo;
                     if (checkRange)
                         return controller.Number;
                 }

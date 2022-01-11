@@ -41,17 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CurrentMeasurmentTools.cs" />
     <Compile Include="DigitalCheckPoint.cs" />
     <Compile Include="CurrentCheckPoint.cs" />
+    <Compile Include="DigitalMeasurmentTools.cs" />
     <Compile Include="ICheckPoint.cs" />
     <Compile Include="IDigitalPort.cs" />
+    <Compile Include="IMeasurmentsTools.cs" />
+    <Compile Include="IRelayDevice.cs" />
+    <Compile Include="IRelayTestTools.cs" />
+    <Compile Include="IStateRelayReader.cs" />
     <Compile Include="ITestProcess.cs" />
     <Compile Include="MeasureResults.cs" />
+    <Compile Include="AbstractMeasurmentTools.cs" />
     <Compile Include="Pressure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RelayTestResultcs.cs" />
-    <Compile Include="TestProcessForDigitalPort.cs" />
-    <Compile Include="TestProcessForCurrentPort.cs" />
+    <Compile Include="RelayTestPoint.cs" />
+    <Compile Include="RelayTestPointSettings.cs" />
+    <Compile Include="RelayTestPointUpDown.cs" />
+    <Compile Include="RelayTestResults.cs" />
+    <Compile Include="RelayTestTools.cs" />
+    <Compile Include="TestProcess.cs" />
     <Compile Include="TestResults.cs" />
     <Compile Include="VariationPoint.cs" />
     <Compile Include="Variations.cs" />

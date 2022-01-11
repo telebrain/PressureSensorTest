@@ -66,7 +66,23 @@ namespace PressSystems
         // Запись уставки на текущий контроллер давления
         void WriteNewSP(double SP, CancellationToken cancellationToken);
 
-        
+        // Запись уставки на один из контроллеров давления пневмосистемы c ограничением скорости выхода на уставку
+        void WriteNewSP(int controller, double SP, double rate, CancellationToken cancellationToken);
+
+        // Передача уставки на контроллер пневмосистемы, исходя из диапазона калибруемого(тестируетого) изделия
+        void WriteNewSP(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken);
+
+        // Передача уставки на контроллер пневмосистемы, исходя из диапазона калибруемого(тестируетого) изделия
+        // С ограничением скорости выхода на уставку
+        void WriteNewSP(double SP, double rangeMin, double rangeMax, double rate, CancellationToken cancellationToken);
+
+        // Передача уставки абсолютного давления на контроллер пневмосистемы, исходя из диапазона калибруемого 
+        // (тестируетого) изделия
+        void WriteNewSP(double SP, double rangeMin, double rangeMax, bool absolutePressure, CancellationToken cancellationToken);
+
+        // Передача уставки абсолютного давления на контроллер пневмосистемы c ограничением скорости выхода на уставку, 
+        // исходя из диапазона калибруемого (тестируетого) изделия с поддержкой абсолютного давления
+        void WriteNewSP(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate, CancellationToken cancellationToken);
 
         // Установка давления с помощью текущего контроллера пневмосистемы, контроль выхода на уставку
         void SetPressure(double SP, CancellationToken cancellationToken);
@@ -78,9 +94,8 @@ namespace PressSystems
         void SetPressure(int controller, double SP, int maxOperationTime, CancellationToken cancellationToken);
 
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
-        // из диапазона и класса точности калибруемого(тестируетого) изделия
-        void SetPressure(double SP, double rangeMin, double rangeMax, 
-            CancellationToken cancellationToken);
+        // из диапазона калибруемого(тестируетого) изделия
+        void SetPressure(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken);
 
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
         // из диапазона и класса точности калибруемого(тестируетого) изделия c передачей флага операции с абсоллютным давлением
@@ -90,6 +105,29 @@ namespace PressSystems
         // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
         // из диапазона и класса точности калибруемого(тестируетого) изделия
         void SetPressure(double SP, double rangeMin, double rangeMax, 
+            int maxOperationTime, CancellationToken cancellationToken);
+
+        // Установка давления с помощью контроллера пневмосистемы c ограничением скорости выхода на уставку, определенного исходя 
+        // из диапазона и класса точности калибруемого(тестируетого) изделия
+        void SetPressure(double SP, double rangeMin, double rangeMax, double rate,
+            CancellationToken cancellationToken);
+
+        // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
+        // из диапазона и класса точности калибруемого(тестируетого) изделия c передачей флага операции с абсоллютным давлением
+        // Ограничение скорости выхода на уставку
+        void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate,
+            CancellationToken cancellationToken);
+
+        // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
+        // из диапазона и класса точности калибруемого(тестируетого) изделия
+        // Ограничение скорости выхода на уставку
+        void SetPressure(double SP, double rangeMin, double rangeMax, double rate,
+            int maxOperationTime, CancellationToken cancellationToken);
+
+        // Установка давления с помощью контроллера пневмосистемы, определенного исходя 
+        // из диапазона и класса точности калибруемого(тестируетого) изделия c передачей флага операции с абсоллютным давлением
+        // Ограничение скорости выхода на уставку
+        void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate, 
             int maxOperationTime, CancellationToken cancellationToken);
 
         // Выключает поддержку давления пневмосистемой для проверки герметичности

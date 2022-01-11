@@ -239,14 +239,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Librarys\ProductDatabase2\ProductDatabase2\ProductDatabase2.csproj">
-      <Project>{7005afcc-fe6e-414c-a33e-13e981288e57}</Project>
-      <Name>ProductDatabase2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Librarys\TCPserver\TCPserver\TCPserver.csproj">
-      <Project>{0fed9692-eeb8-436b-a80b-e0f442e312e0}</Project>
-      <Name>TCPserver</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ArchvingTestResult\ArchvingTestResult\ArchvingTestResult.csproj">
       <Project>{d8a58d02-dc47-484c-9c92-866cc24b014b}</Project>
       <Name>ArchvingTestResult</Name>
@@ -271,6 +263,10 @@
       <Project>{28b19d76-a13d-44a0-8509-76647ed338a7}</Project>
       <Name>PressureSensorTestCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProductDatabase2\ProductDatabase2.csproj">
+      <Project>{7005afcc-fe6e-414c-a33e-13e981288e57}</Project>
+      <Name>ProductDatabase2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SDM_comm\SDM_comm\SDM_comm.csproj">
       <Project>{5b1373a1-7902-47f9-8805-d132d8e01b1e}</Project>
       <Name>SDM_comm</Name>
@@ -278,6 +274,10 @@
     <ProjectReference Include="..\Stand\OwenPressureDevices.csproj">
       <Project>{484ab14b-c806-4b57-a774-c46fe276cb1d}</Project>
       <Name>OwenPressureDevices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TCPserver\TCPserver.csproj">
+      <Project>{0fed9692-eeb8-436b-a80b-e0f442e312e0}</Project>
+      <Name>TCPserver</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

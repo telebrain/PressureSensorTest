@@ -11,4 +11,11 @@ namespace PressureSensorTestCore
         void Init();
         double GetPressurePa();
     }
+
+    [Serializable]
+    public class OpenConnectPortException : Exception { }
+    [Serializable]
+    public class ConnectException : Exception { }
+    [Serializable]
+    public class LostConnectException : Exception { }
 }

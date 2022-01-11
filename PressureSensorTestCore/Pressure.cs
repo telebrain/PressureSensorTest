@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PressureSensorTestCore
 {
-    public struct Pressure
+    public class Pressure
     {
         public double Pressure_Pa { get; }
 

@@ -64,22 +64,22 @@ namespace PressureSensorTestCore
         }
 
         
-        public static double GetPressureByUnits(double val, PressureUnitsEnum pressureUnits)
-        {
-            double result;
-            switch (pressureUnits)
-            {
-                case PressureUnitsEnum.MPa:
-                    result = val * 1e-6;
-                    break;
-                case PressureUnitsEnum.KPa:
-                    result = val * 1e-3;
-                    break;
-                default:
-                    result = val;
-                    break;
-            }
-            return Math.Round(result, Precision, MidpointRounding.AwayFromZero);
-        }
+        //public static double GetPressureByUnits(double val, PressureUnitsEnum pressureUnits)
+        //{
+        //    double result;
+        //    switch (pressureUnits)
+        //    {
+        //        case PressureUnitsEnum.MPa:
+        //            result = val * 1e-6;
+        //            break;
+        //        case PressureUnitsEnum.KPa:
+        //            result = val * 1e-3;
+        //            break;
+        //        default:
+        //            result = val;
+        //            break;
+        //    }
+        //    return Math.Round(result, Precision, MidpointRounding.AwayFromZero);
+        //}
     }
 }

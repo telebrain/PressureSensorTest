@@ -9,6 +9,7 @@ namespace PressSystems
 {
     public sealed class PressSystem : IPressSystem, IDisposable
     {
+        const double RateIsMax = -1;
 
         public PressSystemInfo Info { get; private set; }
 
@@ -146,7 +147,7 @@ namespace PressSystems
             {
                 System.Diagnostics.Debug.WriteLine("Catch на CycleReadVar");
                 throw new PressSystemException(ex.Message);
-                
+
             }
         }
 
@@ -167,86 +168,9 @@ namespace PressSystems
             }
         }
 
-        public void SetPressure(double SP, CancellationToken cancellationToken)
-        {
-            WriteNewSP(SP, cancellationToken);
-            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
-        }
 
-        public void SetPressure(int controller, double SP, CancellationToken cancellationToken)
-        {
-            WriteNewSP(controller, SP, cancellationToken);
-            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
-        }
 
-        public void SetPressure(int controller, double SP, int maxOperationTime, CancellationToken cancellationToken)
-        {
-            WriteNewSP(controller, SP, cancellationToken);
-            WaitSetPessure(maxOperationTime, cancellationToken);
-        }
-
-        public void SetPressure(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken)
-        {
-            double _rangeMin = rangeMin;
-            double _rangeMax = rangeMax;
-            if (rangeMax < rangeMin) // тип ДВ
-            {
-                _rangeMax = rangeMin;
-                _rangeMin = rangeMax;
-            }
-            int controller = Info.SearshController(SP, _rangeMax, _rangeMin);
-            SetPressure(controller, SP, cancellationToken);
-        }
-
-        public void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, CancellationToken cancellationToken)
-        {
-            double _rangeMin = rangeMin;
-            double _rangeMax = rangeMax;
-            double sp = SP;
-            if (absolutePressure)
-            {
-                // Если поверка прибора абсолютного давления, корректируем уставку и диапазон по барометру
-                WaitUpdatePressureVar(cancellationToken);
-                sp -= PressSystemVariables.Barometr;
-                _rangeMin -= PressSystemVariables.Barometr;
-                _rangeMax -= PressSystemVariables.Barometr;
-            }
-            SetPressure(sp, _rangeMin, _rangeMax, cancellationToken);
-        }
-
-        public void SetPressure(double SP, double rangeMin, double rangeMax, int maxOperationTime, CancellationToken cancellationToken)
-        {
-            int controller = Info.SearshController(SP, rangeMax, rangeMin);
-            SetPressure(controller, SP, maxOperationTime, cancellationToken);
-        }
-
-        public void WriteNewSP(int controller, double SP, CancellationToken cancellationToken)
-        {
-            double sp = SP;
-            try
-            {
-                if (sp > Info.RangeHi)
-                    sp = Info.RangeHi;
-                if (sp < Info.RangeLo)
-                    sp = Info.RangeLo;
-                commands.WriteSP(controller, sp, cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new PressSystemException(ex.Message);
-            }
-        }
-
-        public void WriteNewSP(double SP, CancellationToken cancellationToken)
-        {
-            WriteNewSP(CurrentController, SP, cancellationToken);
-        }
-
-        // Дожидаемся стабилизации давления
+        // Дожидается стабилизации давления
         private void WaitSetPessure(int maxOperationTime, CancellationToken cancellationToken)
         {
             using (System.Timers.Timer timer = new System.Timers.Timer(maxOperationTime * 1000))
@@ -268,7 +192,7 @@ namespace PressSystems
                         break;
                 }
             }
-           
+
         }
 
         // Параметр InLim должен быть true в течение времени DelayCheckInlim
@@ -312,9 +236,134 @@ namespace PressSystems
         {
             updatePressureVarAutoReset.Dispose();
         }
+
+        public void WriteNewSP(int controller, double SP, CancellationToken cancellationToken)
+        {
+
+            WriteNewSP(controller, SP, RateIsMax, cancellationToken);
+        }
+
+        public void WriteNewSP(double SP, CancellationToken cancellationToken)
+        {
+            WriteNewSP(CurrentController, cancellationToken);
+        }
+
+        public void WriteNewSP(int controller, double SP, double rate, CancellationToken cancellationToken)
+        {
+            double sp = SP;
+            try
+            {
+                if (sp > Info.RangeHi)
+                    sp = Info.RangeHi;
+                if (sp < Info.RangeLo)
+                    sp = Info.RangeLo;
+                commands.WriteSP(controller, sp, rate, cancellationToken);
+                CurrentController = controller;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new PressSystemException(ex.Message);
+            }
+        }
+
+        public void WriteNewSP(double SP, double rangeMin, double rangeMax, double rate, CancellationToken cancellationToken)
+        {
+            int controller = Info.SearshController(SP, rangeMax, rangeMin);
+            WriteNewSP(controller, SP, rate, cancellationToken);
+        }
+
+        public void WriteNewSP(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken)
+        {
+            int controller = Info.SearshController(SP, rangeMax, rangeMin);
+            WriteNewSP(controller, SP, cancellationToken);
+        }
+
+        
+
+        public void WriteNewSP(double SP, double rangeMin, double rangeMax, bool absolutePressure, CancellationToken cancellationToken)
+        {
+            double shift = 0;
+            if (absolutePressure)
+                shift = GetBarometricValue(cancellationToken);
+            WriteNewSP(SP - shift, rangeMin - shift, rangeMax - shift, cancellationToken);
+        }
+
+        public void WriteNewSP(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate, CancellationToken cancellationToken)
+        {
+            double shift = 0;
+            if (absolutePressure)
+                shift = GetBarometricValue(cancellationToken);
+            WriteNewSP(SP - shift, rangeMin - shift, rangeMax - shift, rate, cancellationToken);
+        }
+
+        public void SetPressure(double SP, CancellationToken cancellationToken)
+        {
+            SetPressure(CurrentController, SP, cancellationToken);
+        }
+
+        public void SetPressure(int controller, double SP, CancellationToken cancellationToken)
+        {
+            WriteNewSP(controller, SP, cancellationToken);
+            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
+        }
+
+        public void SetPressure(int controller, double SP, int maxOperationTime, CancellationToken cancellationToken)
+        {
+            WriteNewSP(controller, SP, cancellationToken);
+            WaitSetPessure(maxOperationTime, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, cancellationToken);
+            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, absolutePressure, cancellationToken);
+            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, int maxOperationTime, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, cancellationToken);
+            WaitSetPessure(maxOperationTime, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, double rate, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, rate, cancellationToken);
+            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, absolutePressure, rate, cancellationToken);
+            WaitSetPessure(MaxTimeSetPressureOperation, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, double rate, int maxOperationTime, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, rate, cancellationToken);
+            WaitSetPessure(maxOperationTime, cancellationToken);
+        }
+
+        public void SetPressure(double SP, double rangeMin, double rangeMax, bool absolutePressure, double rate, int maxOperationTime, CancellationToken cancellationToken)
+        {
+            WriteNewSP(SP, rangeMin, rangeMax, absolutePressure, rate, cancellationToken);
+            WaitSetPessure(maxOperationTime, cancellationToken);
+        }
+
+
+        private double GetBarometricValue(CancellationToken cancellationToken)
+        {
+            WaitUpdatePressureVar(cancellationToken);
+            return PressSystemVariables.Barometr;
+        }
     }
-
-    
-
-    
 }
